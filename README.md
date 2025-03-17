@@ -7,7 +7,7 @@ O projeto inclui um **frontend (HTML, CSS, JavaScript)** e um **backend (Node.js
 
 ## 📂 **Estrutura do Projeto**
 O projeto está organizado da seguinte forma:
-
+```
 inceptus/
 ├── backend/              # Backend (Node.js + Express + MySQL)
 │   ├── models/          # Modelos do banco de dados (Sequelize)
@@ -27,7 +27,7 @@ inceptus/
 ├── img/                  # Imagens e outros ficheiros estáticos
 ├── README.md             # Documentação do projeto
 └── .gitignore            # Ficheiros ignorados no Git
-
+```
 ---
 
 ## 🛠 **Tecnologias Utilizadas**
