@@ -8,22 +8,25 @@ O projeto inclui um **frontend (HTML, CSS, JavaScript)** e um **backend (Node.js
 ## 📂 **Estrutura do Projeto**
 O projeto está organizado da seguinte forma:
 
-backend/                 # Backend em Node.js + Express + MySQL
-  models/                # Modelos do banco de dados (Sequelize)  
-  routes/                # Rotas da API (endpoints do backend)
-  config/                # Configuração do banco de dados
-  server.js              # Arquivo principal do servidor
-  .env                   # Configuração de ambiente (NÃO enviar para o Git!)
-  package.json           # Dependências do backend
-  package-lock.json      # Registo das versões das dependências
-  node_modules/          # Módulos instalados pelo npm (IGNORADO no Git)
-frontend/                # Frontend em HTML, CSS, JavaScript puro
-  index.html             # Página principal
-  styles.css             # Estilos CSS
-  script.js              # Lógica do frontend
-img/                     # Imagens e outros ficheiros estáticos
-README.md                # Documentação do projeto
-.gitignore               # Ficheiros ignorados no Git
+inceptus/
+├── backend/              # Backend (Node.js + Express + MySQL)
+│   ├── models/          # Modelos do banco de dados (Sequelize)
+│   ├── routes/          # Rotas da API (endpoints do backend)
+│   ├── config/          # Configuração do banco de dados
+│   ├── server.js        # Arquivo principal do servidor
+│   ├── .env             # Configuração de ambiente (NÃO enviar para o Git)
+│   ├── package.json     # Dependências do backend
+│   ├── package-lock.json # Registo das versões das dependências
+│   ├── node_modules/    # Módulos instalados pelo npm (IGNORADO no Git)
+│
+├── frontend/             # Frontend (HTML, CSS, JavaScript puro)
+│   ├── index.html       # Página principal
+│   ├── styles.css       # Estilos CSS
+│   ├── script.js        # Lógica do frontend
+│
+├── img/                  # Imagens e outros ficheiros estáticos
+├── README.md             # Documentação do projeto
+└── .gitignore            # Ficheiros ignorados no Git
 
 ---
 
