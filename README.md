@@ -8,25 +8,37 @@ O projeto inclui um **frontend (HTML, CSS, JavaScript)** e um **backend (Node.js
 ## 📂 **Estrutura do Projeto**
 O projeto está organizado da seguinte forma:
 ```
-inceptus/
-├── backend/                # Backend (Node.js + Express + MySQL)
-│   ├── models/             # Modelos da base de dados (Sequelize)
-│   ├── routes/             # Rotas da API (endpoints do backend)
-│   ├── config/             # Configuração da ligação à base de dados
-│   ├── server.js           # Configuração principal do servidor
-│   ├── .env                # Configuração de ambiente (ignorado no Git)
-│   ├── package.json        # Dependências do backend
-│   ├── package-lock.json   # Registo das versões das dependências
-│   ├── node_modules/       # Módulos instalados pelo npm (ignorado no Git)
+Inceptus/
+├── backend/                    # Backend (Node.js + Express + MySQL)
+│   ├── config/                 # Configuração da ligação à base de dados
+│   │   ├── database.js
+│   ├── models/                 # Modelos da base de dados (Sequelize)
+│   │   ├── categoria.js
+│   │   ├── cliente.js
+│   │   ├── comentario.js
+│   │   ├── empresa.js
+│   │   ├── index.js            # Inicializa Sequelize e importa modelos
+│   │   ├── produto.js         
+│   ├── node_modules/           # Módulos instalados pelo npm (ignorado no Git)
+│   ├── routes/                 # Rotas da API (endpoints do backend)
+│   │   ├── categoriaRoutes.js
+│   │   ├── clienteRoutes.js
+│   │   ├── comentarioRoutes.js
+│   │   ├── empresaRoutes.js
+│   │   ├── produtoRoutes.js
+│   ├── .env                    # Configuração de ambiente (ignorado no Git)
+│   ├── package.json            # Dependências do backend
+│   ├── package-lock.json       # Registo das versões das dependências
+│   └── server.js               # Configuração principal do servidor
 │
-├── frontend/               # Frontend (HTML, CSS, JavaScript)
-│   ├── index.html          # Página principal
-│   ├── styles.css          # Estilos CSS
-│   ├── script.js           # Lógica do frontend
+├── frontend/                   # Frontend (HTML, CSS, JavaScript)
+│   ├── index.html              # Página principal
+│   ├── styles.css              # Estilos CSS
+│   ├── script.js               # Lógica do frontend
 │
-├── img/                    # Imagens e outros ficheiros estáticos
-├── README.md               # Documentação do projeto
-└── .gitignore              # Ficheiros ignorados no Git
+├── img/                        # Imagens e outros ficheiros estáticos
+├── .gitignore                  # Ficheiros ignorados no Git
+└── README.md                   # Documentação do projeto
 ```
 ---
 
