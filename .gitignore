@@ -1,0 +1,14 @@
+# 🔹 Node.js (backend)
+backend/node_modules/
+backend/package-lock.json
+
+# 🔹 Ambiente (credenciais)
+backend/.env
+
+# 🔹 Editor Configs
+.idea/
+.vscode/
+.DS_Store
+
+# 🔹 Ignorar pastas do sistema operacional
+Thumbs.db
