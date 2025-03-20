@@ -1,13 +1,13 @@
 const sequelize = require("../config/database");
 
-const Cliente = require("./Cliente");
-const Empresa = require("./Empresa");
-const Categoria = require("./Categoria");
-const Produto = require("./Produto");
-const Comentario = require("./Comentario");
+const Categoria = require("./Category");
+const Comment = require("./Comment");
+const Empresa = require("./Company");
+const Produto = require("./Product");
+const Cliente = require("./User");
 
 // Sincronizar modelos
-sequelize.sync({ alter: true }) // Usa alter: true para atualizar a estrutura sem perder dados
+sequelize.sync()
     .then(() => console.log("🟢 Modelos sincronizados com a BD"))
     .catch((err) => console.error("🔴 Erro ao sincronizar modelos:", err));
 
@@ -16,5 +16,5 @@ module.exports = {
     Empresa,
     Categoria,
     Produto,
-    Comentario,
+    Comment
 };

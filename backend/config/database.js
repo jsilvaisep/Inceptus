@@ -9,6 +9,10 @@ const sequelize = new Sequelize(
         host: process.env.DB_HOST,
         dialect: "mysql",
         logging: false, // Define para true se quiseres ver os logs SQL no terminal
+        define: {
+            freezeTableName: true,   // Evita pluralização automática
+            underscored: true,       // Converte camelCase para snake_case
+        }
     }
 );
 

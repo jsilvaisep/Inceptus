@@ -5,6 +5,17 @@ O projeto inclui um **frontend (HTML, CSS, JavaScript)** e um **backend (Node.js
 
 ---
 
+## ⚙️ **Pré-requisitos**
+Antes de executar o projeto, certifica-te de que tens os seguintes programas instalados:
+
+🔹 [**Node.js** (versão 18 ou superior)](https://nodejs.org/)  
+🔹 [**MySQL Server**](https://dev.mysql.com/downloads/)  
+🔹 [**Git**](https://git-scm.com/downloads)  
+🔹 [**Visual Studio Code** (ou WebStorm)](https://code.visualstudio.com/)  
+🔹 (Opcional) [**Docker**](https://www.docker.com/) para rodar MySQL localmente
+
+---
+
 ## 📂 **Estrutura do Projeto**
 O projeto está organizado da seguinte forma:
 ```
@@ -13,47 +24,47 @@ Inceptus/
 │   ├── config/                 # Configuração da ligação à base de dados
 │   │   ├── database.js
 │   ├── models/                 # Modelos da base de dados (Sequelize)
-│   │   ├── categoria.js
-│   │   ├── cliente.js
-│   │   ├── comentario.js
-│   │   ├── empresa.js
+│   │   ├── Category.js
+│   │   ├── Comment.js
+│   │   ├── Company.js
 │   │   ├── index.js            # Inicializa Sequelize e importa modelos
-│   │   ├── produto.js         
+│   │   ├── Product.js         
+│   │   ├── User.js
 │   ├── node_modules/           # Módulos instalados pelo npm (ignorado no Git)
 │   ├── routes/                 # Rotas da API (endpoints do backend)
-│   │   ├── categoriaRoutes.js
+│   │   ├── categoryRoutes.js
 │   │   ├── clienteRoutes.js
-│   │   ├── comentarioRoutes.js
-│   │   ├── empresaRoutes.js
-│   │   ├── produtoRoutes.js
+│   │   ├── commentRoutes.js
+│   │   ├── companyRoutes.js
+│   │   ├── productRoutes.js
 │   ├── .env                    # Configuração de ambiente (ignorado no Git)
 │   ├── package.json            # Dependências do backend
 │   ├── package-lock.json       # Registo das versões das dependências
 │   └── server.js               # Configuração principal do servidor
 │
 ├── frontend/                   # Frontend (HTML, CSS, JavaScript)
+│   ├── img/                    # Imagens e outros ficheiros estáticos
 │   ├── index.html              # Página principal
 │   ├── styles.css              # Estilos CSS
-│   ├── script.js               # Lógica do frontend
-│
-├── img/                        # Imagens e outros ficheiros estáticos
+│   └── script.js               # Lógica do frontend
 ├── .gitignore                  # Ficheiros ignorados no Git
 └── README.md                   # Documentação do projeto
 ```
----
 
+---
 ## 🛠 **Tecnologias Utilizadas**
 O projeto usa as seguintes tecnologias:
 
 ### 🔹 **Frontend**
-- HTML, CSS, JavaScript
+- HTML5 + CSS3 + JavaScript puro
+- **SPA** (Single Page Application) sem frameworks
+- Design Responsivo
 
 ### 🔹 **Backend**
-- Node.js + Express.js
-- Base de Dados **MySQL** via Sequelize
-- Autenticação com **JWT** 
+- **Node.js** + **Express.js**
+- **MySQL** como base de dados (via **Sequelize ORM**)
+- Autenticação via **JWT (JSON Web Token)**
 
 ### 🔹 **Infraestrutura**
-- Variáveis de ambiente via `.env`
-
----
+- Configuração de variáveis ambiente via `.env`
+- **Docker** (opcional para ambiente isolado)
