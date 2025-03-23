@@ -3,6 +3,7 @@ package org.vaadin.example;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -11,6 +12,7 @@ import com.vaadin.flow.router.Route;
 import org.vaadin.example.DatabaseConnection;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A sample Vaadin view class.
@@ -27,15 +29,17 @@ import java.util.ArrayList;
 @Route
 public class MainView extends VerticalLayout {
 
-    /**
-     * Construct a new Vaadin view.
-     * <p>
-     * Build the initial UI state for the user accessing the application.
-     *
-     * @param service
-     *            The message service. Automatically injected Spring managed bean.
-     */
+    private Grid<User> userGrid = new Grid<>(User.class);
+    private UserRepository userRepository = new UserRepository();
+
     public MainView(GreetService service) {
+
+        Button btnCarregar = new Button("Carregar Users", event -> carregarUsers());
+        add(btnCarregar, userGrid);
+
+        // por algum motivo o nome dentro do setcollums
+        // tem que ser igual aos atributos da classe
+        userGrid.setColumns("id", "name", "email");
 
         // Use TextField for standard text input
         TextField textField = new TextField("Your name");
@@ -64,8 +68,17 @@ public class MainView extends VerticalLayout {
         // styles.css.
         addClassName("centered-content");
 
-        add(textField, button, btnTestarConexao);
+        add(textField, button, btnTestarConexao, btnCarregar, userGrid);
     }
 
+    private void carregarUsers() {
+        try {
+            List<User> users = userRepository.getAllUsers();
+            userGrid.setItems(users);
+            Notification.show("Dados carregados com sucesso!");
+        } catch (Exception e) {
+            Notification.show("Erro ao carregar: " + e.getMessage());
+        }
+    }
 
 }
