@@ -1,4 +1,7 @@
-package org.vaadin.example;
+package org.vaadin.example.repository;
+
+import org.vaadin.example.DatabaseConnection;
+import org.vaadin.example.model.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
