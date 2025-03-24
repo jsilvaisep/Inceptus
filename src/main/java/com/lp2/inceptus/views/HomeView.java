@@ -31,9 +31,8 @@ public class HomeView extends HorizontalLayout {
         H2 companiesTitle = new H2("Top rated Companies");
         Grid<Company> companyGrid = new Grid<>(Company.class, false);
         companyGrid.addColumn(Company::getCompanyName).setHeader("Nome");
-        companyGrid.addColumn(Company::getCompanyDescription).setHeader("Descrição");
         companyGrid.addColumn(Company::getCompanyRank).setHeader("Ranking");
-        companyGrid.setItems(companyService.findAll()); // futuramente: topN sorted
+        companyGrid.setItems(companyService.findTop()); // futuramente: topN sorted
         companyGrid.setWidthFull();
 
         H2 productsTitle = new H2("Top rated Products");
