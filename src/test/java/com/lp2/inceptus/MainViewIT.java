@@ -1,4 +1,4 @@
-package org.vaadin.example;
+package com.lp2.inceptus;
 
 import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.html.testbench.ParagraphElement;
