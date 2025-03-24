@@ -5,8 +5,9 @@ import com.lp2.inceptus.entity.Product;
 import com.lp2.inceptus.service.CompanyService;
 import com.lp2.inceptus.service.ProductService;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
@@ -14,109 +15,52 @@ import com.vaadin.flow.router.Route;
 
 @Route(value = "", layout = MainLayout.class)
 @PageTitle("Início")
-public class HomeView extends VerticalLayout {
+public class HomeView extends HorizontalLayout {
 
     public HomeView(CompanyService companyService, ProductService productService) {
         setSizeFull();
-        setPadding(true);
         setSpacing(true);
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setAlignItems(Alignment.CENTER);
+        setPadding(true);
 
-        H1 welcome = new H1("Bem-vindo à Inceptus!");
+        // Secção esquerda (60%) com grids
+        VerticalLayout leftLayout = new VerticalLayout();
+        leftLayout.setWidth("60%");
+        leftLayout.setPadding(false);
+        leftLayout.setSpacing(true);
 
-        // Grid para Companies
+        H2 companiesTitle = new H2("Top rated Companies");
         Grid<Company> companyGrid = new Grid<>(Company.class, false);
-        // Coluna de teste (ID)
-        companyGrid.addColumn(Company::getCompanyId).setHeader("ID");
-        // Coluna de nome
-        companyGrid.addColumn(Company::getCompanyName).setHeader("Empresa");
-        companyGrid.setItems(companyService.findAll());
+        companyGrid.addColumn(Company::getCompanyName).setHeader("Nome");
+        companyGrid.addColumn(Company::getCompanyDescription).setHeader("Descrição");
+        companyGrid.addColumn(Company::getCompanyRank).setHeader("Ranking");
+        companyGrid.setItems(companyService.findAll()); // futuramente: topN sorted
+        companyGrid.setWidthFull();
 
-        // Grid para Products
+        H2 productsTitle = new H2("Top rated Products");
         Grid<Product> productGrid = new Grid<>(Product.class, false);
-        // Coluna de teste (ID)
-        productGrid.addColumn(Product::getProductId).setHeader("ID");
-        // Coluna de nome
-        productGrid.addColumn(Product::getProductName).setHeader("Produto");
-        productGrid.setItems(productService.findAll());
+        productGrid.addColumn(Product::getProductName).setHeader("Nome");
+        productGrid.addColumn(Product::getProductDescription).setHeader("Descrição");
+        productGrid.addColumn(Product::getProductRank).setHeader("Ranking");
+        productGrid.setItems(productService.findAll()); // futuramente: topN sorted
+        productGrid.setWidthFull();
 
-        // Títulos e Layouts
-        VerticalLayout companiesLayout = new VerticalLayout(new H2("Empresas"), companyGrid);
-        companiesLayout.setSizeFull();
+        leftLayout.add(companiesTitle, companyGrid, productsTitle, productGrid);
 
-        VerticalLayout productsLayout = new VerticalLayout(new H2("Produtos"), productGrid);
-        productsLayout.setSizeFull();
+        // Secção direita (40%) com feed estilo X
+        VerticalLayout rightLayout = new VerticalLayout();
+        rightLayout.setWidth("40%");
+        rightLayout.setPadding(false);
+        rightLayout.setSpacing(true);
 
-        HorizontalLayout gridsLayout = new HorizontalLayout(companiesLayout, productsLayout);
-        gridsLayout.setSizeFull();
-        gridsLayout.setFlexGrow(1, companiesLayout, productsLayout);
+        H2 feedTitle = new H2("Últimos Posts das Empresas");
+        // MOCK até a tabela POST existir
+        Div post1 = new Div(new Paragraph("📢 Post da empresa X - novidade no produto Y!"));
+        Div post2 = new Div(new Paragraph("📢 Empresa Z atingiu o top 3! Obrigado pela confiança."));
+        Div post3 = new Div(new Paragraph("📢 Atualização no site da empresa ABC já disponível."));
 
-        add(welcome, gridsLayout);
+        rightLayout.add(feedTitle, post1, post2, post3);
 
-        // Debug
-        int totalCompanies = companyService.findAll().size();
-        int totalProducts = productService.findAll().size();
-        System.out.println("Total de Companies: " + totalCompanies);
-        System.out.println("Total de Products: " + totalProducts);
+        // Adiciona ao layout principal
+        add(leftLayout, rightLayout);
     }
 }
-
-
-
-
-//public class MainView extends VerticalLayout {
-//
-//    private Grid<User> userGrid = new Grid<>(User.class);
-//    private UserRepository userRepository = new UserRepository();
-//
-//    public MainView(GreetService service) {
-//
-//        Button btnCarregar = new Button("Carregar Users", event -> carregarUsers());
-//        add(btnCarregar, userGrid);
-//
-//        // por algum motivo o nome dentro do setcollums
-//        // tem que ser igual aos atributos da classe
-//        userGrid.setColumns("id", "name", "email");
-//
-//        // Use TextField for standard text input
-//        TextField textField = new TextField("Your name");
-//        textField.addClassName("bordered");
-//
-//        // Button click listeners can be defined as lambda expressions
-//        Button button = new Button("Say hello", e -> {
-//            add(new Paragraph(service.greet(textField.getValue())));
-//        });
-//
-//        Button btnTestarConexao = new Button("Testar Conexão", e -> {
-//            DatabaseConnection conn = new DatabaseConnection();
-//            conn.testarConexao();
-//        });
-//        add(btnTestarConexao);
-//
-//        // Theme variants give you predefined extra styles for components.
-//        // Example: Primary button has a more prominent look.
-//        button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-//
-//        // You can specify keyboard shortcuts for buttons.
-//        // Example: Pressing enter in this view clicks the Button.
-//        button.addClickShortcut(Key.ENTER);
-//
-//        // Use custom CSS classes to apply styling. This is defined in
-//        // styles.css.
-//        addClassName("centered-content");
-//
-//        add(textField, button, btnTestarConexao, btnCarregar, userGrid);
-//    }
-//
-//    private void carregarUsers() {
-//        try {
-//            List<User> users = userRepository.getAllUsers();
-//            userGrid.setItems(users);
-//            Notification.show("Dados carregados com sucesso!");
-//        } catch (Exception e) {
-//            Notification.show("Erro ao carregar: " + e.getMessage());
-//        }
-//    }
-//
-//}
