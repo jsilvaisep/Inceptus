@@ -3,8 +3,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     include '../includes/db.php';
     header('Content-Type: application/json');
 
-    $name = $_POST['name'] ?? '';
-    $email = $_POST['email'] ?? '';
+    $email = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_EMAIL);
+    $name = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $password = $_POST['password'] ?? '';
     $confirm = $_POST['confirm_password'] ?? '';
 
@@ -32,6 +32,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
             $filename = uniqid() . '_' . basename($_FILES['profile_img']['name']);
             $targetPath = $uploadDir . $filename;
+
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            $mimeType = mime_content_type($_FILES['profile_img']['tmp_name']);
+
+            if (!in_array($mimeType, $allowedTypes)) {
+                echo json_encode(['success' => false, 'message' => 'Tipo de imagem inválido.']);
+                exit;
+            }
 
             if (move_uploaded_file($_FILES['profile_img']['tmp_name'], $targetPath)) {
                 $imgPath = 'uploads/' . $filename;
