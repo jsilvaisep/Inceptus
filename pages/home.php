@@ -16,59 +16,39 @@
         <h2>Top rated Products</h2>
         <?php
         try {
-            $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-            $query = "SELECT PRODUCT_NAME, PRODUCT_DESCRIPTION, IMG_URL FROM PRODUCT";
-            $params = [];
-
-            if (!empty($search)) {
-                $query .= " WHERE PRODUCT_NAME LIKE :search";
-                $params['search'] = '%' . $search . '%';
-            }
-
-            $query .= " ORDER BY PRODUCT_RANK DESC LIMIT 5";
-
-            $stmt = $pdo->prepare($query);
-            $stmt->execute($params);
-
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            if (count($results) === 0) {
-                echo '<p>Nenhum resultado encontrado.</p>';
-            }
-
-            foreach ($results as $row) {
-                $img = htmlspecialchars($row['IMG_URL']) ?: 'assets/img/logo-symbol.png';
+            $stmt = $pdo->query("CALL PRODUCT_TOP");
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 echo '<div class="card">
                         <div class="card-left">
-                            <img src="' . $img . '" alt="Produto">
-                            <div>
-                                <strong>' . htmlspecialchars($row['PRODUCT_NAME']) . '</strong><br>
-                                <small>' . htmlspecialchars($row['PRODUCT_DESCRIPTION']) . '</small>
-                            </div>
-                        </div>
+                          <img src ="' . htmlspecialchars($row['IMG_URL']) .'" />
+                          <div>
+                              <strong>' . htmlspecialchars($row['PRODUCT_NAME']) . '</strong><br>
+                              <small>' . htmlspecialchars($row['PRODUCT_DESCRIPTION']) . '</small>
+                          </div>
+                        </div>  
+                        
                         <div class="card-right">
-                            💬 <span class="stars">★★★★★</span>
+                          <span class="stars">★★★★★</scan>
                         </div>
                     </div>';
             }
         } catch (PDOException $e) {
             echo "<p>Erro ao buscar produtos: " . $e->getMessage() . "</p>";
         }
+        $stmt->closeCursor();
         ?>
       </div>
       <div class="banner-container" style="margin-top: 30px; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
         <img src="assets/img/inceptus-banner.png" alt="Banner Inceptus" style="width: 100%; height: auto; display: block; border-radius: 20px; object-fit: cover;">
       </div>
-
-
     </div>
-
     <!-- Coluna da Direita -->
     <div class="right-content">
       <div class="card-section">
         <h2>Top rated companys</h2>
         <?php
         try {
-            $stmt = $pdo->query("SELECT COMPANY_NAME, COMPANY_DESCRIPTION FROM COMPANY ORDER BY COMPANY_RANK DESC LIMIT 3");
+            $stmt = $pdo->query("CALL COMPANY_TOP");
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 echo '<div class="card small-card">
                         <div>
@@ -81,6 +61,7 @@
         } catch (PDOException $e) {
             echo "<p>Erro ao buscar empresas: " . $e->getMessage() . "</p>";
         }
+        $stmt->closeCursor();
         ?>
       </div>
     <br><br>
@@ -88,10 +69,7 @@
         <h2>Trending Forums</h2>
         <?php
         try {
-            $stmt = $pdo->query("SELECT c.COMMENT_TEXT, com.COMPANY_NAME 
-                                 FROM COMMENT c
-                                 JOIN COMPANY com ON c.COMPANY_ID = com.COMPANY_ID
-                                 ORDER BY c.CREATED_AT DESC LIMIT 3");
+            $stmt = $pdo->query("CALL TRENDING_TOP");
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 echo '<div class="card small-card">
                         <div><strong>' . htmlspecialchars($row['COMMENT_TEXT']) . '</strong></div>
@@ -101,6 +79,7 @@
         } catch (PDOException $e) {
             echo "<p>Erro ao buscar comentários: " . $e->getMessage() . "</p>";
         }
+        $stmt->closeCursor();
         ?>
       </div>
     </div>
