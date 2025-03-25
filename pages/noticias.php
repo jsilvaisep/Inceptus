@@ -1,0 +1,1 @@
+<h2>Notícias</h2><p>Últimas notícias disponíveis aqui.</p>
