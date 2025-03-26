@@ -27,7 +27,7 @@ $companies = $stmt->fetchAll();
     <h2>🏢 Empresas</h2>
 
     <div class="search-section">
-        <form method="GET" class="search-box">
+        <form class="search-box" data-page="empresas">
             <span class="search-icon" onclick="this.closest('form').requestSubmit()">🔍</span>
             <input type="text" name="search" class="search-input" placeholder="Barra de pesquisa" value="<?= htmlspecialchars($search) ?>">
         </form>
