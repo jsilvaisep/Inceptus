@@ -42,5 +42,6 @@ if ($action === 'register') {
         $_SESSION['error'] = "Erro ao registar: " . $e->getMessage();
         header('Location: ../index.php?page=register');
     }
+    $stmt=null;
     exit;
 }

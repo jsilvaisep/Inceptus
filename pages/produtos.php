@@ -29,6 +29,7 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
     echo '<p>' . nl2br(htmlspecialchars($product['PRODUCT_DESCRIPTION'])) . '</p>';
     echo '<p><strong>Visualizações:</strong> ' . $product['PRODUCT_VIEW_QTY'] . '</p>';
     echo '</div></div>';
+    $stmt=null;
     exit;
 }
 
@@ -45,6 +46,7 @@ $stmt->bindValue(2, $perPage, PDO::PARAM_INT);
 $stmt->bindValue(3, $offset, PDO::PARAM_INT);
 $stmt->execute();
 $products = $stmt->fetchAll();
+$stmt=null;
 ?>
 
 <div class="company-container">
@@ -137,4 +139,3 @@ function closeModal() {
     document.getElementById('modal-container').innerHTML = '';
 }
 </script>
-<?php $stmt->closeCursor(); ?>

@@ -26,7 +26,7 @@
         } catch (PDOException $e) {
             echo "<p>Erro ao buscar produtos: " . $e->getMessage() . "</p>";
         }
-        $stmt->closeCursor();
+        $stmt=null;
         ?>
       </div>
       <div class="banner-container" style="margin-top: 30px; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
@@ -52,7 +52,7 @@
         } catch (PDOException $e) {
             echo "<p>Erro ao buscar empresas: " . $e->getMessage() . "</p>";
         }
-        $stmt->closeCursor();
+        $stmt=null;
         ?>
       </div>
     <br><br>
@@ -70,7 +70,7 @@
         } catch (PDOException $e) {
             echo "<p>Erro ao buscar comentários: " . $e->getMessage() . "</p>";
         }
-        $stmt->closeCursor();
+        $stmt=null;
         ?>
       </div>
     </div>
