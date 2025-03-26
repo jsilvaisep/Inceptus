@@ -56,7 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     exit;
 }
-$stmt->closeCursor();
 ?>
 
 <div class="form-container">
@@ -73,3 +72,4 @@ $stmt->closeCursor();
         <p>Já tem conta? <a href="?page=login">Entrar</a></p>
     </form>
 </div>
+<?php $stmt->closeCursor(); ?>
