@@ -44,10 +44,54 @@ function reloadNavbar() {
 function setupPageScripts(page) {
     if (page === 'empresas') {
         const input = document.getElementById('company-search');
-        if (input) {
-            input.addEventListener('input', filterCompanies);
-        }
+        if (input) input.addEventListener('input', filterCompanies);
+
+        // Modal de empresa
+        document.querySelectorAll('.clickable-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const id = card.dataset.id;
+                fetch('pages/empresas.php?id=' + id + '&modal=true')
+                    .then(res => res.text())
+                    .then(html => {
+                        document.getElementById('modal-container').innerHTML = html;
+                        document.body.classList.add('no-scroll');
+                    });
+            });
+        });
+
+        // Botões de filtro (por exemplo, TYPE_ID)
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const type = btn.dataset.type;
+                const search = document.querySelector('input[name="search"]')?.value ?? '';
+                let params = `search=${encodeURIComponent(search)}`;
+                if (type !== '') params += `&type=${type}`;
+                loadPage('empresas', params);
+            });
+        });
     }
+
+    if (page === 'produtos') {
+        // Modal de produto
+        document.querySelectorAll('.clickable-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const id = card.dataset.id;
+                fetch('pages/produtos.php?id=' + id + '&modal=true')
+                    .then(res => res.text())
+                    .then(html => {
+                        document.getElementById('modal-container').innerHTML = html;
+                        document.body.classList.add('no-scroll');
+                    });
+            });
+        });
+    }
+
+    // Fechar modal global
+    document.addEventListener('click', function (e) {
+        if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('modal-close')) {
+            closeModal();
+        }
+    });
 }
 
 // ==========================
@@ -87,7 +131,6 @@ window.addEventListener('DOMContentLoaded', () => {
     const search = params.toString();
     loadPage(page, search);
 
-    // Navegação por clique em links
     document.addEventListener('click', e => {
         const link = e.target.closest('a');
         if (link && link.href.includes('?page=')) {
@@ -99,7 +142,6 @@ window.addEventListener('DOMContentLoaded', () => {
             loadPage(pageParam, searchParam);
         }
 
-        // Logout SPA
         if (e.target.id === 'logout-link') {
             e.preventDefault();
             fetch('pages/logout.php')
@@ -111,11 +153,9 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Submissão de formulários SPA
     document.addEventListener('submit', e => {
         const form = e.target;
 
-        // Pesquisa (Home e Empresas)
         if (form.classList.contains('search-box')) {
             e.preventDefault();
             const input = form.querySelector('input[name="search"]');
@@ -124,21 +164,16 @@ window.addEventListener('DOMContentLoaded', () => {
             loadPage(page, `search=${encodeURIComponent(term)}`);
         }
 
-        // Registo
         if (form.id === 'register-form') {
             e.preventDefault();
             const formData = new FormData(form);
             const msg = document.getElementById('register-msg');
-
             if (!form.querySelector('#terms').checked) {
                 msg.innerHTML = `<p class="error">Aceite os termos e condições.</p>`;
                 return;
             }
 
-            fetch('pages/register.php', {
-                method: 'POST',
-                body: formData
-            })
+            fetch('pages/register.php', { method: 'POST', body: formData })
                 .then(res => res.json())
                 .then(data => {
                     msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
@@ -155,16 +190,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 });
         }
 
-        // Login
         if (form.id === 'login-form') {
             e.preventDefault();
             const formData = new FormData(form);
             const msg = document.getElementById('login-msg');
 
-            fetch('pages/login.php', {
-                method: 'POST',
-                body: formData
-            })
+            fetch('pages/login.php', { method: 'POST', body: formData })
                 .then(res => res.json())
                 .then(data => {
                     msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
@@ -180,16 +211,12 @@ window.addEventListener('DOMContentLoaded', () => {
                 });
         }
 
-        // Edição de perfil
         if (form.id === 'edit-profile-form') {
             e.preventDefault();
             const formData = new FormData(form);
             const msg = document.getElementById('profile-msg');
 
-            fetch('pages/profile.php', {
-                method: 'POST',
-                body: formData
-            })
+            fetch('pages/profile.php', { method: 'POST', body: formData })
                 .then(res => res.json())
                 .then(data => {
                     msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
@@ -201,3 +228,12 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// ==========================
+// SPA: Modal handler global
+// ==========================
+function closeModal() {
+    const modalContainer = document.getElementById('modal-container');
+    if (modalContainer) modalContainer.innerHTML = '';
+    document.body.classList.remove('no-scroll');
+}

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+    
     <meta charset="UTF-8">
     <title>Inceptus</title>
     <link rel="stylesheet" href="assets/css/style.css">
