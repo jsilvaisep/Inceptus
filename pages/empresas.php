@@ -28,6 +28,7 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
     echo '<h2>' . htmlspecialchars($company['COMPANY_NAME']) . '</h2>';
     echo '<p>' . nl2br(htmlspecialchars($company['COMPANY_DESCRIPTION'])) . '</p>';
     echo '</div></div>';
+    $stmt=null;
     exit;
 }
 
@@ -44,6 +45,7 @@ $stmt->bindValue(2, $perPage, PDO::PARAM_INT);
 $stmt->bindValue(3, $offset, PDO::PARAM_INT);
 $stmt->execute();
 $companies = $stmt->fetchAll();
+$stmt=null;
 ?>
 
 <div class="company-container">

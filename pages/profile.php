@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     $imgPath = null;
+    $stmt=null;
 
     if (!$name || !$email) {
         echo json_encode(['success' => false, 'message' => 'Preencha nome e email.']);
@@ -62,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
     }
+    $stmt=null;
     exit;
 }
 
@@ -74,6 +76,7 @@ $user_id = $_SESSION['user_id'];
 $stmt = $pdo->prepare("SELECT * FROM USER WHERE USER_ID = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt=null;
 ?>
 
 <div class="profile-container">
