@@ -12,14 +12,7 @@ function loadPage(page, search = '') {
         })
         .then(html => {
             document.getElementById('content').innerHTML = html;
-
-            const newUrl = '?page=' + page + (search ? '&' + search : '');
-            history.pushState(null, '', newUrl);
-
-            if (['login', 'register', 'home', 'profile', 'empresas'].includes(page)) {
-                reloadNavbar();
-            }
-
+            history.replaceState(null, '', '?page=' + page + (search ? '&' + search : ''));
             setupPageScripts(page);
         })
         .catch(() => {
@@ -42,11 +35,10 @@ function reloadNavbar() {
 // SPA: Scripts locais da página carregada
 // ==========================
 function setupPageScripts(page) {
-    if (page === 'empresas') {
-        const input = document.getElementById('company-search');
-        if (input) input.addEventListener('input', filterCompanies);
+    const input = document.getElementById('company-search');
+    if (page === 'empresas' && input) {
+        input.addEventListener('input', filterCompanies);
 
-        // Modal de empresa
         document.querySelectorAll('.clickable-card').forEach(card => {
             card.addEventListener('click', () => {
                 const id = card.dataset.id;
@@ -59,7 +51,6 @@ function setupPageScripts(page) {
             });
         });
 
-        // Botões de filtro (por exemplo, TYPE_ID)
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const type = btn.dataset.type;
@@ -72,7 +63,6 @@ function setupPageScripts(page) {
     }
 
     if (page === 'produtos') {
-        // Modal de produto
         document.querySelectorAll('.clickable-card').forEach(card => {
             card.addEventListener('click', () => {
                 const id = card.dataset.id;
@@ -86,7 +76,6 @@ function setupPageScripts(page) {
         });
     }
 
-    // Fechar modal global
     document.addEventListener('click', function (e) {
         if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('modal-close')) {
             closeModal();
@@ -131,7 +120,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const search = params.toString();
     loadPage(page, search);
 
-    document.addEventListener('click', e => {
+    document.body.addEventListener('click', e => {
         const link = e.target.closest('a');
         if (link && link.href.includes('?page=')) {
             e.preventDefault();
@@ -153,7 +142,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.addEventListener('submit', e => {
+    document.body.addEventListener('submit', e => {
         const form = e.target;
 
         if (form.classList.contains('search-box')) {

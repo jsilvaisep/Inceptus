@@ -1,14 +1,7 @@
 
 <?php include '../includes/db.php'; ?>
 
-<div class="home-container">
-  <div class="search-section">
-    <form method="GET" class="search-box">
-      <span class="search-icon" onclick="this.closest('form').submit()">🔍</span>
-      <input type="text" name="search" class="search-input" placeholder="Barra de pesquisa" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-    </form>
-  </div>
-
+<br><br><br><br><br> 
   <div class="content-boxes">
     <!-- Coluna da Esquerda -->
     <div class="left-content">
