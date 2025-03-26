@@ -1,7 +1,9 @@
-// SPA: Navegação e submissão com AJAX
+// ==========================
+// SPA: Navegação de Páginas
+// ==========================
 function loadPage(page, search = '') {
     let url = 'pages/' + page + '.php';
-    if (search) url += '?search=' + encodeURIComponent(search);
+    if (search) url += '?' + search;
 
     fetch(url)
         .then(response => {
@@ -11,19 +13,23 @@ function loadPage(page, search = '') {
         .then(html => {
             document.getElementById('content').innerHTML = html;
 
-            const newUrl = '?page=' + page + (search ? '&search=' + encodeURIComponent(search) : '');
+            const newUrl = '?page=' + page + (search ? '&' + search : '');
             history.pushState(null, '', newUrl);
 
-            // Recarrega navbar se for login, logout ou register
-            if (['login', 'register', 'home', 'profile'].includes(page)) {
+            if (['login', 'register', 'home', 'profile', 'empresas'].includes(page)) {
                 reloadNavbar();
             }
+
+            setupPageScripts(page);
         })
         .catch(() => {
             document.getElementById('content').innerHTML = '<h3>Página não encontrada.</h3>';
         });
 }
 
+// ==========================
+// SPA: Atualiza Navbar
+// ==========================
 function reloadNavbar() {
     fetch('includes/navbar.php')
         .then(res => res.text())
@@ -32,21 +38,65 @@ function reloadNavbar() {
         });
 }
 
+// ==========================
+// SPA: Scripts locais da página carregada
+// ==========================
+function setupPageScripts(page) {
+    if (page === 'empresas') {
+        const input = document.getElementById('company-search');
+        if (input) {
+            input.addEventListener('input', filterCompanies);
+        }
+    }
+}
+
+// ==========================
+// SPA: Filtro de empresas no DOM
+// ==========================
+function filterCompanies() {
+    const input = document.getElementById('company-search');
+    if (!input) return;
+
+    const term = input.value.toLowerCase();
+    const cards = document.querySelectorAll('.company-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+        const name = card.querySelector('h3').textContent.toLowerCase();
+        if (name.includes(term)) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    const noResults = document.querySelector('.no-results');
+    if (noResults) {
+        noResults.style.display = (visibleCount === 0) ? 'block' : 'none';
+    }
+}
+
+// ==========================
+// SPA: Inicialização e eventos
+// ==========================
 window.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const page = params.get('page') || 'home';
-    const search = params.get('search') || '';
+    params.delete('page');
+    const search = params.toString();
     loadPage(page, search);
 
-    // Navegação SPA ao clicar em links
+    // Navegação por clique em links
     document.addEventListener('click', e => {
         const link = e.target.closest('a');
-
-        // Links com ?page=
         if (link && link.href.includes('?page=')) {
             e.preventDefault();
-            const page = link.href.split('?page=')[1].split('&')[0];
-            loadPage(page);
+            const urlParams = new URL(link.href).searchParams;
+            const pageParam = urlParams.get('page') || 'home';
+            urlParams.delete('page');
+            const searchParam = urlParams.toString();
+            loadPage(pageParam, searchParam);
         }
 
         // Logout SPA
@@ -61,16 +111,17 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Submissões de formulários SPA
+    // Submissão de formulários SPA
     document.addEventListener('submit', e => {
         const form = e.target;
 
-        // Pesquisa
+        // Pesquisa (Home e Empresas)
         if (form.classList.contains('search-box')) {
             e.preventDefault();
             const input = form.querySelector('input[name="search"]');
             const term = input.value.trim();
-            loadPage('home', term);
+            const page = form.dataset.page || 'home';
+            loadPage(page, `search=${encodeURIComponent(term)}`);
         }
 
         // Registo
@@ -142,9 +193,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 .then(res => res.json())
                 .then(data => {
                     msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
-                    if (data.success) {
-                        reloadNavbar();
-                    }
+                    if (data.success) reloadNavbar();
                 })
                 .catch(() => {
                     msg.innerHTML = `<p class="error">Erro ao atualizar perfil.</p>`;
