@@ -1,7 +1,5 @@
-
 <?php include '../includes/db.php'; ?>
 
-<br><br><br><br><br> 
   <div class="content-boxes">
     <!-- Coluna da Esquerda -->
     <div class="left-content">

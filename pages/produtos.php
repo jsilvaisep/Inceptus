@@ -48,7 +48,6 @@ $products = $stmt->fetchAll();
 ?>
 
 <div class="company-container">
-    <h2>🌟 Produtos</h2>
 
     <div class="search-section">
         <form class="search-box" data-page="produtos">

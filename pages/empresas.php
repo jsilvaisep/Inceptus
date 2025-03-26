@@ -47,8 +47,7 @@ $companies = $stmt->fetchAll();
 ?>
 
 <div class="company-container">
-    <h2>🏢 Empresas</h2>
-
+    
     <div class="search-section">
         <form class="search-box" data-page="empresas">
             <span class="search-icon" onclick="this.closest('form').requestSubmit()">🔍</span>
