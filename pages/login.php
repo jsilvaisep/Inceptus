@@ -5,7 +5,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     include '../includes/db.php';
     header('Content-Type: application/json');
 
-    $email = $_POST['email'] ?? '';
+    $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'] ?? '';
 
     if (!$email || !$password) {
@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user_type'] = $user['TYPE_ID'];
             $_SESSION['user_img'] = $user['IMG_URL'];
 
+            session_regenerate_id(true);
             echo json_encode(['success' => true, 'message' => 'Login efetuado com sucesso!']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Credenciais inválidas.']);
