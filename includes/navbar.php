@@ -10,7 +10,8 @@
 
         <nav class="navbar">
             <ul>
-                <li><a href="?page=home">Produtos</a></li>
+                <li><a href="?page=home">Home</a></li>
+                <li><a href="?page=produtos">Produtos</a></li>
                 <li><a href="?page=empresas">Empresas</a></li>
                 <li><a href="?page=noticias">Notícias</a></li>
                 <li><a href="?page=forums">Forums</a></li>
