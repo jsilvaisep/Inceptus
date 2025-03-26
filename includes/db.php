@@ -12,4 +12,5 @@ try {
 } catch (PDOException $e) {
     die('Erro na ligação à base de dados: ' . $e->getMessage());
 }
+// $stmt->closeCursor();
 ?>

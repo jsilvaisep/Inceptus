@@ -25,6 +25,7 @@ if ($action === 'login') {
         header('Location: ../index.php?page=login');
     }
     exit;
+    $stmt->closeCursor();
 }
 
 if ($action === 'register') {
@@ -43,4 +44,5 @@ if ($action === 'register') {
         header('Location: ../index.php?page=register');
     }
     exit;
+    $stmt->closeCursor();
 }

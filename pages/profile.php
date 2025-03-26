@@ -74,6 +74,7 @@ $user_id = $_SESSION['user_id'];
 $stmt = $pdo->prepare("SELECT * FROM USER WHERE USER_ID = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt->closeCursor();
 ?>
 
 <div class="profile-container">

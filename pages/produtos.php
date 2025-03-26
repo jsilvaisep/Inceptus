@@ -21,6 +21,7 @@ $stmt->bindValue(2, $perPage, PDO::PARAM_INT);
 $stmt->bindValue(3, $offset, PDO::PARAM_INT);
 $stmt->execute();
 $products = $stmt->fetchAll();
+$stmt->closeCursor();
 ?>
 
 <div class="company-container">

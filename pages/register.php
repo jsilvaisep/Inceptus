@@ -3,8 +3,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     include '../includes/db.php';
     header('Content-Type: application/json');
 
-    $email = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_EMAIL);
-    $name = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $name = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_EMAIL);
+    $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     $password = $_POST['password'] ?? '';
     $confirm = $_POST['confirm_password'] ?? '';
 
@@ -56,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     exit;
 }
+$stmt->closeCursor();
 ?>
 
 <div class="form-container">
