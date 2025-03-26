@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form id="login-form" class="form-box">
         <h2>Login</h2>
         <input type="email" name="email" placeholder="Email" required />
-        <input type="password" name="password" placeholder="Senha" required />
+        <input type="password" name="password" placeholder="Password" required />
         <button type="submit">Entrar</button>
         <div id="login-msg"></div>
         <p>Não tem conta? <a href="?page=register">Criar conta</a></p>
