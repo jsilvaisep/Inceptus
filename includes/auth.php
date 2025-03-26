@@ -25,7 +25,7 @@ if ($action === 'login') {
         header('Location: ../index.php?page=login');
     }
     exit;
-    $stmt->closeCursor();
+    $stmt=null;
 }
 
 if ($action === 'register') {
@@ -43,6 +43,6 @@ if ($action === 'register') {
         $_SESSION['error'] = "Erro ao registar: " . $e->getMessage();
         header('Location: ../index.php?page=register');
     }
+    $stmt=null;
     exit;
-    $stmt->closeCursor();
 }
