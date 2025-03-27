@@ -1,0 +1,15 @@
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (1,'Dicas essenciais para melhorar sua produtividade no trabalho.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (2,'Como manter uma rotina saudável mesmo com um dia corrido.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (3,'Os melhores aplicativos para organizar suas tarefas diárias.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (4,'Tendências de tecnologia que você precisa conhecer em 2025.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (5,'Passo a passo para criar um blog de sucesso na internet.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (6,'Dicas práticas para economizar dinheiro sem abrir mão do lazer.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (7,'Como aprender um novo idioma de forma rápida e eficiente.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (8,'O impacto das redes sociais na nossa saúde mental.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (9,'Receitas fáceis e deliciosas para o dia a dia.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (1,'Os melhores destinos para viajar gastando pouco.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (2,'Estratégias para melhorar sua concentração e foco.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (3,'Como transformar seu hobby em uma fonte de renda.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (4,'Livros que vão mudar a sua forma de pensar sobre a vida.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (5,'Erros comuns na carreira e como evitá-los.');
+INSERT INTO DB_INCEPTUS_PP.POST (COMPANY_ID, POST_CONTENT) VALUES (6,'O que fazer para manter a motivação nos momentos difíceis.');
