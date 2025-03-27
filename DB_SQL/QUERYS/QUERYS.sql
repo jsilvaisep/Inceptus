@@ -1,8 +1,10 @@
 select COUNT(*) from CATEGORY c;
+select COUNT(*) from COMMENT c ;
+select COUNT(*) from COMPANY c ;
 select COUNT(*) from PRODUCT p ;
 select COUNT(*) from USER u ;
-select COUNT(*) from COMPANY c ;
-select COUNT(*) from COMMENT c ;
+
+
 
 
 Create Procedure COMPANY_TOP() 
