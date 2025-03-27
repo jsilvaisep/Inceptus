@@ -1,5 +1,6 @@
 <?php
 include '../includes/db.php';
+include '../includes/filter.php';
 
 $search = $_GET['search'] ?? '';
 $searchTerm = '%' . $search . '%';
