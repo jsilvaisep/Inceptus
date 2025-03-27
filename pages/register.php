@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare("INSERT INTO USER (USER_NAME, USER_EMAIL, USER_PASSWORD, TYPE_ID, IMG_URL) VALUES (?, ?, ?, 2, ?)");
+        $stmt = $pdo->prepare("INSERT INTO USER (USER_NAME, USER_EMAIL, USER_PASSWORD, TYPE_ID, IMG_URL) VALUES (?, ?, ?, , ?)");
         $stmt->execute([$name, $email, $hash, $imgPath]);
 
         $userId = $pdo->lastInsertId();
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['user'] = [
             'user_id' => $userId,
             'user_name' => $name,
-            'user_type' => 'COMPANY',
+            'user_type' => 'SUSER',
             'user_img' => $imgPath
         ];
 

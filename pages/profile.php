@@ -86,7 +86,7 @@ $stmt=null;
         <form id="edit-profile-form" enctype="multipart/form-data">
             <input type="text" name="name" value="<?= htmlspecialchars($user['USER_NAME']) ?>" required>
             <input type="email" name="email" value="<?= htmlspecialchars($user['USER_EMAIL']) ?>" required>
-            <input type="password" name="password" placeholder="Nova senha (opcional)">
+            <input type="password" name="password" placeholder="Nova Password (opcional)">
             <input type="file" name="profile_img" accept="image/*" onchange="previewAvatar(event)">
             <button type="submit">Guardar</button>
             <div id="profile-msg"></div>
