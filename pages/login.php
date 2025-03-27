@@ -19,10 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['USER_PASSWORD'])) {
-            $_SESSION['user_id'] = $user['USER_ID'];
-            $_SESSION['user_name'] = $user['USER_NAME'];
-            $_SESSION['user_type'] = $user['TYPE_ID'];
-            $_SESSION['user_img'] = $user['IMG_URL'];
+            $_SESSION['user'] = [
+                'user_id' => $user['USER_ID'],
+                'user_name' => $user['USER_NAME'],
+                'user_type' => getUserTypeName($pdo, $user['TYPE_ID']),
+                'user_img' => $user['IMG_URL']
+            ];
 
             session_regenerate_id(true);
             echo json_encode(['success' => true, 'message' => 'Login efetuado com sucesso!']);
@@ -32,8 +34,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
     }
-    $stmt=null;
+
+    $stmt = null;
     exit;
+}
+
+function getUserTypeName($pdo, $typeId) {
+    $stmt = $pdo->prepare("SELECT USER_TYPE FROM USER_TYPE WHERE TYPE_ID = ?");
+    $stmt->execute([$typeId]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result ? $result['USER_TYPE'] : null;
 }
 ?>
 

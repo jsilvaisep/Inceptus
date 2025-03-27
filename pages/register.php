@@ -1,10 +1,12 @@
 <?php
+session_start();
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     include '../includes/db.php';
     header('Content-Type: application/json');
 
-    $name = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_EMAIL);
-    $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $name = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'] ?? '';
     $confirm = $_POST['confirm_password'] ?? '';
 
@@ -14,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($password !== $confirm) {
-        echo json_encode(['success' => false, 'message' => 'As palavras-pass não coincidem.']);
+        echo json_encode(['success' => false, 'message' => 'As palavras-passe não coincidem.']);
         exit;
     }
 
@@ -50,11 +52,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $pdo->prepare("INSERT INTO USER (USER_NAME, USER_EMAIL, USER_PASSWORD, TYPE_ID, IMG_URL) VALUES (?, ?, ?, 2, ?)");
         $stmt->execute([$name, $email, $hash, $imgPath]);
 
+        $userId = $pdo->lastInsertId();
+
+        $_SESSION['user'] = [
+            'user_id' => $userId,
+            'user_name' => $name,
+            'user_type' => 'COMPANY',
+            'user_img' => $imgPath
+        ];
+
+        session_regenerate_id(true);
         echo json_encode(['success' => true, 'message' => 'Registo efetuado com sucesso! Redirecionando...']);
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
     }
-    $stmt=null;
+
+    $stmt = null;
     exit;
 }
 ?>

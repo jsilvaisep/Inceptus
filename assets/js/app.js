@@ -38,49 +38,82 @@ function setupPageScripts(page) {
     const input = document.getElementById('company-search');
     if (page === 'empresas' && input) {
         input.addEventListener('input', filterCompanies);
-
-        document.querySelectorAll('.clickable-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const id = card.dataset.id;
-                fetch('pages/empresas.php?id=' + id + '&modal=true')
-                    .then(res => res.text())
-                    .then(html => {
-                        document.getElementById('modal-container').innerHTML = html;
-                        document.body.classList.add('no-scroll');
-                    });
-            });
-        });
-
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const type = btn.dataset.type;
-                const search = document.querySelector('input[name="search"]')?.value ?? '';
-                let params = `search=${encodeURIComponent(search)}`;
-                if (type !== '') params += `&type=${type}`;
-                loadPage('empresas', params);
-            });
-        });
     }
 
-    if (page === 'produtos') {
-        document.querySelectorAll('.clickable-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const id = card.dataset.id;
-                fetch('pages/produtos.php?id=' + id + '&modal=true')
-                    .then(res => res.text())
-                    .then(html => {
-                        document.getElementById('modal-container').innerHTML = html;
-                        document.body.classList.add('no-scroll');
-                    });
-            });
+    document.querySelectorAll('.clickable-card').forEach(card => {
+        card.addEventListener('click', () => {
+            const id = card.dataset.id;
+            const modalPage = page === 'produtos' ? 'produtos' : 'empresas';
+            fetch(`pages/${modalPage}.php?id=${id}&modal=true`)
+                .then(res => res.text())
+                .then(html => {
+                    const container = document.getElementById('modal-container');
+                    if (container) container.innerHTML = html;
+                    document.body.classList.add('no-scroll');
+                    setupGlobalModalListeners();
+                });
         });
-    }
-
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('modal-overlay') || e.target.classList.contains('modal-close')) {
-            closeModal();
-        }
     });
+
+    if (page === 'home') {
+        initNewsCarousel();
+    }
+
+    // Setup login form listener
+    const loginForm = document.getElementById('login-form');
+    if (page === 'login' && loginForm) {
+        loginForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const formData = new FormData(loginForm);
+            const msg = document.getElementById('login-msg');
+
+            fetch('pages/login.php', { method: 'POST', body: formData })
+                .then(res => res.json())
+                .then(data => {
+                    msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
+                    if (data.success) {
+                        setTimeout(() => {
+                            loadPage('home');
+                            reloadNavbar();
+                        }, 1000);
+                    }
+                })
+                .catch(() => {
+                    msg.innerHTML = `<p class="error">Erro no servidor.</p>`;
+                });
+        });
+    }
+
+    setupGlobalModalListeners();
+}
+
+// ==========================
+// SPA: Modal handler global
+// ==========================
+function setupGlobalModalListeners() {
+    document.querySelectorAll('.modal-overlay, .modal-close').forEach(el => {
+        el.addEventListener('click', closeModal);
+    });
+
+    const newsModal = document.getElementById('post-modal');
+    if (newsModal) {
+        newsModal.addEventListener('click', e => {
+            if (e.target === newsModal) closeModal();
+        });
+
+        const closeBtn = newsModal.querySelector('.news-modal-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeModal);
+        }
+    }
+}
+
+function closeModal() {
+    const modalContainer = document.getElementById('modal-container');
+    const postModal = document.getElementById('post-modal');
+    if (modalContainer) modalContainer.innerHTML = '';
+    if (postModal) postModal.style.display = 'none';
+    document.body.classList.remove('no-scroll');
 }
 
 // ==========================
@@ -111,7 +144,7 @@ function filterCompanies() {
 }
 
 // ==========================
-// SPA: Inicialização e eventos
+// SPA: Inicialização
 // ==========================
 window.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
@@ -141,88 +174,58 @@ window.addEventListener('DOMContentLoaded', () => {
                 });
         }
     });
-
-    document.body.addEventListener('submit', e => {
-        const form = e.target;
-
-        if (form.classList.contains('search-box')) {
-            e.preventDefault();
-            const input = form.querySelector('input[name="search"]');
-            const term = input.value.trim();
-            const page = form.dataset.page || 'home';
-            loadPage(page, `search=${encodeURIComponent(term)}`);
-        }
-
-        if (form.id === 'register-form') {
-            e.preventDefault();
-            const formData = new FormData(form);
-            const msg = document.getElementById('register-msg');
-            if (!form.querySelector('#terms').checked) {
-                msg.innerHTML = `<p class="error">Aceite os termos e condições.</p>`;
-                return;
-            }
-
-            fetch('pages/register.php', { method: 'POST', body: formData })
-                .then(res => res.json())
-                .then(data => {
-                    msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
-                    if (data.success) {
-                        form.reset();
-                        setTimeout(() => {
-                            loadPage('login');
-                            reloadNavbar();
-                        }, 1500);
-                    }
-                })
-                .catch(() => {
-                    msg.innerHTML = `<p class="error">Erro no servidor.</p>`;
-                });
-        }
-
-        if (form.id === 'login-form') {
-            e.preventDefault();
-            const formData = new FormData(form);
-            const msg = document.getElementById('login-msg');
-
-            fetch('pages/login.php', { method: 'POST', body: formData })
-                .then(res => res.json())
-                .then(data => {
-                    msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
-                    if (data.success) {
-                        setTimeout(() => {
-                            loadPage('home');
-                            reloadNavbar();
-                        }, 1000);
-                    }
-                })
-                .catch(() => {
-                    msg.innerHTML = `<p class="error">Erro no servidor.</p>`;
-                });
-        }
-
-        if (form.id === 'edit-profile-form') {
-            e.preventDefault();
-            const formData = new FormData(form);
-            const msg = document.getElementById('profile-msg');
-
-            fetch('pages/profile.php', { method: 'POST', body: formData })
-                .then(res => res.json())
-                .then(data => {
-                    msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
-                    if (data.success) reloadNavbar();
-                })
-                .catch(() => {
-                    msg.innerHTML = `<p class="error">Erro ao atualizar perfil.</p>`;
-                });
-        }
-    });
 });
 
 // ==========================
-// SPA: Modal handler global
+// Banner de Notícias (News)
 // ==========================
-function closeModal() {
-    const modalContainer = document.getElementById('modal-container');
-    if (modalContainer) modalContainer.innerHTML = '';
-    document.body.classList.remove('no-scroll');
+function initNewsCarousel() {
+    let currentNews = 0;
+    const slides = document.querySelectorAll('.news-slide');
+    if (!slides.length) return;
+
+    const showSlide = index => {
+        slides.forEach(s => s.classList.remove('active'));
+        slides[index].classList.add('active');
+    };
+
+    const nextSlide = () => {
+        currentNews = (currentNews + 1) % slides.length;
+        showSlide(currentNews);
+    };
+
+    const prevSlide = () => {
+        currentNews = (currentNews - 1 + slides.length) % slides.length;
+        showSlide(currentNews);
+    };
+
+    document.querySelector('.news-nav.next')?.addEventListener('click', nextSlide);
+    document.querySelector('.news-nav.prev')?.addEventListener('click', prevSlide);
+
+    let autoSlide = setInterval(nextSlide, 7000);
+    const container = document.querySelector('.news-carousel-container');
+    if (container) {
+        container.addEventListener('mouseenter', () => clearInterval(autoSlide));
+        container.addEventListener('mouseleave', () => autoSlide = setInterval(nextSlide, 7000));
+    }
+
+    slides.forEach(slide => {
+        const button = slide.querySelector('.read-more-btn');
+        if (button) {
+            button.addEventListener('click', () => {
+                const title = slide.dataset.title;
+                const content = slide.dataset.content;
+                const date = slide.dataset.date;
+                const img = slide.dataset.img;
+
+                document.getElementById("modal-title").innerText = title;
+                document.getElementById("modal-text").innerText = content;
+                document.getElementById("modal-date").innerText = '🕒 ' + date;
+                document.getElementById("modal-img").src = img;
+                document.getElementById("post-modal").style.display = "flex";
+            });
+        }
+    });
+
+    showSlide(currentNews);
 }

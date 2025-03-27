@@ -1,7 +1,7 @@
 <div class="footer-carousel">
     <div class="carousel-track">
         <?php
-        $logos = ['logo1.png', 'logo2.png', 'logo3.png', 'logo4.png', 'logo5.png' ,'logo1.png', 'logo2.png', 'logo3.png', 'logo4.png', 'logo5.png'];
+        $logos = ['logo1.png', 'logo2.png', 'logo3.png', 'logo4.png', 'logo5.png' ,'logo1.png', 'logo2.png', 'logo3.png', 'logo4.png', 'logo5.png', 'logo1.png', 'logo2.png', 'logo3.png', 'logo4.png', 'logo5.png' ,'logo1.png', 'logo2.png', 'logo3.png', 'logo4.png', 'logo5.png'];
         // Repetir 2x para fazer loop visual contínuo
         for ($i = 0; $i < 2; $i++) {
             foreach ($logos as $index => $logo) {
@@ -25,7 +25,7 @@
 .carousel-track {
     display: flex;
     width: max-content;
-    animation: scroll-carousel 15s linear infinite;
+    animation: scroll-carousel 40s linear infinite;
 }
 
 .carousel-track img {
