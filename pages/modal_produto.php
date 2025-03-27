@@ -62,3 +62,4 @@ try {
     echo '<p>Erro: ' . $e->getMessage() . '</p>';
 }
 ?>
+<?php $stmt->closeCursor(); ?>

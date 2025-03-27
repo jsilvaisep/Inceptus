@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     $imgPath = null;
+    $stmt=null;
 
     if (!$name || !$email) {
         echo json_encode(['success' => false, 'message' => 'Preencha nome e email.']);
