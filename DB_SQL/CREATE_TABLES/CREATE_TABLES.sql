@@ -1,3 +1,8 @@
+/* 
+###############################
+####### TABLE USER_TYPE #####################################################################################################################################################################################
+###############################
+*/
 CREATE TABLE DB_INCEPTUS_PP.USER_TYPE (
 	TYPE_ID INT NOT NULL,
 	USER_TYPE VARCHAR(100) NOT NULL,
@@ -10,6 +15,12 @@ ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci
 COMMENT='Table containing user type data';
+
+/* 
+###############################
+####### TABLE USER ##########################################################################################################################################################################################
+###############################
+*/
 
 CREATE TABLE DB_INCEPTUS_PP.USER (
 	USER_ID INT AUTO_INCREMENT NOT NULL,
@@ -30,6 +41,11 @@ DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci
 COMMENT='Table containing user data';
 
+/* 
+###############################
+####### TABLE COMPANY #######################################################################################################################################################################################
+###############################
+*/
 
 CREATE TABLE DB_INCEPTUS_PP.COMPANY (
 	COMPANY_ID INT AUTO_INCREMENT NOT NULL,
@@ -53,6 +69,14 @@ DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci
 COMMENT='Table containing company data';
 
+-- DB_INCEPTUS_PP.COMPANY
+ALTER TABLE DB_INCEPTUS_PP.COMPANY MODIFY COLUMN COMPANY_RANK decimal(2,1) NULL;
+
+/* 
+###############################
+####### TABLE CATEGORY ######################################################################################################################################################################################
+###############################
+*/
 
 CREATE TABLE DB_INCEPTUS_PP.CATEGORY (
 	CATEGORY_ID INT AUTO_INCREMENT NOT NULL,
@@ -68,6 +92,11 @@ DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci
 COMMENT='Table containing category data';
 
+/* 
+###############################
+####### TABLE PRODUCT #######################################################################################################################################################################################
+###############################
+*/
 
 CREATE TABLE DB_INCEPTUS_PP.PRODUCT (
 	PRODUCT_ID INT AUTO_INCREMENT NOT NULL,
@@ -91,6 +120,14 @@ DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci
 COMMENT='Table containing prodcut data';
 
+-- DB_INCEPTUS_PP.PRODUCT
+ALTER TABLE DB_INCEPTUS_PP.PRODUCT MODIFY COLUMN PRODUCT_RANK decimal(2,1) NULL;
+
+/* 
+###############################
+####### TABLE COMMENT #######################################################################################################################################################################################
+###############################
+*/
 
 CREATE TABLE DB_INCEPTUS_PP.COMMENT (
 	COMMENT_ID INT AUTO_INCREMENT NOT NULL,
@@ -98,6 +135,7 @@ CREATE TABLE DB_INCEPTUS_PP.COMMENT (
 	COMPANY_ID INT NOT NULL,
 	PRODUCT_ID INT NOT NULL,
 	COMMENT_TEXT VARCHAR(2000) NOT NULL,
+	COMMENT_RANK INT NOT NULL DEFAULT 0,
 	COMMENT_STATUS VARCHAR(1) DEFAULT 'A' NOT NULL,
 	CREATED_AT DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	UPDATED_AT DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,		
@@ -111,3 +149,121 @@ DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci
 COMMENT='Table containing comment data';
 
+/* 
+###############################
+####### TABLE POST ##########################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE POST (
+  POST_ID INT NOT NULL AUTO_INCREMENT,
+  COMPANY_ID INT NOT NULL,
+  POST_CONTENT VARCHAR(2000) NOT NULL,
+  POST_STATUS VARCHAR(1) DEFAULT 'A',
+  CREATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (POST_ID),
+  CONSTRAINT POST_COMPANY_ID_FK FOREIGN KEY (COMPANY_ID) REFERENCES DB_INCEPTUS_PP.COMPANY (COMPANY_ID) ON DELETE CASCADE ON UPDATE CASCADE
+) 
+ENGINE=InnoDB DEFAULT 
+CHARSET=utf8mb4 
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Table containing posts data';
+
+/* 
+###############################
+####### TABLE TAG ###########################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE TAG (
+  TAG_ID INT NOT NULL AUTO_INCREMENT,
+  TAG_NAME VARCHAR(50) NOT NULL,
+  TAG_STATUS VARCHAR(1) DEFAULT 'A',
+  CREATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (TAG_ID)
+) 
+ENGINE=InnoDB DEFAULT 
+CHARSET=utf8mb4 
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Table containing tags data';
+
+/* 
+###############################
+####### TABLE TAG_COMPANY #####################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE TAG_COMPANY (
+  TAG_ID INT NOT NULL,
+  COMPANY_ID INT NOT NULL,
+  PRIMARY KEY (TAG_ID, COMPANY_ID),
+  CONSTRAINT TAG_COMPANY_TAG_ID_FK FOREIGN KEY (TAG_ID) REFERENCES DB_INCEPTUS_PP.TAG (TAG_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT TAG_COMPANY_COMPANY_ID_FK FOREIGN KEY (COMPANY_ID) REFERENCES DB_INCEPTUS_PP.COMPANY(COMPANY_ID) ON DELETE CASCADE ON UPDATE CASCADE
+) 
+ENGINE=InnoDB DEFAULT 
+CHARSET=utf8mb4 
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Table containing tags company data';
+
+/* 
+###############################
+####### TABLE TAG_PRODCUT #####################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE TAG_PRODUCT (
+  TAG_ID INT NOT NULL,
+  PRODUCT_ID INT NOT NULL,
+  PRIMARY KEY (TAG_ID, PRODUCT_ID),
+  CONSTRAINT TAG_PRODUCT_TAG_ID_FK FOREIGN KEY (TAG_ID) REFERENCES DB_INCEPTUS_PP.TAG(TAG_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT TAG_PRODUCT_PRODCUT_ID_FK FOREIGN KEY (PRODUCT_ID) REFERENCES DB_INCEPTUS_PP.PRODUCT(PRODUCT_ID) ON DELETE CASCADE ON UPDATE CASCADE
+) 
+ENGINE=InnoDB DEFAULT 
+CHARSET=utf8mb4 
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Table containing tags product data';
+
+/* 
+###############################
+####### TABLE SEC_RST_CODE ##################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE SEC_RST_CODE (
+  SEC_RST_CODE_ID INT NOT NULL AUTO_INCREMENT,
+  USER_ID INT,
+  GENERATED_CODE INT NOT NULL,
+  CREATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (SEC_RST_CODE_ID),
+  CONSTRAINT SEC_RST_CODE_ID_USER_ID_FK FOREIGN KEY (USER_ID) REFERENCES DB_INCEPTUS_PP.USER(USER_ID) ON DELETE CASCADE ON UPDATE CASCADE
+) 
+ENGINE=InnoDB DEFAULT 
+CHARSET=utf8mb4 
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Table containing reset password volatile codes data';
+
+/* 
+###############################
+####### TABLE ADMIN_POST ####################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE ADMIN_POST (
+  ADM_POST_ID INT NOT NULL AUTO_INCREMENT,
+  USER_ID INT,
+  COMPANY_ID INT,
+  ADM_POST_CONTENT VARCHAR(2000) NOT NULL,
+  ADM_POST_STATUS VARCHAR(1) DEFAULT 'A',
+  CREATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (ADM_POST_ID),
+  CONSTRAINT ADMIN_POST_USER_ID_FK FOREIGN KEY (USER_ID) REFERENCES DB_INCEPTUS_PP.USER(USER_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT ADMIN_POST_COMPANY_ID_FK FOREIGN KEY (COMPANY_ID) REFERENCES DB_INCEPTUS_PP.COMPANY (COMPANY_ID) ON DELETE CASCADE ON UPDATE CASCADE
+) 
+ENGINE=InnoDB DEFAULT 
+CHARSET=utf8mb4 
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Table containing admin posts data';
