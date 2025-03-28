@@ -49,8 +49,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare("INSERT INTO USER (USER_NAME, USER_EMAIL, USER_PASSWORD, TYPE_ID, IMG_URL) VALUES (?, ?, ?, , ?)");
-        $stmt->execute([$name, $email, $hash, $imgPath]);
+        $stmt = $pdo->prepare("CALL INSERT_USER(:name, :email, :password, :imgPath)");
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $hash);
+        $stmt->bindParam(':imgPath', $imgPath);
+        $stmt->execute();
 
         $userId = $pdo->lastInsertId();
 
