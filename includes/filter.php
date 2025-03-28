@@ -4,20 +4,16 @@
     <div class="filter-section">
         <h3>Avaliação</h3>
         <div class="stars">
-            <span class="star" onclick="stars()" data-value="1">★</span>
-            <span class="star" data-value="2">★</span>
-            <span class="star" data-value="3">★</span>
-            <span class="star" data-value="4">★</span>
-            <span class="star" data-value="5">★</span>
+            <span class="star" onclick="stars(1)" data-value="1">★</span>
+            <span class="star" onclick="stars(2)" data-value="2">★</span>
+            <span class="star" onclick="stars(3)" data-value="3">★</span>
+            <span class="star" onclick="stars(4)" data-value="4">★</span>
+            <span class="star" onclick="stars(5)" data-value="5">★</span>
         </div>
     </div>
 </div>
 
 <script>
-
-    function stars(){
-        alert("Entrou");
-    }
     document.querySelectorAll('.star').forEach(star => {
         star.addEventListener('click', function() {
             let value = this.getAttribute('data-value');

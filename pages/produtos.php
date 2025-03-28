@@ -40,6 +40,9 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
     $stmt=null;
     exit;
 }
+if (isset($_COOKIE['stars'])) {
+    echo $_COOKIE["stars"]; 
+}
 
 // Total para paginação
 $totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_NAME LIKE ?");

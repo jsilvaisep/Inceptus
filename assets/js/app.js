@@ -18,8 +18,37 @@ function loadPage(page, search = '') {
         .catch(() => {
             document.getElementById('content').innerHTML = '<h3>Página não encontrada.</h3>';
         });
+        
+        
 }
+function stars(value){
+    alert('Filtering by '+ value + ' stars');
+    /*let searchParams = new URLSearchParams("./produtos.php");
+    searchParams.set('stars', value); // Add or update the 'stars' parameter
+    loadPage('produtos', searchParams.toString());*/
+    // Creating a cookie after the document is ready
+    $(document).ready(function () {
+        createCookie("stars", value, "10");
+    });
 
+    // Function to create the cookie 
+    function createCookie(name, value, time) {
+        let expires;
+
+        if (days) {
+            let date = new Date();
+            date.setTime(date.getTime() + (time * 1000));
+            expires = "; expires=" + date.toGMTString();
+        }
+        else {
+            expires = "";
+        }
+
+        document.cookie = escape(name) + "=" +
+            escape(value) + expires + "; path=/produtos.php";
+    }
+    window.location.href = "produtos.php";
+}
 // ==========================
 // SPA: Atualiza Navbar
 // ==========================
