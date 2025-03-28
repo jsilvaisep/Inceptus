@@ -92,7 +92,7 @@ function setupPageScripts(page) {
                 e.preventDefault();
                 const formData = new FormData(registerForm);
                 const msg = document.getElementById('register-message');
-                msg.innerHTML = 'A processar...';
+                //msg.innerHTML = 'A processar...';
 
                 try {
                     const res = await fetch('pages/register.php', {
@@ -100,7 +100,7 @@ function setupPageScripts(page) {
                         body: formData
                     });
                     const data = await res.json();
-                    msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
+                    //msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
 
                     if (data.success) {
                         setTimeout(() => {
@@ -109,7 +109,7 @@ function setupPageScripts(page) {
                         }, 2000);
                     }
                 } catch {
-                    msg.innerHTML = `<p class="error">Erro no servidor.</p>`;
+                    //msg.innerHTML = `<p class="error">Erro no servidor.</p>`;
                 }
             });
         }
