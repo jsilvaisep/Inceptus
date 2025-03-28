@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $imgPath = null;
         if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '../uploads/';
+            $uploadDir = '/uploads/';
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
             $filename = uniqid() . '_' . basename($_FILES['profile_img']['name']);
             $targetPath = $uploadDir . $filename;
@@ -47,13 +47,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $imgPath = 'uploads/' . $filename;
             }
         }
+        /* TODO workarround para inserir o caminho das imagens na BD No entanto não grava a imagem na pasta */
+        $imgPathteste = 'uploads/' . $filename;
 
         $hash = password_hash($password, PASSWORD_DEFAULT);
         $stmt = $pdo->prepare("CALL INSERT_USER(:name, :email, :password, :imgPath)");
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $hash);
-        $stmt->bindParam(':imgPath', $imgPath);
+        $stmt->bindParam(':imgPath', $imgPathteste);
         $stmt->execute();
 
         $userId = $pdo->lastInsertId();

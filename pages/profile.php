@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Upload imagem
     if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '../uploads/';
+        $uploadDir = '/uploads/';
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 
         $filename = uniqid() . '_' . basename($_FILES['profile_img']['name']);
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($imgPath) {
-            $query .= ", IMG_URL = ?";
+            $query = ", IMG_URL = ?";
             $params[] = $imgPath;
             $_SESSION['user_img'] = $imgPath;
         }
@@ -82,10 +82,10 @@ $stmt=null;
 <div class="profile-container">
     <div class="profile-card">
         <h2>Editar Perfil</h2>
-        <img src="<?= htmlspecialchars($user['IMG_URL']) ?: 'assets/img/default-user.png' ?>" class="profile-avatar" id="avatar-preview">
+        <img src="<?= $user['IMG_URL'] ?: 'assets/img/default-user.png' ?>" class="profile-avatar" id="avatar-preview">
         <form id="edit-profile-form" enctype="multipart/form-data">
-            <input type="text" name="name" value="<?= htmlspecialchars($user['USER_NAME']) ?>" required>
-            <input type="email" name="email" value="<?= htmlspecialchars($user['USER_EMAIL']) ?>" required>
+            <input type="text" name="name" value="<?= $user['USER_NAME'] ?>" required>
+            <input type="email" name="email" value="<?= $user['USER_EMAIL'] ?>" required>
             <input type="password" name="password" placeholder="Nova Password (opcional)">
             <input type="file" name="profile_img" accept="image/*" onchange="previewAvatar(event)">
             <button type="submit">Guardar</button>
