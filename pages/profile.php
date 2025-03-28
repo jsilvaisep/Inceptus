@@ -5,7 +5,7 @@ include '../includes/db.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
 
-    if (!isset($_SESSION['user_id'])) {
+    if (!isset($_SESSION['user'])) {
         echo json_encode(['success' => false, 'message' => 'Acesso negado.']);
         exit;
     }
@@ -67,12 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user'])) {
     echo "<p class='error'>Acesso não autorizado.</p>";
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user']['user_id'];
 $stmt = $pdo->prepare("SELECT * FROM USER WHERE USER_ID = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
