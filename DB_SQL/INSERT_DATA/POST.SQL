@@ -1,45 +1,45 @@
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(1, 1, 'Dicas essenciais para melhorar sua produtividade no trabalho.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4cdb755b-0be9-11f0-b0d3-020017000d59', 'Dicas essenciais para melhorar sua produtividade no trabalho.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(2, 2, 'Como manter uma rotina saudável mesmo com um dia corrido.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4cdb755b-0be9-11f0-b0d3-020017000d59', 'Como manter uma rotina saudável mesmo com um dia corrido.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(3, 3, 'Os melhores aplicativos para organizar suas tarefas diárias.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4cdb755b-0be9-11f0-b0d3-020017000d59', 'Os melhores aplicativos para organizar suas tarefas diárias.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(4, 4, 'Tendências de tecnologia que você precisa conhecer em 2025.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4cef93a4-0be9-11f0-b0d3-020017000d59', 'Tendências de tecnologia que você precisa conhecer em 2025.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(5, 5, 'Passo a passo para criar um blog de sucesso na internet.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4cef93a4-0be9-11f0-b0d3-020017000d59', 'Passo a passo para criar um blog de sucesso na internet.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(6, 6, 'Dicas práticas para economizar dinheiro sem abrir mão do lazer.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4cef93a4-0be9-11f0-b0d3-020017000d59', 'Dicas práticas para economizar dinheiro sem abrir mão do lazer.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(7, 7, 'Como aprender um novo idioma de forma rápida e eficiente.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4cef93a4-0be9-11f0-b0d3-020017000d59', 'Como aprender um novo idioma de forma rápida e eficiente.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(8, 8, 'O impacto das redes sociais na nossa saúde mental.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4cef93a4-0be9-11f0-b0d3-020017000d59', 'O impacto das redes sociais na nossa saúde mental.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(9, 9, 'Receitas fáceis e deliciosas para o dia a dia.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4cef93a4-0be9-11f0-b0d3-020017000d59', 'Receitas fáceis e deliciosas para o dia a dia.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(10, 1, 'Os melhores destinos para viajar gastando pouco.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4d3e1ed5-0be9-11f0-b0d3-020017000d59', 'Os melhores destinos para viajar gastando pouco.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(11, 2, 'Estratégias para melhorar sua concentração e foco.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4d3e1ed5-0be9-11f0-b0d3-020017000d59', 'Estratégias para melhorar sua concentração e foco.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(12, 3, 'Como transformar seu hobby em uma fonte de renda.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4d3e1ed5-0be9-11f0-b0d3-020017000d59', 'Como transformar seu hobby em uma fonte de renda.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(13, 4, 'Livros que vão mudar a sua forma de pensar sobre a vida.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4d97b659-0be9-11f0-b0d3-020017000d59', 'Livros que vão mudar a sua forma de pensar sobre a vida.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(14, 5, 'Erros comuns na carreira e como evitá-los.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
+VALUES(UUID() , '4d97b659-0be9-11f0-b0d3-020017000d59', 'Erros comuns na carreira e como evitá-los.', 'A', '2025-03-27 10:13:59', '2025-03-27 10:13:59');
 INSERT INTO DB_INCEPTUS_PP.POST
 (POST_ID, COMPANY_ID, POST_CONTENT, POST_STATUS, CREATED_AT, UPDATED_AT)
-VALUES(15, 6, 'O que fazer para manter a motivação nos momentos difíceis.', 'A', '2025-03-27 10:14:00', '2025-03-27 10:14:00');
+VALUES(UUID() , '4d97b659-0be9-11f0-b0d3-020017000d59', 'O que fazer para manter a motivação nos momentos difíceis.', 'A', '2025-03-27 10:14:00', '2025-03-27 10:14:00');
