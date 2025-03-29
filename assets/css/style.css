@@ -26,6 +26,13 @@ body {
     height: auto;
 }
 
+.navbar .active{
+    background: linear-gradient(145deg, #d25062, #be3144);
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
 .navbar ul {
     list-style: none;
     display: flex;
@@ -635,24 +642,4 @@ body {
     gap: 15px;
     margin: 0;
     padding: 0;
-}
-
-.navbar ul li a {
-    display: inline-block;
-    padding: 10px 22px;
-    font-size: 16px;
-    font-weight: 500;
-    text-decoration: none;
-    color: #be3144;
-    background: linear-gradient(145deg, #ffffff, #f5f5f5);
-    border-radius: 50px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-}
-
-.navbar ul li a:hover {
-    background: linear-gradient(145deg, #d25062, #be3144);
-    color: #ffffff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
