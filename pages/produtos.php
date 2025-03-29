@@ -44,6 +44,7 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
     echo $showMoreButton;
     echo '</div>';
     echo '<p style="color:black;"><strong>Visualizações:</strong> ' . $product['PRODUCT_VIEW_QTY'] . '</p>';
+    echo '<p style="color:black;"><strong>Produzido por:</strong> ';
     echo '</div></div>';
     $stmt=null;
     exit;
