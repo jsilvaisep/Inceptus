@@ -50,6 +50,10 @@ function toggleDescription(button) {
     }
 }
 
+function stars(value){
+    alert(value);
+}
+
 // ==========================
 // SPA: Scripts locais da página carregada
 // ==========================
