@@ -15,10 +15,11 @@
 
 <script>
     document.querySelectorAll('.star').forEach(star => {
-        star.addEventListener('click', function() {
-            let value = this.getAttribute('data-value');
-            alert('Filtering by'+ value + 'stars');
-            // Implement AJAX or page reload filtering logic here
+        star.addEventListener('click', function () {
+            const value = this.getAttribute('data-value');
+            const params = new URLSearchParams(window.location.search);
+            params.set('rank', value);
+            loadPage('produtos', params.toString());
         });
     });
 </script>

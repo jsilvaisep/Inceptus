@@ -144,6 +144,70 @@ function setupPageScripts(page) {
         }
     }
 
+    if (page === 'produtos') {
+        const searchInput = document.getElementById('search-input');
+        const resultsDiv = document.getElementById('search-results');
+    
+        if (searchInput && resultsDiv) {
+            let debounce;
+    
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.trim();
+    
+                clearTimeout(debounce);
+                debounce = setTimeout(() => {
+                    if (query.length === 0) {
+                        resultsDiv.innerHTML = '';
+                        return;
+                    }
+    
+                    fetch(`includes/search-products.php?q=${encodeURIComponent(query)}`)
+                        .then(res => res.text())
+                        .then(html => {
+                            resultsDiv.innerHTML = html;
+    
+                            document.querySelectorAll('.clickable-product').forEach(item => {
+                                item.addEventListener('click', () => {
+                                    const id = item.dataset.id;
+                            
+                                    fetch(`pages/produtos.php?id=${id}&modal=true`)
+                                        .then(res => res.text())
+                                        .then(modalHtml => {
+                                            const modalContainer = document.getElementById("modal-container");
+                                            modalContainer.innerHTML = modalHtml;
+                                            document.body.classList.add("no-scroll");
+                                            setupGlobalModalListeners();
+                                            resultsDiv.innerHTML = '';
+                                            searchInput.value = '';
+                                        });
+                                });
+                            });
+                        })
+                        .catch(err => console.error("Erro ao buscar produtos:", err));
+                }, 300);
+            });
+    
+            // Enter = mostrar todos os resultados
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // impedir reload da página
+                    const query = searchInput.value.trim();
+                    if (query.length > 0) {
+                        loadPage('produtos', 'search=' + encodeURIComponent(query));
+                        resultsDiv.innerHTML = '';
+                    }
+                }
+            });
+
+            // Fecha ao clicar fora
+            document.addEventListener('click', (e) => {
+                if (!resultsDiv.contains(e.target) && e.target !== searchInput) {
+                    resultsDiv.innerHTML = '';
+                }
+            });
+        }
+    }
+
     setupGlobalModalListeners();
 }
 
