@@ -10,7 +10,7 @@ $perPage = 9;
 $offset = ($page - 1) * $perPage;
 
 // Total para paginação
-$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_NAME LIKE ?");
+$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_STATUS = 'A' AND PRODUCT_NAME LIKE ?");
 $totalStmt->execute([$searchTerm]);
 $totalprodutos = $totalStmt->fetchColumn();
 $totalPages = ceil($totalprodutos / $perPage);
@@ -18,7 +18,7 @@ $totalPages = ceil($totalprodutos / $perPage);
 // Modal handler
 if (isset($_GET['modal']) && isset($_GET['id'])) {
     $productId = $_GET['id'];
-    $stmt = $pdo->prepare("SELECT * FROM PRODUCT WHERE PRODUCT_ID = ?");
+    $stmt = $pdo->prepare("SELECT * FROM PRODUCT WHERE PRODUCT_STATUS = 'A' AND PRODUCT_ID = ?");
     $stmt->execute([$productId]);
     $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -53,13 +53,13 @@ if (isset($_COOKIE['stars'])) {
 }
 
 // Total para paginação
-$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_NAME LIKE ?");
+$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_STATUS = 'A' AND PRODUCT_NAME LIKE ?");
 $totalStmt->execute([$searchTerm]);
 $totalProducts = $totalStmt->fetchColumn();
 $totalPages = ceil($totalProducts / $perPage);
 
 // Produtos paginados
-$stmt = $pdo->prepare("SELECT * FROM PRODUCT WHERE PRODUCT_NAME LIKE ? ORDER BY PRODUCT_RANK DESC LIMIT ? OFFSET ?");
+$stmt = $pdo->prepare("SELECT * FROM PRODUCT WHERE PRODUCT_STATUS = 'A' AND PRODUCT_NAME LIKE ? ORDER BY PRODUCT_RANK DESC LIMIT ? OFFSET ?");
 $stmt->bindValue(1, $searchTerm);
 $stmt->bindValue(2, $perPage, PDO::PARAM_INT);
 $stmt->bindValue(3, $offset, PDO::PARAM_INT);
