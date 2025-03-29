@@ -10,7 +10,7 @@ $perPage = 9;
 $offset = ($page - 1) * $perPage;
 
 // Total para paginação
-$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_NAME LIKE ?");
+$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_STATUS = 'A' AND PRODUCT_NAME LIKE ?");
 $totalStmt->execute([$searchTerm]);
 $totalprodutos = $totalStmt->fetchColumn();
 $totalPages = ceil($totalprodutos / $perPage);
@@ -18,7 +18,7 @@ $totalPages = ceil($totalprodutos / $perPage);
 // Modal handler
 if (isset($_GET['modal']) && isset($_GET['id'])) {
     $productId = $_GET['id'];
-    $stmt = $pdo->prepare("SELECT * FROM PRODUCT WHERE PRODUCT_ID = ?");
+    $stmt = $pdo->prepare("SELECT p.*, c.COMPANY_NAME FROM PRODUCT p INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID WHERE p.PRODUCT_STATUS = 'A' AND p.PRODUCT_ID = ?");
     $stmt->execute([$productId]);
     $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -44,6 +44,7 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
     echo $showMoreButton;
     echo '</div>';
     echo '<p style="color:black;"><strong>Visualizações:</strong> ' . $product['PRODUCT_VIEW_QTY'] . '</p>';
+    echo '<p style="color:black;"><strong>Produzido por:</strong> '. $product['COMPANY_NAME'] . '</p>';;
     echo '</div></div>';
     $stmt=null;
     exit;
@@ -53,13 +54,13 @@ if (isset($_COOKIE['stars'])) {
 }
 
 // Total para paginação
-$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_NAME LIKE ?");
+$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_STATUS = 'A' AND PRODUCT_NAME LIKE ?");
 $totalStmt->execute([$searchTerm]);
 $totalProducts = $totalStmt->fetchColumn();
 $totalPages = ceil($totalProducts / $perPage);
 
 // Produtos paginados
-$stmt = $pdo->prepare("SELECT * FROM PRODUCT WHERE PRODUCT_NAME LIKE ? ORDER BY PRODUCT_RANK DESC LIMIT ? OFFSET ?");
+$stmt = $pdo->prepare("SELECT * FROM PRODUCT WHERE PRODUCT_STATUS = 'A' AND PRODUCT_NAME LIKE ? ORDER BY PRODUCT_RANK DESC LIMIT ? OFFSET ?");
 $stmt->bindValue(1, $searchTerm);
 $stmt->bindValue(2, $perPage, PDO::PARAM_INT);
 $stmt->bindValue(3, $offset, PDO::PARAM_INT);
@@ -78,8 +79,6 @@ $stmt=null;
     <!-- Lado direito: Produtos -->
     <div class="produtos-conteudo">
         <div class="company-container">
-            <h2>Produtos</h2>
-
             <div class="search-section">
                 <form class="search-box" data-page="produtos" onsubmit="return false;">
                     <span class="search-icon">🔍</span>

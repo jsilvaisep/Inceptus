@@ -9,7 +9,6 @@
 
         <nav class="navbar">
             <ul>
-                <li><a href="?page=home" class="nav-link">Home</a></li>
                 <li><a href="?page=produtos" class="nav-link">Produtos</a></li>
                 <li><a href="?page=empresas" class="nav-link">Empresas</a></li>
                 <li><a href="?page=noticias" class="nav-link">Notícias</a></li>
@@ -41,14 +40,31 @@
             </ul>
         </nav>
     </div>
-
-</header>
-<script>
-    const currentUrl = window.location.href;
-    const navLinks = document.querySelectorAll('.nav-link');
-    navLinks.forEach(link => {
-        if (link.href === currentUrl) {
-            link.classList.add('active');
+    <script>
+        function updateActiveLink() {
+            const currentUrl = window.location.href;
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            navLinks.forEach(link => {
+                if (currentUrl.includes(link.getAttribute('href'))) {
+                    link.classList.add('active');
+                }
+            });
         }
-    });
-</script>
+        function observeUrlChange() {
+            let lastUrl = window.location.href;
+            new MutationObserver(() => {
+                const currentUrl = window.location.href;
+                if (currentUrl !== lastUrl) {
+                    lastUrl = currentUrl;
+                    updateActiveLink();
+                }
+            }).observe(document, { subtree: true, childList: true });
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            updateActiveLink();
+            observeUrlChange();
+        });
+        window.addEventListener("popstate", updateActiveLink);
+    </script>
+</header>

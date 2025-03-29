@@ -11,7 +11,7 @@ $offset = ($page - 1) * $perPage;
 // Modal handler
 if (isset($_GET['modal']) && isset($_GET['id'])) {
     $companyId = $_GET['id'];
-    $stmt = $pdo->prepare("SELECT * FROM COMPANY WHERE COMPANY_ID = ?");
+    $stmt = $pdo->prepare("SELECT * FROM COMPANY WHERE COMPANY_STATUS = 'A' AND COMPANY_ID = ?");
     $stmt->execute([$companyId]);
     $company = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -33,13 +33,13 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
 }
 
 // Total para paginação
-$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM COMPANY WHERE COMPANY_NAME LIKE ?");
-$totalStmt->execute([$searchTerm]);
+$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM COMPANY WHERE COMPANY_STATUS = 'A'");
+$totalStmt->execute();
 $totalCompanies = $totalStmt->fetchColumn();
 $totalPages = ceil($totalCompanies / $perPage);
 
 // Empresas paginadas
-$stmt = $pdo->prepare("SELECT * FROM COMPANY WHERE COMPANY_NAME LIKE ? ORDER BY COMPANY_RANK DESC LIMIT ? OFFSET ?");
+$stmt = $pdo->prepare("SELECT * FROM COMPANY WHERE COMPANY_STATUS = 'A' AND COMPANY_NAME LIKE ? ORDER BY COMPANY_RANK DESC LIMIT ? OFFSET ?");
 $stmt->bindValue(1, $searchTerm);
 $stmt->bindValue(2, $perPage, PDO::PARAM_INT);
 $stmt->bindValue(3, $offset, PDO::PARAM_INT);

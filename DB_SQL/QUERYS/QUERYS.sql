@@ -8,3 +8,10 @@ SELECT * FROM SEC_RST_CODE;
 SELECT * FROM TAG;
 SELECT * FROM USER;
 SELECT * FROM USER_TYPE;
+
+UPDATE COMPANY c SET COMPANY_STATUS = 'A';
+UPDATE PRODUCT p SET PRODUCT_STATUS = 'A';
+
+UPDATE COMPANY c SET COMPANY_STATUS = 'I';
+UPDATE PRODUCT p SET PRODUCT_STATUS = 'I'; 
+-- Grill elétrico com ajustes de temperatura e superfícies antiaderentes para grelhar carnes e vegetais.
