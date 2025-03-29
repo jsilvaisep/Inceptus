@@ -94,14 +94,28 @@ BEGIN
 	ORDER BY C.CREATED_AT DESC LIMIT 3;
 END
 
+/* 
+####################################
+####### CRIAR UTILIZADORES #######################################################################################################################################################################
+####################################
+*/
 
 CREATE PROCEDURE INSERT_USER (IN V_USER_NAME VARCHAR(255), IN V_USER_EMAIL VARCHAR(255), IN V_USER_PASSWORD VARCHAR(255), IN V_IMG_URL VARCHAR(255))
 BEGIN
 	INSERT INTO USER 
 	(USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD, TYPE_ID, IMG_URL) 
-	VALUES (UUID(), 'V_USER_NAME', 'V_USER_EMAIL', 'V_USER_PASSWORD', '50821e47-0be6-11f0-b0d3-020017000d59', 'V_IMG_URL'); 
+	VALUES (UUID(), V_USER_NAME, V_USER_EMAIL, V_USER_PASSWORD, '50821e47-0be6-11f0-b0d3-020017000d59', V_IMG_URL);
 END
 
+/* 
+####################################
+####### CRIAR EMPRESAS #######################################################################################################################################################################
+####################################
+*/
 
-CALL INSERT_USER('TESTE','T@T','PASS','IMG');
-
+CREATE PROCEDURE INSERT_COMPANY (IN V_COMPANY_NAME VARCHAR(255), IN V_COMPANY_EMAIL VARCHAR(255), IN V_COMPANY_PASSWORD VARCHAR(255), IN V_IMG_URL VARCHAR(255))
+BEGIN
+	INSERT INTO USER 
+	(USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD, TYPE_ID, IMG_URL) 
+	VALUES (UUID(), V_COMPANY_NAME, V_COMPANY_EMAIL, V_COMPANY_PASSWORD, '50770bdc-0be6-11f0-b0d3-020017000d59', V_IMG_URL);
+END

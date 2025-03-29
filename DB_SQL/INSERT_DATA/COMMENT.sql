@@ -36,16 +36,10 @@ BEGIN
                 END IF;
                 -- Inserindo os comentários
                 INSERT INTO COMMENT (COMMENT_ID, USER_ID, COMPANY_ID, PRODUCT_ID, COMMENT_RANK, COMMENT_TEXT)
-                VALUES (UUID(), v_user, v_company, v_product, FLOOR(RAND() * 6), 
-                    CONCAT('Comentário positivo para o produto ', v_product, 
-                           ' da empresa ', v_company, 
-                           '. Excelente qualidade e desempenho!'));
+                VALUES (UUID(), v_user, v_company, v_product, FLOOR(RAND() * 6), 'Excelente qualidade e desempenho!');
 
                 INSERT INTO COMMENT (COMMENT_ID, USER_ID, COMPANY_ID, PRODUCT_ID, COMMENT_RANK, COMMENT_TEXT)
-                VALUES (UUID(), v_user, v_company, v_product, FLOOR(RAND() * 6),
-                    CONCAT('Comentário alternativo para o produto ', v_product, 
-                           ' da empresa ', v_company, 
-                           '. Atendeu às expectativas, mas poderia ser melhor em alguns aspectos.'));
+                VALUES (UUID(), v_user, v_company, v_product, FLOOR(RAND() * 6),'Atendeu às expectativas, mas poderia ser melhor em alguns aspectos.');
             END LOOP;
             CLOSE list_product;
         END LOOP;

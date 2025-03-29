@@ -120,8 +120,8 @@ function setupPageScripts(page) {
             registerForm.addEventListener('submit', async e => {
                 e.preventDefault();
                 const formData = new FormData(registerForm);
-                const msg = document.getElementById('register-message');
-                //msg.innerHTML = 'A processar...';
+                const msg = document.getElementById('register-msg');
+                msg.innerHTML = 'A processar...';
 
                 try {
                     const res = await fetch('pages/register.php', {
@@ -129,16 +129,16 @@ function setupPageScripts(page) {
                         body: formData
                     });
                     const data = await res.json();
-                    //msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
+                    msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
 
                     if (data.success) {
                         setTimeout(() => {
-                            loadPage('login');
+                            loadPage('home');
                             reloadNavbar();
                         }, 2000);
                     }
                 } catch {
-                    //msg.innerHTML = `<p class="error">Erro no servidor.</p>`;
+                    msg.innerHTML = `<p class="error">Erro no servidor.</p>`;
                 }
             });
         }
