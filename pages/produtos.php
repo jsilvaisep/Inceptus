@@ -79,8 +79,6 @@ $stmt=null;
     <!-- Lado direito: Produtos -->
     <div class="produtos-conteudo">
         <div class="company-container">
-            <h2>Produtos</h2>
-
             <div class="search-section">
                 <form class="search-box" data-page="produtos" onsubmit="return false;">
                     <span class="search-icon">🔍</span>
