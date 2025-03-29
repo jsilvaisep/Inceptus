@@ -33,8 +33,8 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
 }
 
 // Total para paginação
-$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM COMPANY WHERE COMPANY_STATUS = 'A' AND COMPANY_NAME LIKE ?");
-$totalStmt->execute([$searchTerm]);
+$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM COMPANY WHERE COMPANY_STATUS = 'A'");
+$totalStmt->execute();
 $totalCompanies = $totalStmt->fetchColumn();
 $totalPages = ceil($totalCompanies / $perPage);
 
