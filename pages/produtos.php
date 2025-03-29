@@ -3,11 +3,19 @@ include '../includes/db.php';
 
 $search = $_GET['search'] ?? '';
 $searchTerm = '%' . $search . '%';
+$rank = isset($_GET['rank']) ? (float) $_GET['rank'] : 0;
 
 $page = isset($_GET['pg']) ? max(1, (int)$_GET['pg']) : 1;
 $perPage = 9;
 $offset = ($page - 1) * $perPage;
 
+// Total para paginação
+$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_NAME LIKE ?");
+$totalStmt->execute([$searchTerm]);
+$totalprodutos = $totalStmt->fetchColumn();
+$totalPages = ceil($totalprodutos / $perPage);
+
+// Empresas paginadas
 // Modal handler
 if (isset($_GET['modal']) && isset($_GET['id'])) {
     $productId = $_GET['id'];
@@ -32,6 +40,9 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
     $stmt=null;
     exit;
 }
+if (isset($_COOKIE['stars'])) {
+    echo $_COOKIE["stars"]; 
+}
 
 // Total para paginação
 $totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_NAME LIKE ?");
@@ -49,41 +60,58 @@ $products = $stmt->fetchAll();
 $stmt=null;
 ?>
 
-<div class="company-container">
+<div class="produtos-layout">
 
-    <div class="search-section">
-        <form class="search-box" data-page="produtos">
-            <span class="search-icon" onclick="this.closest('form').requestSubmit()">🔍</span>
-            <input type="text" name="search" class="search-input" placeholder="Barra de pesquisa" value="<?= htmlspecialchars($search) ?>">
-        </form>
+    <!-- Lado esquerdo: Filtros -->
+    <div class="filtros">
+        <?php include '../includes/filter.php'; ?>
     </div>
 
-    <?php if (count($products) > 0): ?>
-        <div class="company-grid">
-            <?php foreach ($products as $product): ?>
-                <div class="company-card clickable-card" data-id="<?= $product['PRODUCT_ID'] ?>">
-                    <img src="<?= htmlspecialchars($product['IMG_URL']) ?>" alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>" class="company-img">
-                    <div class="company-info">
-                        <h3><?= htmlspecialchars($product['PRODUCT_NAME']) ?></h3>
-                        <p><?= htmlspecialchars($product['PRODUCT_DESCRIPTION']) ?></p>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+    <!-- Lado direito: Produtos -->
+    <div class="produtos-conteudo">
+        <div class="company-container">
+            <h2>Produtos</h2>
 
-        <div class="pagination">
-            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                <button class="page-btn<?= $i == $page ? ' active' : '' ?>" onclick="loadPage('produtos', '<?= http_build_query(['search' => $search, 'pg' => $i]) ?>')">
-                    <?= $i ?>
-                </button>
-            <?php endfor; ?>
+            <div class="search-section">
+                <form class="search-box" data-page="produtos" onsubmit="return false;">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search-input" class="search-input" placeholder="Pesquisar produtos...">
+                    <div id="search-results" class="search-results-box"></div>
+                </form>
+            </div>
+
+            <?php if (count($products) > 0): ?>
+                <div class="company-grid">
+                    <?php foreach ($products as $product): ?>
+                        <?php
+                            $img = !empty($product['IMG_URL']) ? htmlspecialchars($product['IMG_URL']) : '/produtos/sem_imagem.png';
+                        ?>
+                        <div class="company-card clickable-card" data-id="<?= $product['PRODUCT_ID'] ?>">
+                            <img src="<?= $img ?>" alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>" class="company-img" onerror="this.onerror=null;this.src='/produtos/sem_imagem.png';">
+                            <div class="company-info">
+                                <h3><?= htmlspecialchars($product['PRODUCT_NAME']) ?></h3>
+                                <p><?= htmlspecialchars($product['PRODUCT_DESCRIPTION']) ?></p>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="pagination">
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <button class="page-btn<?= $i == $page ? ' active' : '' ?>" onclick="loadPage('produtos', '<?= http_build_query(['search' => $search, 'pg' => $i]) ?>')">
+                            <?= $i ?>
+                        </button>
+                    <?php endfor; ?>
+                </div>
+            <?php else: ?>
+                <p class="no-results">Nenhum produto encontrado.</p>
+            <?php endif; ?>
         </div>
-    <?php else: ?>
-        <p class="no-results">Nenhum produto encontrado.</p>
-    <?php endif; ?>
+    </div>
 </div>
 
 <div id="modal-container"></div>
+
 
 <style>
 .modal-overlay {
@@ -128,6 +156,35 @@ $stmt=null;
     color: #be3144;
     font-size: 24px;
 }
+
+.produtos-layout {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.filtros {
+    flex: 0 0 20%;
+    max-width: 20%;
+}
+
+.produtos-conteudo {
+    flex: 1;
+    max-width: 80%;
+}
+
+@media (max-width: 768px) {
+    .produtos-layout {
+        flex-direction: column;
+    }
+
+    .filtros, .produtos-conteudo {
+        max-width: 100%;
+        flex: 1 1 100%;
+    }
+}
+
+
 @keyframes fadeIn {
     from { opacity: 0; transform: translate(-50%, -60%); }
     to { opacity: 1; transform: translate(-50%, -50%); }

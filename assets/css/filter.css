@@ -1,0 +1,48 @@
+body {
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+.filter-container {
+    width: 250px;
+    background-color: #121212;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.filter-section h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.filter-section h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.stars {
+    display: flex;
+    gap: 5px;
+}
+
+.star {
+    font-size: 24px;
+    cursor: pointer;
+    color: gray;
+    transition: color 0.3s;
+}
+
+.stars:hover .star {
+    color: gold;
+}
+
+.star:hover ~ .star {
+    color: gray;
+}
+
+.star:hover,
+.star:hover ~ .star,
+.star:active {
+    color: gray;
+}
