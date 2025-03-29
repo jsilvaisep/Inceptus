@@ -350,6 +350,5 @@ function initNewsCarousel() {
             });
         }
     });
-
     showSlide(currentNews);
 }
