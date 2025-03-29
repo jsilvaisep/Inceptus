@@ -114,6 +114,10 @@ body {
     border-bottom: none;
 }
 
+.product-description p {
+    color: black !important;
+}
+
 .search-result-item img {
     width: 48px;
     height: 48px;

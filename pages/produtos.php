@@ -26,9 +26,11 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
         echo '<p>Produto inválido.</p>';
         exit;
     }
+
     $fullDescription = nl2br(htmlspecialchars($product['PRODUCT_DESCRIPTION']));
     $shortDescription = strlen($fullDescription) > 100 ? substr($fullDescription, 0, 200) . '...' : $fullDescription;
     $showMoreButton = strlen($fullDescription) > 100 ? '<button class="show-more-btn" onclick="toggleDescription(this)">Mais...</button>' : '';
+    
 
     echo '<div class="modal-overlay" onclick="closeModal()"></div>';
     echo '<div class="modal-box fade-in">';
@@ -41,7 +43,7 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
     echo '<p class="full-description" style="display:none;">' . $fullDescription . '</p>';
     echo $showMoreButton;
     echo '</div>';
-    echo '<p><strong>Visualizações:</strong> ' . $product['PRODUCT_VIEW_QTY'] . '</p>';
+    echo '<p style="color:black;"><strong>Visualizações:</strong> ' . $product['PRODUCT_VIEW_QTY'] . '</p>';
     echo '</div></div>';
     $stmt=null;
     exit;
@@ -221,22 +223,5 @@ $stmt=null;
 </style>
 
 <script>
-    function closeModal() {
-        document.getElementById('modal-container').innerHTML = '';
-    }
-    function toggleDescription(button) {
-        const container = button.closest('.product-description');
-        const shortText = container.querySelector('.description-text');
-        const fullText = container.querySelector('.full-description');
-
-        if (fullText.style.display === 'none') {
-            shortText.style.display = 'none';
-            fullText.style.display = 'block';
-            button.textContent = 'Menos...';
-        } else {
-            shortText.style.display = 'block';
-            fullText.style.display = 'none';
-            button.textContent = 'Mais...';
-        }
-    }
+    
 </script>

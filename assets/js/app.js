@@ -60,6 +60,25 @@ function reloadNavbar() {
         });
 }
 
+function closeModal() {
+    document.getElementById('modal-container').innerHTML = '';
+}
+function toggleDescription(button) {
+    const container = button.closest('.product-description');
+    const shortText = container.querySelector('.description-text');
+    const fullText = container.querySelector('.full-description');
+
+    if (fullText.style.display === 'none') {
+        shortText.style.display = 'none';
+        fullText.style.display = 'block';
+        button.textContent = 'Menos...';
+    } else {
+        shortText.style.display = 'block';
+        fullText.style.display = 'none';
+        button.textContent = 'Mais...';
+    }
+}
+
 // ==========================
 // SPA: Scripts locais da página carregada
 // ==========================
@@ -112,6 +131,8 @@ function setupPageScripts(page) {
                 });
         });
     }
+
+    
 
     // Setup register form listener
     if (page === 'register') {
