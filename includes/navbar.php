@@ -41,5 +41,31 @@
             </ul>
         </nav>
     </div>
-
+    <script>
+        function updateActiveLink() {
+            const currentUrl = window.location.href;
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => link.classList.remove('active'));
+            navLinks.forEach(link => {
+                if (currentUrl.includes(link.getAttribute('href'))) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        function observeUrlChange() {
+            let lastUrl = window.location.href;
+            new MutationObserver(() => {
+                const currentUrl = window.location.href;
+                if (currentUrl !== lastUrl) {
+                    lastUrl = currentUrl;
+                    updateActiveLink();
+                }
+            }).observe(document, { subtree: true, childList: true });
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            updateActiveLink();
+            observeUrlChange();
+        });
+        window.addEventListener("popstate", updateActiveLink);
+    </script>
 </header>
