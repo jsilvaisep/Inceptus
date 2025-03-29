@@ -63,6 +63,18 @@ function setupPageScripts(page) {
         const searchInput = document.getElementById('search-input');
         const resultsDiv = document.getElementById('search-results');
 
+        // Toggle Produtos / Projetos / Ambos
+        const viewModeRadios = document.querySelectorAll('input[name="viewMode"]');
+        viewModeRadios.forEach(radio => {
+            radio.addEventListener('change', e => {
+                const type = e.target.value;
+                const urlParams = new URLSearchParams(window.location.search);
+                urlParams.set('page', 'produtos');
+                urlParams.set('type', type); // novo param
+                loadPage('produtos', urlParams.toString());
+            });
+        });
+
         if (searchInput && resultsDiv) {
             let debounce;
 
@@ -346,3 +358,4 @@ function initNewsCarousel() {
 
     showSlide(currentNews);
 }
+

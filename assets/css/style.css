@@ -647,3 +647,32 @@ body {
     margin: 0;
     padding: 0;
 }
+
+/* Container do toggle: coloque inline, horizontal etc. */
+.toggle-switch {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+/* Esconder radio "original" */
+.toggle-switch input[type="radio"] {
+    display: none;
+}
+
+/* Estilos para o label que serve de “botão” */
+.toggle-label {
+    padding: 0.4rem 1rem;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+    background-color: #f2f2f2;
+}
+
+/* Quando o radio estiver checado, estilizar o label correspondente */
+.toggle-switch input[type="radio"]:checked + .toggle-label {
+    background-color: #d25062;
+    color: #fff;
+    border-color: #d25062;
+}
