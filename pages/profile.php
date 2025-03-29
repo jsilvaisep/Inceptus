@@ -5,7 +5,7 @@ include '../includes/db.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
 
-    if (!isset($_SESSION['user_id'])) {
+    if (!isset($_SESSION['user'])) {
         echo json_encode(['success' => false, 'message' => 'Acesso negado.']);
         exit;
     }
@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     $imgPath = null;
+    $stmt=null;
 
     if (!$name || !$email) {
         echo json_encode(['success' => false, 'message' => 'Preencha nome e email.']);
@@ -23,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Upload imagem
     if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '../uploads/';
+        $uploadDir = '/uploads/';
         if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 
         $filename = uniqid() . '_' . basename($_FILES['profile_img']['name']);
@@ -44,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if ($imgPath) {
-            $query .= ", IMG_URL = ?";
+            $query = ", IMG_URL = ?";
             $params[] = $imgPath;
             $_SESSION['user_img'] = $imgPath;
         }
@@ -66,12 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-if (!isset($_SESSION['user_id'])) {
+if (!isset($_SESSION['user'])) {
     echo "<p class='error'>Acesso não autorizado.</p>";
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user']['user_id'];
 $stmt = $pdo->prepare("SELECT * FROM USER WHERE USER_ID = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -81,11 +82,11 @@ $stmt=null;
 <div class="profile-container">
     <div class="profile-card">
         <h2>Editar Perfil</h2>
-        <img src="<?= htmlspecialchars($user['IMG_URL']) ?: 'assets/img/default-user.png' ?>" class="profile-avatar" id="avatar-preview">
+        <img src="<?= $user['IMG_URL'] ?: 'assets/img/default-user.png' ?>" class="profile-avatar" id="avatar-preview">
         <form id="edit-profile-form" enctype="multipart/form-data">
-            <input type="text" name="name" value="<?= htmlspecialchars($user['USER_NAME']) ?>" required>
-            <input type="email" name="email" value="<?= htmlspecialchars($user['USER_EMAIL']) ?>" required>
-            <input type="password" name="password" placeholder="Nova senha (opcional)">
+            <input type="text" name="name" value="<?= $user['USER_NAME'] ?>" required>
+            <input type="email" name="email" value="<?= $user['USER_EMAIL'] ?>" required>
+            <input type="password" name="password" placeholder="Nova Password (opcional)">
             <input type="file" name="profile_img" accept="image/*" onchange="previewAvatar(event)">
             <button type="submit">Guardar</button>
             <div id="profile-msg"></div>
