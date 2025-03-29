@@ -10,7 +10,7 @@ $search = trim($_GET['q']);
 $term = "%$search%";
 
 $stmt = $pdo->prepare("SELECT PRODUCT_ID, PRODUCT_NAME, PRODUCT_DESCRIPTION, IMG_URL FROM PRODUCT WHERE PRODUCT_NAME LIKE ? LIMIT 10");
-$stmt->execute([$term]);
+$stmt->execute(params: [$term]);
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 if (count($results) === 0) {
