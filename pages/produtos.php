@@ -15,7 +15,6 @@ $totalStmt->execute([$searchTerm]);
 $totalprodutos = $totalStmt->fetchColumn();
 $totalPages = ceil($totalprodutos / $perPage);
 
-// Empresas paginadas
 // Modal handler
 if (isset($_GET['modal']) && isset($_GET['id'])) {
     $productId = $_GET['id'];
@@ -27,6 +26,9 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
         echo '<p>Produto inválido.</p>';
         exit;
     }
+    $fullDescription = nl2br(htmlspecialchars($product['PRODUCT_DESCRIPTION']));
+    $shortDescription = strlen($fullDescription) > 100 ? substr($fullDescription, 0, 200) . '...' : $fullDescription;
+    $showMoreButton = strlen($fullDescription) > 100 ? '<button class="show-more-btn" onclick="toggleDescription(this)">Mais...</button>' : '';
 
     echo '<div class="modal-overlay" onclick="closeModal()"></div>';
     echo '<div class="modal-box fade-in">';
@@ -34,7 +36,11 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
     echo '<div class="modal-content">';
     echo '<img src="' . htmlspecialchars($product['IMG_URL']) . '" alt="' . htmlspecialchars($product['PRODUCT_NAME']) . '" class="modal-img">';
     echo '<h2>' . htmlspecialchars($product['PRODUCT_NAME']) . '</h2>';
-    echo '<p>' . nl2br(htmlspecialchars($product['PRODUCT_DESCRIPTION'])) . '</p>';
+    echo '<div class="product-description">';
+    echo '<p class="description-text">' . $shortDescription . '</p>';
+    echo '<p class="full-description" style="display:none;">' . $fullDescription . '</p>';
+    echo $showMoreButton;
+    echo '</div>';
     echo '<p><strong>Visualizações:</strong> ' . $product['PRODUCT_VIEW_QTY'] . '</p>';
     echo '</div></div>';
     $stmt=null;
@@ -189,10 +195,48 @@ $stmt=null;
     from { opacity: 0; transform: translate(-50%, -60%); }
     to { opacity: 1; transform: translate(-50%, -50%); }
 }
+
+.product-description {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.show-more-btn {
+    background: #bd283d;
+    color: white;
+    border: 10px;
+    padding: 8px 15px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-top: 5px;
+    transition: background 0.3s;
+}
+
+.show-more-btn:hover {
+    background: #9a2533;
+}
+
+.description-text, .full-description {
+    word-wrap: break-word;
 </style>
 
 <script>
-function closeModal() {
-    document.getElementById('modal-container').innerHTML = '';
-}
+    function closeModal() {
+        document.getElementById('modal-container').innerHTML = '';
+    }
+    function toggleDescription(button) {
+        const container = button.closest('.product-description');
+        const shortText = container.querySelector('.description-text');
+        const fullText = container.querySelector('.full-description');
+
+        if (fullText.style.display === 'none') {
+            shortText.style.display = 'none';
+            fullText.style.display = 'block';
+            button.textContent = 'Menos...';
+        } else {
+            shortText.style.display = 'block';
+            fullText.style.display = 'none';
+            button.textContent = 'Mais...';
+        }
+    }
 </script>
