@@ -71,6 +71,36 @@ function setupPageScripts(page) {
         const resultsDiv = document.getElementById('search-results');
         const starContainer = document.getElementById('stars');
         const toggleInputs = document.querySelectorAll('#projectToggle input[name="type"]');
+        const tagSection = document.querySelector('.filter-section.tags');
+        const minViewsInput = document.getElementById('min-views');
+        const maxViewsInput = document.getElementById('max-views');
+
+        let minViews = new URLSearchParams(window.location.search).get('min_views');
+        let maxViews = new URLSearchParams(window.location.search).get('max_views');
+
+        if (minViewsInput && maxViewsInput) {
+            if (minViews) minViewsInput.value = minViews;
+            if (maxViews) maxViewsInput.value = maxViews;
+        
+            // Adiciona listeners aos inputs
+            minViewsInput.addEventListener('input', triggerViewsFilter);
+            maxViewsInput.addEventListener('input', triggerViewsFilter);
+        }
+
+        function triggerViewsFilter() {
+            const min = minViewsInput.value;
+            const max = maxViewsInput.value;
+        
+            if (min && max) {
+                minViews = min;
+                maxViews = max;
+                loadWithFilters();
+            }
+        }
+
+        if(tagSection) {
+            tagSection.remove();
+        }
 
         let selectedRank = parseInt(new URLSearchParams(window.location.search).get('rank')) || null;
 
@@ -167,9 +197,150 @@ function setupPageScripts(page) {
             if (search) url.set('search', search);
             if (type) url.set('type', type);
             if (selectedRank !== null) url.set('rank', selectedRank);
+            if (minViews && maxViews) {
+                url.set('min_views', minViews);
+                url.set('max_views', maxViews);
+            }
             url.set('pg', '1');
 
             loadPage('produtos', url.toString());
+        }
+    }
+
+    // Empresas: Filtro no DOM (além do search)
+    if (page === 'empresas') {
+        filterCompanies();
+
+        const searchInput = document.getElementById('search-input');
+        const resultsDiv = document.getElementById('search-results');
+        const starContainer = document.getElementById('stars');
+        // 👁 FILTRO DE VIEWS
+        const minViewsInput = document.getElementById('min-views');
+        const maxViewsInput = document.getElementById('max-views');
+
+        let minViews = new URLSearchParams(window.location.search).get('min_views');
+        let maxViews = new URLSearchParams(window.location.search).get('max_views');
+
+        // Preencher os inputs se vierem da URL
+        if (minViewsInput && maxViewsInput) {
+            if (minViews) minViewsInput.value = minViews;
+            if (maxViews) maxViewsInput.value = maxViews;
+
+            // Adiciona listeners aos inputs
+            minViewsInput.addEventListener('input', triggerViewsFilter);
+            maxViewsInput.addEventListener('input', triggerViewsFilter);
+        }
+
+        function triggerViewsFilter() {
+            const min = minViewsInput.value;
+            const max = maxViewsInput.value;
+
+            if (min && max) {
+                minViews = min;
+                maxViews = max;
+                loadWithFilters();
+            }
+        }
+
+        const toggleContent = document.querySelector('.filter-section.custom-toggle-wrapper');
+
+        if (toggleContent) {
+            toggleContent.remove();
+        }
+        
+        let selectedRank = parseInt(new URLSearchParams(window.location.search).get('rank')) || null;
+
+        // 🌟 ESTRELAS
+        if (starContainer) {
+            const stars = starContainer.querySelectorAll('.star');
+
+            // Aplicar visual ativo se URL já tiver rank
+            if (selectedRank) highlightStars(selectedRank);
+
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+
+                    if (selectedRank === value) {
+                        selectedRank = null;
+                        clearStars();
+                    } else {
+                        selectedRank = value;
+                        highlightStars(value);
+                    }
+
+                    loadWithFilters();
+                });
+            });
+
+            function highlightStars(value) {
+                stars.forEach(s => {
+                    const v = parseInt(s.getAttribute('data-value'));
+                    s.classList.toggle('selected', v <= value);
+                });
+            }
+
+            function clearStars() {
+                stars.forEach(s => s.classList.remove('selected'));
+            }
+        }
+
+        // 🔍 PESQUISA
+        if (searchInput && resultsDiv) {
+            let debounce;
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.trim();
+                clearTimeout(debounce);
+                debounce = setTimeout(() => {
+                    if (!query) {
+                        resultsDiv.innerHTML = '';
+                        return;
+                    }
+
+                    fetch(`includes/search-empresas.php?q=${encodeURIComponent(query)}`)
+                        .then(res => res.text())
+                        .then(html => {
+                            resultsDiv.innerHTML = html;
+                            document.querySelectorAll('.clickable-product').forEach(item => {
+                                item.addEventListener('click', () => {
+                                    const id = item.dataset.id;
+                                    fetch(`pages/empresas.php?id=${id}&modal=true`)
+                                        .then(res => res.text())
+                                        .then(modalHtml => {
+                                            document.getElementById("modal-container").innerHTML = modalHtml;
+                                            document.body.classList.add("no-scroll");
+                                            setupGlobalModalListeners();
+                                            resultsDiv.innerHTML = '';
+                                            searchInput.value = '';
+                                        });
+                                });
+                            });
+                        });
+                }, 300);
+            });
+
+            searchInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    loadWithFilters();
+                }
+            });
+        }
+
+        // 🧠 Função geral para construir a query e recarregar
+        function loadWithFilters() {
+            const search = document.getElementById('search-input')?.value.trim() || '';
+            const url = new URLSearchParams();
+        
+            if (search) url.set('search', search);
+            if (selectedRank !== null) url.set('rank', selectedRank);
+            if (minViews && maxViews) {
+                url.set('min_views', minViews);
+                url.set('max_views', maxViews);
+            }
+        
+            url.set('pg', '1');
+            loadPage('empresas', url.toString());
         }
     }
 
@@ -244,11 +415,6 @@ function setupPageScripts(page) {
         }
     }
 
-    // Empresas: Filtro no DOM (além do search)
-    if (page === 'empresas') {
-        filterCompanies();
-    }
-
     setupGlobalModalListeners();
 }
 
@@ -285,7 +451,6 @@ function closeModal() {
 // SPA: Filtro de empresas no DOM
 // ==========================
 function filterCompanies() {
-    debugger;
     const input = document.getElementById('company-search');
     if (!input) return;
 

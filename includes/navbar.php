@@ -12,7 +12,6 @@
                 <li><a href="?page=produtos" class="nav-link">Produtos</a></li>
                 <li><a href="?page=empresas" class="nav-link">Empresas</a></li>
                 <li><a href="?page=noticias" class="nav-link">Notícias</a></li>
-                <li><a href="?page=forums" class="nav-link">Forums</a></li>
                 <li><a href="?page=warroom" class="nav-link">Warroom</a></li>
 
                 <?php if (isset($_SESSION['user'])): ?>

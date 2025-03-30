@@ -1,6 +1,9 @@
 <?php 
 $type = $_GET['type'] ?? 'both'; // valor atual
 $rank = isset($_GET['rank']) ? (int) $_GET['rank'] : 0;
+$minViews = isset($_GET['min_views']) ? (int) $_GET['min_views'] : '';
+$maxViews = isset($_GET['max_views']) ? (int) $_GET['max_views'] : '';
+$tags = isset($_GET['tags']) ? explode(',', $_GET['tags']) : []; // array de strings
 ?>
 
 <div class="filter-container">
@@ -30,6 +33,29 @@ $rank = isset($_GET['rank']) ? (int) $_GET['rank'] : 0;
             <label for="toggle-projects" title="Projetos">🛠</label>
 
             <div class="toggle-slider"></div>
+        </div>
+    </div>
+
+    
+    <!-- Visualizações -->
+    <div class="filter-section views-filter">
+        <h3>Views:</h3>
+        <div class="views-range">
+            <label for="min-views">Min:</label>
+            <input type="number" id="min-views" name="min_views" placeholder="100">
+
+            <label for="max-views">Max:</label>
+            <input type="number" id="max-views" name="max_views" placeholder="500">
+        </div>
+    </div>
+
+    
+    <!-- Tags -->
+    <div class="filter-section tags">
+        <h3>Tags</h3>
+        <div class="tag-filter">
+         <input id="tags" name="tags" placeholder="Escreve para procurar tags..." />
+
         </div>
     </div>
 </div>

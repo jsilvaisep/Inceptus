@@ -4,8 +4,8 @@ include '../includes/db.php';
 $search = $_GET['search'] ?? '';
 $searchTerm = '%' . $search . '%';
 $rank = isset($_GET['rank']) ? (float) $_GET['rank'] : 0;
-$type = $_GET['type'] ?? 'both';
-
+$minViews = isset($_GET['min_views']) ? (int) $_GET['min_views'] : '';
+$maxViews = isset($_GET['max_views']) ? (int) $_GET['max_views'] : '';
 $page = isset($_GET['pg']) ? max(1, (int)$_GET['pg']) : 1;
 $perPage = 12;
 $offset = ($page - 1) * $perPage;
@@ -34,20 +34,52 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
     exit;
 }
 
+if (isset($_COOKIE['stars'])) {
+    echo $_COOKIE["stars"]; 
+}
+
+// BASE DA QUERY
+$baseQuery = "
+    FROM COMPANY 
+    WHERE COMPANY.COMPANY_STATUS = 'A' 
+    AND COMPANY.COMPANY_NAME LIKE ?
+";
+$params = [$searchTerm];
+
+// Views
+if($minViews !== null && $maxViews !== null && $minViews > 0 && ($maxViews > 0 && $maxViews > $minViews)) {
+    $baseQuery .= " AND COMPANY.COMPANY_VIEW_QTY >= ? AND COMPANY.COMPANY_VIEW_QTY <= ?";
+    $params[] = $minViews;
+    $params[] = $maxViews;
+}
+
+// RANK
+if ($rank > 0) {
+    $baseQuery .= " AND COMPANY.COMPANY_RANK >= ? AND COMPANY.COMPANY_RANK < ?";
+    $params[] = $rank;
+    $params[] = $rank + 1;
+}
+
 // Total para paginação
-$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM COMPANY WHERE COMPANY_STATUS = 'A'");
-$totalStmt->execute();
+$totalStmt = $pdo->prepare("SELECT COUNT(*) " . $baseQuery);
+$totalStmt->execute($params);
 $totalCompanies = $totalStmt->fetchColumn();
 $totalPages = ceil($totalCompanies / $perPage);
 
-// Empresas paginadas
-$stmt = $pdo->prepare("SELECT * FROM COMPANY WHERE COMPANY_STATUS = 'A' AND COMPANY_NAME LIKE ? ORDER BY COMPANY_RANK DESC LIMIT ? OFFSET ?");
-$stmt->bindValue(1, $searchTerm);
-$stmt->bindValue(2, $perPage, PDO::PARAM_INT);
-$stmt->bindValue(3, $offset, PDO::PARAM_INT);
+// -------- PRODUTOS PAGINADOS --------
+$companiesQuery = "SELECT COMPANY.* " . $baseQuery . " ORDER BY COMPANY.COMPANY_RANK DESC LIMIT ? OFFSET ?";
+$stmt = $pdo->prepare($companiesQuery);
+
+// Bind dos parâmetros normais
+for ($i = 0; $i < count($params); $i++) {
+    $stmt->bindValue($i + 1, $params[$i]);
+}
+
+// Bind dos inteiros LIMIT e OFFSET
+$stmt->bindValue(count($params) + 1, $perPage, PDO::PARAM_INT);
+$stmt->bindValue(count($params) + 2, $offset, PDO::PARAM_INT);
 $stmt->execute();
 $companies = $stmt->fetchAll();
-$stmt=null;
 ?>
 
 <div class="company-layout">    

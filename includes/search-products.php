@@ -20,7 +20,7 @@ if (count($results) === 0) {
 
 foreach ($results as $produto) {
     echo '<div class="search-result-item clickable-product" data-id="' . $produto['PRODUCT_ID'] . '">';
-    echo '<img class="company-img" src="' . htmlspecialchars($produto['IMG_URL']) . '" alt="Imagem do Produto">';
+    echo '<img class="product-img" src="' . htmlspecialchars($produto['IMG_URL']) . '" alt="Imagem do Produto">';
     echo '<div class="info">';
     echo '<strong>' . htmlspecialchars($produto['PRODUCT_NAME']) . '</strong>';
     echo '<p>' . htmlspecialchars($produto['PRODUCT_DESCRIPTION']) . '</p>';

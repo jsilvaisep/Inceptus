@@ -5,7 +5,8 @@ $search = $_GET['search'] ?? '';
 $searchTerm = '%' . $search . '%';
 $rank = isset($_GET['rank']) ? (float) $_GET['rank'] : 0;
 $type = $_GET['type'] ?? 'both';
-
+$minViews = isset($_GET['min_views']) ? (int) $_GET['min_views'] : '';
+$maxViews = isset($_GET['max_views']) ? (int) $_GET['max_views'] : '';
 $page = isset($_GET['pg']) ? max(1, (int)$_GET['pg']) : 1;
 $perPage = 12;
 $offset = ($page - 1) * $perPage;
@@ -58,6 +59,13 @@ if ($type === 'products') {
     $baseQuery .= " AND CATEGORY.CATEGORY_TYPE = 'PRODUTO'";
 } elseif ($type === 'projects') {
     $baseQuery .= " AND CATEGORY.CATEGORY_TYPE = 'SERVICO'";
+}
+
+// Views
+if($minViews !== null && $maxViews !== null && $minViews > 0 && ($maxViews > 0 && $maxViews > $minViews)) {
+    $baseQuery .= " AND PRODUCT.PRODUCT_VIEW_QTY >= ? AND PRODUCT.PRODUCT_VIEW_QTY <= ?";
+    $params[] = $minViews;
+    $params[] = $maxViews;
 }
 
 // RANK

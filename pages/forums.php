@@ -1,1 +1,0 @@
-<h2>Fóruns</h2><p>Discussões e temas ativos.</p>
