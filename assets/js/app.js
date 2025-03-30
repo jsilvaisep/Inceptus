@@ -1,5 +1,8 @@
 // ==========================
-// SPA: Navegação de Páginas
+// Renderiza as páginas sem ter que recarregar todo o código. 
+// Garante que o que temos é um SPA.
+// o fetch faz o carregamento da página.
+// O setupPageScripts vai buscar o que é suposto apresentar.
 // ==========================
 function loadPage(page, search = '') {
     let url = 'pages/' + page + '.php';
@@ -21,7 +24,7 @@ function loadPage(page, search = '') {
 }
 
 // ==========================
-// SPA: Atualiza Navbar
+// Atualiza a barra de navegação, mantendo a lógica do SPA, sem recarregar a página inteira.
 // ==========================
 function reloadNavbar() {
     fetch('includes/navbar.php')
@@ -31,78 +34,111 @@ function reloadNavbar() {
         });
 }
 
+// ==========================
+// Fecha algum modal que esteja aberto.
+// ==========================
 function closeModal() {
     document.getElementById('modal-container').innerHTML = '';
 }
-function toggleDescription(button) {
-    const container = button.closest('.product-description');
-    const shortText = container.querySelector('.description-text');
-    const fullText = container.querySelector('.full-description');
 
-    if (fullText.style.display === 'none') {
-        shortText.style.display = 'none';
-        fullText.style.display = 'block';
-        button.textContent = 'Menos...';
-    } else {
-        shortText.style.display = 'block';
-        fullText.style.display = 'none';
-        button.textContent = 'Mais...';
-    }
-}
+// ==========================
+// Para alternar entre mostrar todo o texto ou apenas um pouco.
+// Não será utilizado, mas deixo comentado caso seja necessário voltar a usar algo semelhante.
+// ==========================
+// function toggleDescription(button) {
+//     const container = button.closest('.product-description');
+//     const shortText = container.querySelector('.description-text');
+//     const fullText = container.querySelector('.full-description');
+
+//     if (fullText.style.display === 'none') {
+//         shortText.style.display = 'none';
+//         fullText.style.display = 'block';
+//         button.textContent = 'Menos...';
+//     } else {
+//         shortText.style.display = 'block';
+//         fullText.style.display = 'none';
+//         button.textContent = 'Mais...';
+//     }
+// }
 
 // ==========================
 // SPA: Scripts locais da página carregada
 // ==========================
 function setupPageScripts(page) {
     // Pesquisa AJAX dinâmica para produtos e empresas
-    if (page === 'produtos' || page === 'empresas') {
+    if (page === 'produtos') {
         const searchInput = document.getElementById('search-input');
         const resultsDiv = document.getElementById('search-results');
+        const starContainer = document.getElementById('stars');
+        const toggleInputs = document.querySelectorAll('#projectToggle input[name="type"]');
 
-        // Toggle Produtos / Projetos / Ambos
-        document.querySelectorAll('#projectToggle input[name="type"]').forEach(input => {
-            input.addEventListener('change', function () {
-                const selectedType = this.value;
-    
-                const search = document.getElementById('search-input')?.value || '';
-                const urlParams = new URLSearchParams();
-                if (search) urlParams.set('search', search);
-                urlParams.set('pg', '1');
-                urlParams.set('type', selectedType);
-    
-                loadPage('produtos', urlParams.toString());
+        let selectedRank = parseInt(new URLSearchParams(window.location.search).get('rank')) || null;
+
+        // 🌟 ESTRELAS
+        if (starContainer) {
+            const stars = starContainer.querySelectorAll('.star');
+
+            // Aplicar visual ativo se URL já tiver rank
+            if (selectedRank) highlightStars(selectedRank);
+
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+
+                    if (selectedRank === value) {
+                        selectedRank = null;
+                        clearStars();
+                    } else {
+                        selectedRank = value;
+                        highlightStars(value);
+                    }
+
+                    loadWithFilters();
+                });
+            });
+
+            function highlightStars(value) {
+                stars.forEach(s => {
+                    const v = parseInt(s.getAttribute('data-value'));
+                    s.classList.toggle('selected', v <= value);
+                });
+            }
+
+            function clearStars() {
+                stars.forEach(s => s.classList.remove('selected'));
+            }
+        }
+
+        // 🔁 TOGGLE (produtos / ambos / projetos)
+        toggleInputs.forEach(input => {
+            input.addEventListener('change', () => {
+                loadWithFilters();
             });
         });
 
+        // 🔍 PESQUISA
         if (searchInput && resultsDiv) {
             let debounce;
-
             searchInput.addEventListener('input', () => {
                 const query = searchInput.value.trim();
                 clearTimeout(debounce);
-
                 debounce = setTimeout(() => {
-                    if (query.length === 0) {
+                    if (!query) {
                         resultsDiv.innerHTML = '';
                         return;
                     }
 
-                    const searchFile = page === 'produtos' ? 'includes/search-products.php' : 'includes/search-empresas.php';
-
-                    fetch(`${searchFile}?q=${encodeURIComponent(query)}`)
+                    fetch(`includes/search-products.php?q=${encodeURIComponent(query)}`)
                         .then(res => res.text())
                         .then(html => {
                             resultsDiv.innerHTML = html;
-
-                            const selector = page === 'produtos' ? '.clickable-product' : '.clickable-company';
-                            document.querySelectorAll(selector).forEach(item => {
+                            document.querySelectorAll('.clickable-product').forEach(item => {
                                 item.addEventListener('click', () => {
                                     const id = item.dataset.id;
-                                    fetch(`pages/${page}.php?id=${id}&modal=true`)
+                                    fetch(`pages/produtos.php?id=${id}&modal=true`)
                                         .then(res => res.text())
                                         .then(modalHtml => {
-                                            const modalContainer = document.getElementById("modal-container");
-                                            modalContainer.innerHTML = modalHtml;
+                                            document.getElementById("modal-container").innerHTML = modalHtml;
                                             document.body.classList.add("no-scroll");
                                             setupGlobalModalListeners();
                                             resultsDiv.innerHTML = '';
@@ -117,32 +153,35 @@ function setupPageScripts(page) {
             searchInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    const query = searchInput.value.trim();
-                    if (query.length > 0) {
-                        loadPage(page, 'search=' + encodeURIComponent(query));
-                        resultsDiv.innerHTML = '';
-                    }
-                }
-            });
-
-            document.addEventListener('click', (e) => {
-                if (!resultsDiv.contains(e.target) && e.target !== searchInput) {
-                    resultsDiv.innerHTML = '';
+                    loadWithFilters();
                 }
             });
         }
+
+        // 🧠 Função geral para construir a query e recarregar
+        function loadWithFilters() {
+            const type = document.querySelector('#projectToggle input[name="type"]:checked')?.value || 'both';
+            const search = document.getElementById('search-input')?.value.trim() || '';
+            const url = new URLSearchParams();
+
+            if (search) url.set('search', search);
+            if (type) url.set('type', type);
+            if (selectedRank !== null) url.set('rank', selectedRank);
+            url.set('pg', '1');
+
+            loadPage('produtos', url.toString());
+        }
     }
 
-    // Modal Cards clicáveis
+    // Clique em cartão → Modal
     document.querySelectorAll('.clickable-card').forEach(card => {
         card.addEventListener('click', () => {
             const id = card.dataset.id;
             fetch(`pages/${page}.php?id=${id}&modal=true`)
                 .then(res => res.text())
                 .then(html => {
-                    const container = document.getElementById('modal-container');
-                    if (container) container.innerHTML = html;
-                    document.body.classList.add('no-scroll');
+                    document.getElementById("modal-container").innerHTML = html;
+                    document.body.classList.add("no-scroll");
                     setupGlobalModalListeners();
                 });
         });
@@ -246,6 +285,7 @@ function closeModal() {
 // SPA: Filtro de empresas no DOM
 // ==========================
 function filterCompanies() {
+    debugger;
     const input = document.getElementById('company-search');
     if (!input) return;
 
