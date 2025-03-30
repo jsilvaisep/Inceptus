@@ -1,26 +1,30 @@
+<?php
+$type = $_GET['type'] ?? 'products'; // valor atual
+?>
+
 <link rel="stylesheet" href="assets/css/filter.css">
 <div class="filter-container">
     <h2>FILTROS</h2>
     <div class="filter-section">
         <h3>Avaliação</h3>
         <div class="stars">
-            <span class="star" onclick="stars(1)" data-value="1">★</span>
-            <span class="star" onclick="stars(2)" data-value="2">★</span>
-            <span class="star" onclick="stars(3)" data-value="3">★</span>
-            <span class="star" onclick="stars(4)" data-value="4">★</span>
-            <span class="star" onclick="stars(5)" data-value="5">★</span>
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
         </div>
         <br />
         <div class="custom-toggle-wrapper">
             <h3>Produtos / Projeto</h3>
             <div class="custom-toggle" id="projectToggle">
-                <input type="radio" name="type" value="products" id="toggle-products" checked>
+                <input type="radio" name="type" value="products" id="toggle-products" <?= $type === 'products' ? 'checked' : '' ?>>
                 <label for="toggle-products" title="Produtos">📦</label>
 
-                <input type="radio" name="type" value="both" id="toggle-both">
+                <input type="radio" name="type" value="both" id="toggle-both" <?= $type === 'both' ? 'checked' : '' ?>>
                 <label for="toggle-both" title="Ambos">🔁</label>
 
-                <input type="radio" name="type" value="projects" id="toggle-projects">
+                <input type="radio" name="type" value="projects" id="toggle-projects" <?= $type === 'projects' ? 'checked' : '' ?>>
                 <label for="toggle-projects" title="Projetos">🛠</label>
 
                 <div class="toggle-slider"></div>
@@ -31,13 +35,25 @@
 
 <script>
     document.querySelectorAll('.star').forEach(star => {
-        star.addEventListener('click', function () {
-            const value = this.getAttribute('data-value');
-            const params = new URLSearchParams(window.location.search);
-            params.set('rank', value);
-            loadPage('produtos', params.toString());
+    star.addEventListener('click', function () {
+        const rank = this.getAttribute('data-value');
+        const type = document.querySelector('.custom-toggle input[name="type"]:checked')?.value || 'both';
+        const search = document.getElementById('search-input')?.value ?? '';
+
+        loadPage('produtos', `rank=${rank}&type=${type}&search=${encodeURIComponent(search)}`);
+    });
+});
+    document.querySelectorAll('input[name="type"]').forEach(input => {
+        input.addEventListener('change', () => {
+            const type = input.value;
+            const currentParams = new URLSearchParams(window.location.search);
+            currentParams.set('type', type);
+            currentParams.set('pg', 1); 
+            loadPage('produtos', currentParams.toString());
         });
     });
+    
+
 
 </script>
 

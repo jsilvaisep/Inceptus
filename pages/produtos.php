@@ -4,16 +4,11 @@ include '../includes/db.php';
 $search = $_GET['search'] ?? '';
 $searchTerm = '%' . $search . '%';
 $rank = isset($_GET['rank']) ? (float) $_GET['rank'] : 0;
+$type = $_GET['type'] ?? 'both';
 
 $page = isset($_GET['pg']) ? max(1, (int)$_GET['pg']) : 1;
 $perPage = 9;
 $offset = ($page - 1) * $perPage;
-
-// Total para paginação
-$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_STATUS = 'A' AND PRODUCT_NAME LIKE ?");
-$totalStmt->execute([$searchTerm]);
-$totalprodutos = $totalStmt->fetchColumn();
-$totalPages = ceil($totalprodutos / $perPage);
 
 // Modal handler
 if (isset($_GET['modal']) && isset($_GET['id'])) {
@@ -53,20 +48,50 @@ if (isset($_COOKIE['stars'])) {
     echo $_COOKIE["stars"]; 
 }
 
-// Total para paginação
-$totalStmt = $pdo->prepare("SELECT COUNT(*) FROM PRODUCT WHERE PRODUCT_STATUS = 'A' AND PRODUCT_NAME LIKE ?");
-$totalStmt->execute([$searchTerm]);
+// BASE DA QUERY
+$baseQuery = "
+    FROM PRODUCT 
+    LEFT JOIN CATEGORY ON PRODUCT.CATEGORY_ID = CATEGORY.CATEGORY_ID 
+    WHERE PRODUCT.PRODUCT_STATUS = 'A' 
+    AND PRODUCT.PRODUCT_NAME LIKE ?
+";
+$params = [$searchTerm];
+
+// TIPO: produtos / projetos (serviços) / ambos
+if ($type === 'products') {
+    $baseQuery .= " AND CATEGORY.CATEGORY_TYPE = 'PRODUTO'";
+} elseif ($type === 'projects') {
+    $baseQuery .= " AND CATEGORY.CATEGORY_TYPE = 'SERVICO'";
+}
+
+// RANK
+if ($rank > 0) {
+    $baseQuery .= " AND PRODUCT.PRODUCT_RANK >= ? AND PRODUCT.PRODUCT_RANK < ?";
+    $params[] = $rank;
+    $params[] = $rank + 1;
+}
+
+// -------- TOTAL --------
+$totalStmt = $pdo->prepare("SELECT COUNT(*) " . $baseQuery);
+$totalStmt->execute($params);
 $totalProducts = $totalStmt->fetchColumn();
 $totalPages = ceil($totalProducts / $perPage);
 
-// Produtos paginados
-$stmt = $pdo->prepare("SELECT * FROM PRODUCT WHERE PRODUCT_STATUS = 'A' AND PRODUCT_NAME LIKE ? ORDER BY PRODUCT_RANK DESC LIMIT ? OFFSET ?");
-$stmt->bindValue(1, $searchTerm);
-$stmt->bindValue(2, $perPage, PDO::PARAM_INT);
-$stmt->bindValue(3, $offset, PDO::PARAM_INT);
+// -------- PRODUTOS PAGINADOS --------
+$productsQuery = "SELECT PRODUCT.* " . $baseQuery . " ORDER BY PRODUCT.PRODUCT_RANK DESC LIMIT ? OFFSET ?";
+$stmt = $pdo->prepare($productsQuery);
+
+// Bind dos parâmetros normais
+for ($i = 0; $i < count($params); $i++) {
+    $stmt->bindValue($i + 1, $params[$i]);
+}
+
+// Bind dos inteiros LIMIT e OFFSET
+$stmt->bindValue(count($params) + 1, $perPage, PDO::PARAM_INT);
+$stmt->bindValue(count($params) + 2, $offset, PDO::PARAM_INT);
+
 $stmt->execute();
 $products = $stmt->fetchAll();
-$stmt=null;
 ?>
 
 <div class="produtos-layout">

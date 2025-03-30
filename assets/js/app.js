@@ -50,10 +50,6 @@ function toggleDescription(button) {
     }
 }
 
-function stars(value){
-    alert(value);
-}
-
 // ==========================
 // SPA: Scripts locais da página carregada
 // ==========================
@@ -62,6 +58,21 @@ function setupPageScripts(page) {
     if (page === 'produtos' || page === 'empresas') {
         const searchInput = document.getElementById('search-input');
         const resultsDiv = document.getElementById('search-results');
+
+        // Toggle Produtos / Projetos / Ambos
+        document.querySelectorAll('#projectToggle input[name="type"]').forEach(input => {
+            input.addEventListener('change', function () {
+                const selectedType = this.value;
+    
+                const search = document.getElementById('search-input')?.value || '';
+                const urlParams = new URLSearchParams();
+                if (search) urlParams.set('search', search);
+                urlParams.set('pg', '1');
+                urlParams.set('type', selectedType);
+    
+                loadPage('produtos', urlParams.toString());
+            });
+        });
 
         if (searchInput && resultsDiv) {
             let debounce;
