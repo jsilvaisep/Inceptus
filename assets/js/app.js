@@ -95,8 +95,13 @@ function setupPageScripts(page) {
                 minViews = min;
                 maxViews = max;
                 loadWithFilters();
+            } else {
+                minViews = null;
+                maxViews = null;
+                loadWithFilters();
             }
         }
+        
 
         if(tagSection) {
             tagSection.remove();
@@ -234,13 +239,18 @@ function setupPageScripts(page) {
         function triggerViewsFilter() {
             const min = minViewsInput.value;
             const max = maxViewsInput.value;
-
+        
             if (min && max) {
                 minViews = min;
                 maxViews = max;
                 loadWithFilters();
+            } else {
+                minViews = null;
+                maxViews = null;
+                loadWithFilters();
             }
         }
+        
 
         const toggleContent = document.querySelector('.filter-section.custom-toggle-wrapper');
 
