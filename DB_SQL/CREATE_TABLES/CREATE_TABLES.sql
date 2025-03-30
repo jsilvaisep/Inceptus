@@ -1,3 +1,10 @@
+/*
+ * TODO - 3FN
+ * Criar tabela U_TYPE para ligar USER a USER_TYPES
+ * Criar tabela UDA_PRODUCT e UDA_COMPANY para ligar UDA com PRODUCT e COMPANY
+ * Criar tabela CAT_TYPES para ligar CATEGORY com CATEGORY_TYPES
+*/
+
 /* 
 ###############################
 ####### TABLE USER_TYPE #####################################################################################################################################################################################
@@ -146,6 +153,26 @@ COMMENT='Table containing comment data';
 
 /* 
 ###############################
+####### TABLE COMMENT_EXT #######################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE DB_INCEPTUS_PP.COMMENT_EXT (
+	COMMENT_EXT_ID BINARY(36) NOT NULL,
+	COMMENT_ID BINARY(36) NOT NULL,
+	COMMENT_EXT_TEXT VARCHAR(2000) NOT NULL,
+	CREATED_AT DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	UPDATED_AT DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,		
+	CONSTRAINT COMMENT_EXT_PK PRIMARY KEY (COMMENT_EXT_ID),
+	CONSTRAINT COMMENT_EXT_COMMENT_ID_FK FOREIGN KEY (COMMENT_ID) REFERENCES DB_INCEPTUS_PP.COMMENT(COMMENT_ID) ON DELETE CASCADE ON UPDATE CASCADE
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Table containing comment response data';
+
+/* 
+###############################
 ####### TABLE POST ##########################################################################################################################################################################################
 ###############################
 */
@@ -164,6 +191,26 @@ ENGINE=InnoDB DEFAULT
 CHARSET=utf8mb4 
 COLLATE=utf8mb4_0900_ai_ci
 COMMENT='Table containing posts data';
+
+/* 
+###############################
+####### TABLE POST_EXT ##########################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE POST_EXT (
+  POST_EXT_ID BINARY(36) NOT NULL,
+  POST_ID BINARY(36) NOT NULL,
+  POST_EXT_CONTENT VARCHAR(2000) NOT NULL,
+  CREATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (POST_EXT_ID),
+  CONSTRAINT POST_EXT_POST_ID_FK FOREIGN KEY (POST_ID) REFERENCES DB_INCEPTUS_PP.POST (POST_ID) ON DELETE CASCADE ON UPDATE CASCADE
+) 
+ENGINE=InnoDB DEFAULT 
+CHARSET=utf8mb4 
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Table containing posts response data';
 
 /* 
 ###############################
@@ -262,3 +309,26 @@ ENGINE=InnoDB DEFAULT
 CHARSET=utf8mb4 
 COLLATE=utf8mb4_0900_ai_ci
 COMMENT='Table containing admin posts data';
+
+
+/* 
+###############################
+####### TABLE UDA ####################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE UDA (
+  UDA_ID BINARY(36) NOT NULL,
+  PRODUCT_ID BINARY(36),
+  UDA_VALUES JSON NOT NULL,
+  CREATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UPDATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (UDA_ID),
+  CONSTRAINT UDA_PRODUCT_ID_FK FOREIGN KEY (PRODUCT_ID) REFERENCES DB_INCEPTUS_PP.PRODUCT(PRODUCT_ID) ON DELETE CASCADE ON UPDATE CASCADE
+) 
+ENGINE=InnoDB DEFAULT 
+CHARSET=utf8mb4 
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Table containing products UDA data';
+
+
