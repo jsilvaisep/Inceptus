@@ -14,19 +14,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $stmt = $pdo->prepare("SELECT u.USER_ID, u.USER_NAME, u.USER_PASSWORD, u.USER_EMAIL, u.IMG_URL, ut2.TYPE_ID FROM USER u"+
-							  "INNER JOIN U_TYPE ut ON u.USER_ID = ut.USER_ID"+
-							  "INNER JOIN USER_TYPE ut2 ON ut2.TYPE_ID"+
-							  "WHERE USER_EMAIL = ?");
+        $stmt = $pdo->prepare("SELECT * FROM USER u INNER JOIN U_TYPE ut ON ut.USER_ID = u.USER_ID WHERE USER_EMAIL = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['u.USER_PASSWORD'])) {
+        if ($user && password_verify($password, $user['USER_PASSWORD'])) {
             $_SESSION['user'] = [
-                'user_id' => $user['u.USER_ID'],
-                'user_name' => $user['u.USER_NAME'],
-                'user_type' => getUserTypeName($pdo, $user['ut2.TYPE_ID']),
-                'user_img' => $user['u.IMG_URL']
+                'user_id' => $user['USER_ID'],
+                'user_name' => $user['USER_NAME'],
+                'user_type' => getUserTypeName($pdo, $user['TYPE_ID']),
+                'user_img' => $user['IMG_URL']
             ];
 
             session_regenerate_id(true);
@@ -43,13 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 function getUserTypeName($pdo, $typeId) {
-    $stmt = $pdo->prepare(	"SELECT ut2.USER_TYPE FROM USER u"+
-							"INNER JOIN U_TYPE ut ON u.USER_ID = ut.USER_ID"+
-							"INNER JOIN USER_TYPE ut2 ON ut2.TYPE_ID"+
-							"WHERE ut2.TYPE_ID= ?");
+    $stmt = $pdo->prepare("SELECT USER_TYPE FROM USER_TYPE WHERE TYPE_ID = ?");
     $stmt->execute([$typeId]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $result ? $result['ut2.USER_TYPE'] : null;
+    return $result ? $result['USER_TYPE'] : null;
 }
 ?>
 
