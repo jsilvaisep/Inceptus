@@ -9,7 +9,7 @@ $tags = isset($_GET['tags']) ? explode(',', $_GET['tags']) : []; // array de str
 <div class="filter-container">
     <h2>FILTROS</h2>
 
-    <!-- Estrelas -->
+    <!-- Avaliação -->
     <div class="filter-section">
         <h3>Avaliação</h3>
         <div id="stars" class="stars">
@@ -19,7 +19,7 @@ $tags = isset($_GET['tags']) ? explode(',', $_GET['tags']) : []; // array de str
         </div>
     </div>
 
-    <!-- Toggle produtos/projetos -->
+    <!-- Produtos / Projetos -->
     <div class="filter-section custom-toggle-wrapper">
         <h3>Produtos / Projeto</h3>
         <div class="custom-toggle" id="projectToggle">
@@ -37,7 +37,7 @@ $tags = isset($_GET['tags']) ? explode(',', $_GET['tags']) : []; // array de str
     </div>
 
     
-    <!-- Visualizações -->
+    <!-- Views -->
     <div class="filter-section views-filter">
         <h3>Views:</h3>
         <div class="views-range">

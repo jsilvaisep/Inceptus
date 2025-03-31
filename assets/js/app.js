@@ -95,11 +95,7 @@ function setupPageScripts(page) {
                 minViews = min;
                 maxViews = max;
                 loadWithFilters();
-            } else {
-                minViews = null;
-                maxViews = null;
-                loadWithFilters();
-            }
+            } 
         }
         
 
@@ -243,10 +239,6 @@ function setupPageScripts(page) {
             if (min && max) {
                 minViews = min;
                 maxViews = max;
-                loadWithFilters();
-            } else {
-                minViews = null;
-                maxViews = null;
                 loadWithFilters();
             }
         }
