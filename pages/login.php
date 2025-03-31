@@ -14,7 +14,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $stmt = $pdo->prepare("SELECT * FROM USER u INNER JOIN U_TYPE ut ON ut.USER_ID = u.USER_ID WHERE USER_EMAIL = ?");
+        $stmt = $pdo->prepare(
+            "SELECT u.USER_ID, u.USER_NAME, u.USER_PASSWORD, u.USER_EMAIL, u.IMG_URL, ut.TYPE_ID, ut2.USER_TYPE FROM USER u 
+            INNER JOIN U_TYPE ut ON ut.USER_ID = u.USER_ID 
+            INNER JOIN USER_TYPE ut2 ON ut.TYPE_ID = ut2.TYPE_ID
+            WHERE USER_EMAIL = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -22,7 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user'] = [
                 'user_id' => $user['USER_ID'],
                 'user_name' => $user['USER_NAME'],
-                'user_type' => getUserTypeName($pdo, $user['TYPE_ID']),
+                //'user_type' => getUserTypeName($pdo, $user['TYPE_ID']),
+                'user_type' => $user['USER_TYPE'],
                 'user_img' => $user['IMG_URL']
             ];
 
@@ -41,13 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = null;
     exit;
 }
-
+/*
 function getUserTypeName($pdo, $typeId) {
     $stmt = $pdo->prepare("SELECT USER_TYPE FROM USER_TYPE WHERE TYPE_ID = ?");
     $stmt->execute([$typeId]);
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     return $result ? $result['USER_TYPE'] : null;
-}
+}*/
 ?>
 
 <div class="form-container">
