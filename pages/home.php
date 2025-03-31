@@ -1,8 +1,8 @@
 <?php include '../includes/db.php'; ?>
 
-<div class="content-boxes" style="display: flex; gap: 30px; justify-content: space-between; padding: 20px; align-items: stretch;">
-    <div class="left-content" style="flex: 1;">
-        <h2 style="text-align: center; margin-bottom: 20px;">Top Rated Products</h2>
+<div class="content-boxes">
+    <div class="top-rated-section">
+        <h2 class="top-rated-title">Top Rated Products</h2>
         <?php
         try {
             if (!empty($pdo)) {
@@ -17,7 +17,7 @@
                 
                 echo "
                 <div class='top-rated-card'>
-                    <div style='display: flex; align-items: center; gap: 15px;'>
+                    <div class='card-content'>
                         <img src='{$row['IMG_URL']}' class='card-image'>
                         <div>
                             <strong>{$row['PRODUCT_NAME']}</strong><br>
@@ -35,8 +35,8 @@
         $stmt = null;
         ?>
     </div>
-    <div class="center-content" style="flex: 1;">
-        <h2 style="text-align: center; margin-bottom: 20px;">Top Rated Services</h2>
+    <div class="top-rated-section">
+        <h2 class="top-rated-title">Top Rated Services</h2>
         <?php
         try {
             if (!empty($pdo)) {
@@ -51,7 +51,7 @@
 
                 echo "
                 <div class='top-rated-card'>
-                    <div style='display: flex; align-items: center; gap: 15px;'>
+                    <div class='card-content'>
                         <img src='{$row['IMG_URL']}' class='card-image'>
                         <div>
                             <strong>{$row['PRODUCT_NAME']}</strong><br>
@@ -70,8 +70,8 @@
         ?>
     </div>
 
-    <div class="right-content" style="flex: 1;">
-        <h2 style="text-align: center; margin-bottom: 20px;">Top Rated companies</h2>
+    <div class="top-rated-section">
+        <h2 class="top-rated-title">Top Rated companies</h2>
         <?php
         try {
             if (!empty($pdo)) {
@@ -86,7 +86,7 @@
 
                 echo "
                 <div class='top-rated-card'>
-                    <div style='display: flex; align-items: center; gap: 15px;'>
+                    <div class='card-content'>
                         <img src='{$row['IMG_URL']}' class='card-image'>
                         <div>
                             <strong>{$row['COMPANY_NAME']}</strong><br>
@@ -108,29 +108,3 @@
 </div>
 <br>
 <?php include '../includes/banner-news.php'; ?>
-
-<style>
-.top-rated-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 20px;
-    background: white;
-    border-radius: 15px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    height: 110px;
-}
-
-.top-rated-card .card-image {
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
-    border-radius: 10px;
-}
-
-.stars {
-    color: #be3144;
-    font-size: 18px;
-}
-</style>
