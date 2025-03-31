@@ -23,6 +23,19 @@ function loadPage(page, search = '') {
         });
 }
 
+document.addEventListener("submit", function () {
+        let name = document.getElementById("product_name").value.trim();
+        let description = document.getElementById("product_description").value.trim();
+        let category = document.getElementById("category_id").value;
+        let company = "4ce516e6-0be9-11f0-b0d3-020017000d59";
+        alert(name);
+
+        if (!name || !description || !category || !company) {
+            alert("Todos os campos são obrigatórios.");
+        }
+    });
+
+
 // ==========================
 // Atualiza a barra de navegação, mantendo a lógica do SPA, sem recarregar a página inteira.
 // ==========================
