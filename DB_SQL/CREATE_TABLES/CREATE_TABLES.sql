@@ -26,6 +26,24 @@ COMMENT='Table containing user type data';
 
 /* 
 ###############################
+####### TABLE U_TYPE #####################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE DB_INCEPTUS_PP.U_TYPE (
+	TYPE_ID BINARY(36) NOT NULL,
+	USER_ID BINARY(36) NOT NULL,
+	CONSTRAINT TYPE__PK PRIMARY KEY (TYPE_ID,USER_ID),
+	CONSTRAINT U_TYPE_TYPE_ID_FK FOREIGN KEY (TYPE_ID) REFERENCES DB_INCEPTUS_PP.USER_TYPE(TYPE_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT U_TYPE_USER_ID_FK FOREIGN KEY (USER_ID) REFERENCES DB_INCEPTUS_PP.USER(USER_ID) ON DELETE CASCADE ON UPDATE CASCADE
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Connection Table for user to user type';
+
+/* 
+###############################
 ####### TABLE USER ##########################################################################################################################################################################################
 ###############################
 */
@@ -36,18 +54,19 @@ CREATE TABLE DB_INCEPTUS_PP.USER (
 	USER_EMAIL VARCHAR(100) NOT NULL,
 	USER_PASSWORD VARCHAR(100) DEFAULT 'Mudar#1234' NOT NULL,
 	USER_STATUS VARCHAR(1) DEFAULT 'A' NOT NULL COMMENT 'Values (A)ctive, (I)nactive',
-	TYPE_ID BINARY(36) NOT NULL,
+	--- TYPE_ID BINARY(36) NOT NULL,
 	IMG_URL VARCHAR(100),
 	CREATED_AT DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	UPDATED_AT DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,	
 	CONSTRAINT USER_PK PRIMARY KEY (USER_ID),
 	CONSTRAINT USER_UNIQUE UNIQUE KEY (USER_EMAIL),
-	CONSTRAINT USER_TYPE_ID_FK FOREIGN KEY (TYPE_ID) REFERENCES DB_INCEPTUS_PP.USER_TYPE(TYPE_ID) ON DELETE CASCADE ON UPDATE CASCADE
+	-- CONSTRAINT USER_TYPE_ID_FK FOREIGN KEY (TYPE_ID) REFERENCES DB_INCEPTUS_PP.U_TYPE(TYPE_ID) ON DELETE CASCADE ON UPDATE CASCADE
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci
 COMMENT='Table containing user data';
+
 
 /* 
 ###############################
@@ -65,7 +84,7 @@ CREATE TABLE DB_INCEPTUS_PP.COMPANY (
 	COMPANY_STATUS VARCHAR(1) DEFAULT 'A' NOT NULL,
 	COMPANY_RANK DECIMAL(2,1) DEFAULT 0,
 	COMPANY_VIEW_QTY INT,
-	TYPE_ID BINARY(36) DEFAULT 2 NOT NULL,
+	-- TYPE_ID BINARY(36) DEFAULT 2 NOT NULL,
 	IMG_URL VARCHAR(100),
 	CREATED_AT DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	UPDATED_AT DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,	
@@ -76,6 +95,24 @@ ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_0900_ai_ci
 COMMENT='Table containing company data';
+
+/* 
+###############################
+####### TABLE C_TYPE #######################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE DB_INCEPTUS_PP.C_TYPE (
+	TYPE_ID BINARY(36) NOT NULL,
+	COMPANY_ID BINARY(36) NOT NULL,
+	CONSTRAINT TYPE__PK PRIMARY KEY (TYPE_ID,COMPANY_ID),
+	CONSTRAINT C_TYPE_TYPE_ID_FK FOREIGN KEY (TYPE_ID) REFERENCES DB_INCEPTUS_PP.USER_TYPE(TYPE_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+	CONSTRAINT C_TYPE_COMPANY_ID_FK FOREIGN KEY (COMPANY_ID) REFERENCES DB_INCEPTUS_PP.COMPANY(COMPANY_ID) ON DELETE CASCADE ON UPDATE CASCADE
+)
+ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Connection Table for company to user type';
 
 /* 
 ###############################
