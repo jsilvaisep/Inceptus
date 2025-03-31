@@ -137,4 +137,14 @@ BEGIN
 	VALUES (UUID(), V_COMPANY_NAME, V_COMPANY_EMAIL, V_COMPANY_PASSWORD, '50770bdc-0be6-11f0-b0d3-020017000d59', V_IMG_URL);
 END
 
+/* 
+####################################
+####### CRIAR PRODUTO #######################################################################################################################################################################
+####################################
+*/
 
+CREATE PROCEDURE INSERT_PRODUCT (IN V_PRODUCT_NAME VARCHAR(255), IN V_PRODUCT_DESCRIPTION VARCHAR(1000), IN V_CATEGORY_ID VARCHAR(255), IN V_COMPANY_ID VARCHAR(255))
+BEGIN
+	INSERT INTO PRODUCT (PRODUCT_ID, PRODUCT_NAME, PRODUCT_DESCRIPTION, CATEGORY_ID, COMPANY_ID)
+	VALUES (UUID(), V_PRODUCT_NAME, V_PRODUCT_DESCRIPTION, V_CATEGORY_ID, V_COMPANY_ID);
+END

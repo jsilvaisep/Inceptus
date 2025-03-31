@@ -356,16 +356,50 @@ COMMENT='Table containing admin posts data';
 
 CREATE TABLE UDA (
   UDA_ID BINARY(36) NOT NULL,
-  PRODUCT_ID BINARY(36),
   UDA_VALUES JSON NOT NULL,
   CREATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP,
   UPDATED_AT DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (UDA_ID),
-  CONSTRAINT UDA_PRODUCT_ID_FK FOREIGN KEY (PRODUCT_ID) REFERENCES DB_INCEPTUS_PP.PRODUCT(PRODUCT_ID) ON DELETE CASCADE ON UPDATE CASCADE
+  PRIMARY KEY (UDA_ID)
+)
+ENGINE=InnoDB DEFAULT 
+CHARSET=utf8mb4 
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Table containing admin posts data';
+
+/* 
+###############################
+####### TABLE PROD_UDA ####################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE PROD_UDA (
+  UDA_ID BINARY(36) NOT NULL,
+  PRODUCT_ID BINARY(36) not null,
+  PRIMARY KEY (UDA_ID, PRODUCT_ID),
+  CONSTRAINT PROD_UDA_UDA_ID_FK FOREIGN KEY (UDA_ID) REFERENCES DB_INCEPTUS_PP.UDA (UDA_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT PROD_UDA_PRODUCT_ID_FK FOREIGN KEY (PRODUCT_ID) REFERENCES DB_INCEPTUS_PP.PRODUCT (PRODUCT_ID) ON DELETE CASCADE ON UPDATE CASCADE
 ) 
 ENGINE=InnoDB DEFAULT 
 CHARSET=utf8mb4 
 COLLATE=utf8mb4_0900_ai_ci
-COMMENT='Table containing products UDA data';
+COMMENT='Table for link products to UDA data';
+
+/* 
+###############################
+####### TABLE COMP_UDA ####################################################################################################################################################################################
+###############################
+*/
+
+CREATE TABLE COMP_UDA (
+  UDA_ID BINARY(36) NOT NULL,
+  COMPANY_ID BINARY(36),
+  PRIMARY KEY (UDA_ID, COMPANY_ID),
+  CONSTRAINT COMP_UDA_UDA_ID_FK FOREIGN KEY (UDA_ID) REFERENCES DB_INCEPTUS_PP.UDA (UDA_ID) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT COMP_UDA_COMPANY_ID_FK FOREIGN KEY (COMPANY_ID) REFERENCES DB_INCEPTUS_PP.COMPANY(COMPANY_ID) ON DELETE CASCADE ON UPDATE CASCADE
+) 
+ENGINE=InnoDB DEFAULT 
+CHARSET=utf8mb4 
+COLLATE=utf8mb4_0900_ai_ci
+COMMENT='Table for link companies to UDA data';
 
 

@@ -28,11 +28,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             session_regenerate_id(true);
             echo json_encode(['success' => true, 'message' => 'Login efetuado com sucesso!']);
+			$stmt = null;
         } else {
             echo json_encode(['success' => false, 'message' => 'Credenciais inválidas.']);
+			$stmt = null;
         }
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
+		$stmt = null;
     }
 
     $stmt = null;
