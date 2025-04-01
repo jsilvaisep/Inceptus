@@ -32,9 +32,61 @@
 .modal-content img.modal-img {
     width: 100%;
     height: auto;
+    max-height: 200px;
     border-radius: 12px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
+    object-fit: cover;
+    display: block;
 }
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0px;
+}
+
+.header-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0px;
+}
+
+.visit-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: white;
+    color: #333;
+    padding: 8px 16px;
+    border: 2px solid #d3d6db;
+    border-radius: 25px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.visit-button:hover {
+    background-color: #f0f0f0;
+    border-color: #be3144;
+    color: #be3144;
+}
+
+.company-rating {
+    margin-bottom: 10px;
+    margim-top:0px;
+    color: #bd283d;
+}
+
+.company-description {
+    margin-bottom:60px;
+    margin-top:40px ;
+    line-height: 1.5;
+}
+
+
 .modal-content h2 {
     margin: 0 0 10px;
     color: #be3144;
@@ -97,7 +149,6 @@
     display: block;
 }
 
-/* Informações da empresa */
 .company-info {
     padding: 15px;
 }

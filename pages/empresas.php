@@ -10,6 +10,19 @@ $page = isset($_GET['pg']) ? max(1, (int)$_GET['pg']) : 1;
 $perPage = 12;
 $offset = ($page - 1) * $perPage;
 
+function renderStars($rating) {
+    $fullStars = floor($rating); // Número de estrelas cheias
+    $halfStar = ($rating - $fullStars) >= 0.5 ? 1 : 0; // Determina se há meia estrela
+    $emptyStars = 5 - ($fullStars + $halfStar); // Estrelas vazias restantes
+
+    $starsHTML = str_repeat('★', $fullStars); // Adiciona estrelas cheias
+    if ($halfStar) $starsHTML .= '☆'; // Adiciona meia estrela
+    $starsHTML .= str_repeat('☆', $emptyStars); // Adiciona estrelas vazias
+
+    return $starsHTML;
+}
+
+
 // Modal handler
 if (isset($_GET['modal']) && isset($_GET['id'])) {
     $companyId = $_GET['id'];
@@ -22,14 +35,38 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
         exit;
     }
 
+    $siteUrl = htmlspecialchars($company['COMPANY_SITE']);
+    if (!preg_match("~^(?:f|ht)tps?://~i", $siteUrl)) {
+        $siteUrl = "https://" . $siteUrl;
+    }
+
     echo '<div class="modal-overlay" onclick="closeModal()"></div>';
     echo '<div class="modal-box show">';
     echo '<button class="modal-close" onclick="closeModal()">&times;</button>';
     echo '<div class="modal-content">';
     echo '<img src="' . htmlspecialchars($company['IMG_URL']) . '" alt="' . htmlspecialchars($company['COMPANY_NAME']) . '" class="modal-img">';
+
+// Nome da empresa+visit button
+    echo '<div class="modal-header">';
+    echo '<div>';
     echo '<h2>' . htmlspecialchars($company['COMPANY_NAME']) . '</h2>';
+    echo '</div>';
+    echo '<div class="header-actions">';
+    echo '<a href="' . htmlspecialchars($company['COMPANY_SITE']) . '" class="visit-button" target="_blank" rel="noopener noreferrer"> Visit</a>';
+    echo '</div>';
+    echo '</div>';
+// COMPANY_RANK -> ESTRELAS
+    echo '<div class="company-rating">';
+    echo '<p>' . renderStars($company['COMPANY_RANK']) . htmlspecialchars($company['COMPANY_RANK']).'</p>';
+    echo '</div>';
+
+    echo '<div class="company-description">';
     echo '<p>' . nl2br(htmlspecialchars($company['COMPANY_DESCRIPTION'])) . '</p>';
-    echo '</div></div>';
+    echo '</div>';
+
+    echo '<p class="products-title"><strong>Produtos lançados pela ' . htmlspecialchars($company['COMPANY_NAME']) . ':</strong></p>';
+    echo '<ul class="products-list">';
+    echo
     $stmt=null;
     exit;
 }
