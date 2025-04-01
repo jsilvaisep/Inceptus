@@ -1,94 +1,134 @@
 <?php
 session_start();
+include '../includes/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    include '../includes/db.php';
     header('Content-Type: application/json');
 
-    $name = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $name = trim($_POST['name'] ?? '');
     $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'] ?? '';
-    $confirm = $_POST['confirm_password'] ?? '';
+    $confirmPassword = $_POST['confirm_password'] ?? '';
+    $userType = 'SUSER';
 
-    if (!$name || !$email || !$password || !$confirm) {
+    if (!$name || !$email || !$password || !$confirmPassword) {
         echo json_encode(['success' => false, 'message' => 'Preencha todos os campos.']);
         exit;
     }
-
-    if ($password !== $confirm) {
-        echo json_encode(['success' => false, 'message' => 'As palavras-passe não coincidem.']);
+    if ($password !== $confirmPassword) {
+        echo json_encode(['success' => false, 'message' => 'As passwords não coincidem.']);
+        exit;
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(['success' => false, 'message' => 'Email inválido.']);
         exit;
     }
 
-    try {
-        $check = $pdo->prepare("SELECT USER_ID FROM USER WHERE USER_EMAIL = ?");
-        $check->execute([$email]);
-        if ($check->fetch()) {
-            echo json_encode(['success' => true, 'message' => 'Conta já existente. Redirecionando para login...']);
+    $imgPath = 'assets/img/default-user.png';
+    if (!empty($_FILES['image']['name'])) {
+        $targetDir = '../uploads/';
+        $fileName = uniqid() . '_' . basename($_FILES['image']['name']);
+        $targetFile = $targetDir . $fileName;
+        $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+        $validTypes = ['jpg', 'jpeg', 'png', 'gif'];
+
+        if (!in_array($imageFileType, $validTypes)) {
+            echo json_encode(['success' => false, 'message' => 'Formato de imagem inválido.']);
             exit;
         }
 
-        $imgPath = null;
-        if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '/uploads/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
-            $filename = uniqid() . '_' . basename($_FILES['profile_img']['name']);
-            $targetPath = $uploadDir . $filename;
-
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-            $mimeType = mime_content_type($_FILES['profile_img']['tmp_name']);
-
-            if (!in_array($mimeType, $allowedTypes)) {
-                echo json_encode(['success' => false, 'message' => 'Tipo de imagem inválido.']);
-                exit;
-            }
-
-            if (move_uploaded_file($_FILES['profile_img']['tmp_name'], $targetPath)) {
-                $imgPath = 'uploads/' . $filename;
-            }
+        if ($_FILES['image']['size'] > 2 * 1024 * 1024) {
+            echo json_encode(['success' => false, 'message' => 'Imagem muito grande. Máximo: 2MB.']);
+            exit;
         }
-        /* TODO workarround para inserir o caminho das imagens na BD No entanto não grava a imagem na pasta */
-        $imgPathteste = 'uploads/' . $filename;
 
-        $hash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare("CALL INSERT_USER(:name, :email, :password, :imgPath)");
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', $hash);
-        $stmt->bindParam(':imgPath', $imgPathteste);
-        $stmt->execute();
+        if (!move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
+            echo json_encode(['success' => false, 'message' => 'Erro ao guardar a imagem.']);
+            exit;
+        }
 
-        $userId = $pdo->lastInsertId();
-
-        $_SESSION['user'] = [
-            'user_id' => $userId,
-            'user_name' => $name,
-            'user_type' => 'SUSER',
-            'user_img' => $imgPath
-        ];
-
-        session_regenerate_id(true);
-        echo json_encode(['success' => true, 'message' => 'Registo efetuado com sucesso! Redirecionando...']);
-    } catch (PDOException $e) {
-        echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
+        $imgPath = 'uploads/' . $fileName;
     }
 
-    $stmt = null;
-    exit;
+    try {
+        $stmt = $pdo->prepare("INSERT INTO USER (USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD, USER_STATUS, IMG_URL, CREATED_AT, UPDATED_AT)
+            VALUES (UUID_TO_BIN(UUID()), ?, ?, ?, 'A', ?, NOW(), NOW())");
+
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        $stmt->execute([$name, $email, $hashedPassword, $imgPath]);
+
+        $stmtUser = $pdo->prepare("SELECT USER_ID FROM USER WHERE USER_EMAIL = ?");
+        $stmtUser->execute([$email]);
+        $userRow = $stmtUser->fetch(PDO::FETCH_ASSOC);
+        $userId = $userRow['USER_ID'];
+
+        $stmtType = $pdo->prepare("SELECT TYPE_ID FROM USER_TYPE WHERE USER_TYPE = ?");
+        $stmtType->execute([$userType]);
+        $type = $stmtType->fetch(PDO::FETCH_ASSOC);
+
+        if ($type) {
+            $stmtUT = $pdo->prepare("INSERT INTO U_TYPE (USER_ID, TYPE_ID) VALUES (?, ?)");
+            $stmtUT->execute([$userId, $type['TYPE_ID']]);
+        }
+
+        $stmtInfo = $pdo->prepare("SELECT u.USER_ID, u.USER_NAME, u.USER_EMAIL, u.IMG_URL, ut2.USER_TYPE
+            FROM USER u
+            JOIN U_TYPE ut ON ut.USER_ID = u.USER_ID
+            JOIN USER_TYPE ut2 ON ut.TYPE_ID = ut2.TYPE_ID
+            WHERE u.USER_EMAIL = ?");
+        $stmtInfo->execute([$email]);
+        $user = $stmtInfo->fetch(PDO::FETCH_ASSOC);
+
+        $_SESSION['user'] = [
+            'user_id' => $user['USER_ID'],
+            'user_name' => $user['USER_NAME'],
+            'user_email' => $user['USER_EMAIL'],
+            'user_img' => $user['IMG_URL'],
+            'user_type' => $user['USER_TYPE']
+        ];
+
+        echo json_encode(['success' => true, 'message' => 'Conta criada com sucesso!']);
+        exit;
+
+    } catch (PDOException $e) {
+        echo json_encode(['success' => false, 'message' => 'Erro ao criar conta: ' . $e->getMessage()]);
+        exit;
+    }
 }
 ?>
 
+<!-- HTML do formulário -->
 <div class="form-container">
     <form id="register-form" class="form-box" enctype="multipart/form-data">
-        <h2>Registo</h2>
-        <input type="text" name="name" placeholder="Nome completo" required />
-        <input type="email" name="email" placeholder="Email" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <input type="password" name="confirm_password" placeholder="Confirmar Password" required />
-        <label>Imagem de perfil: <input type="file" name="profile_img" accept="image/*" /></label>
-        <label><input type="checkbox" id="terms" required /> Aceito os termos e condições</label>
+        <h2>Criar Conta</h2>
+        <input type="text" name="name" placeholder="Nome" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <input type="password" name="confirm_password" placeholder="Confirmar Password" required>
+        <input type="file" name="image" accept="image/*">
         <button type="submit">Registar</button>
         <div id="register-msg"></div>
-        <p>Já tem conta? <a href="?page=login">Entrar</a></p>
+        <p>Já tem conta? <a href="#" onclick="loadPage('login')">Entrar</a></p>
     </form>
 </div>
+
+<script>
+    document.getElementById('register-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        fetch('../includes/auth.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            const msgDiv = document.getElementById('register-msg');
+            msgDiv.textContent = data.message;
+            if (data.success) {
+                setTimeout(() => {
+                    loadPage('home');
+                }, 2000);
+            }
+        })
+        .catch(error => console.error('Erro:', error));
+    });

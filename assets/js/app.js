@@ -5,6 +5,12 @@
 // O setupPageScripts vai buscar o que é suposto apresentar.
 // ==========================
 function loadPage(page, search = '') {
+    const currentPage = new URLSearchParams(window.location.search).get('page');
+    if (currentPage === page && !search) {
+        setupPageScripts(page);
+        return;
+    }
+
     let url = 'pages/' + page + '.php';
     if (search) url += '?' + search;
 
@@ -22,6 +28,19 @@ function loadPage(page, search = '') {
             document.getElementById('content').innerHTML = '<h3>Página não encontrada.</h3>';
         });
 }
+
+function toast(msg) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => el.classList.add('visible'), 100);
+    setTimeout(() => {
+        el.classList.remove('visible');
+        setTimeout(() => el.remove(), 500);
+    }, 3000);
+}
+
 
 // ==========================
 // Atualiza a barra de navegação, mantendo a lógica do SPA, sem recarregar a página inteira.
