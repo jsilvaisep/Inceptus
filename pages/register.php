@@ -28,7 +28,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        // Lógica para carregar a imagem de perfil
         $imgPath = null;
         if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = 'uploads/';
@@ -49,10 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Criptografando a senha
         $hash = password_hash($password, PASSWORD_DEFAULT);
 
-        // Chama o procedimento armazenado para inserção do usuário
         $stmt = $pdo->prepare("CALL INSERT_USER(:name, :email, :password, :imgPath)");
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':email', $email);
@@ -62,11 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $userId = $pdo->lastInsertId();
 
-        // Atribui as variáveis de sessão
+       
         $_SESSION['user'] = [
             'user_id' => $userId,
             'user_name' => $name,
-            'user_type' => 'SUSER', // Tipo atribuído automaticamente pelo banco de dados
+            'user_type' => 'SUSER',
             'user_img' => $imgPath
         ];
 
@@ -81,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!-- Formulário de registro -->
+
 <div class="form-container">
     <form id="register-form" class="form-box" enctype="multipart/form-data">
         <h2>Registo</h2>

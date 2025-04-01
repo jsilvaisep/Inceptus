@@ -14,7 +14,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // Query para buscar o usuário sem buscar o USER_TYPE (já é atribuído na base de dados)
         $stmt = $pdo->prepare(
             "SELECT USER_ID, USER_NAME, USER_PASSWORD, IMG_URL FROM USER WHERE USER_EMAIL = ?"
         );
@@ -22,11 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['USER_PASSWORD'])) {
-            // Armazenar os dados do usuário na sessão
             $_SESSION['user'] = [
                 'user_id' => $user['USER_ID'],
                 'user_name' => $user['USER_NAME'],
-                'user_type' => 'SUSER',  // Definir um tipo fixo ou buscar dinamicamente da base
+                'user_type' => 'SUSER', 
                 'user_img' => $user['IMG_URL']
             ];
 
@@ -44,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!-- Formulário de login -->
 <div class="form-container">
     <form id="login-form" class="form-box">
         <h2>Login</h2>
