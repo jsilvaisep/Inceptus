@@ -8,7 +8,7 @@ function loadPage(page, search = '') {
     const currentPage = new URLSearchParams(window.location.search).get('page');
     if (currentPage === page && !search) {
         setupPageScripts(page);
-        return;
+        return; // Impede a chamada duplicada
     }
 
     let url = 'pages/' + page + '.php';
@@ -64,21 +64,23 @@ function closeModal() {
 // Para alternar entre mostrar todo o texto ou apenas um pouco.
 // Não será utilizado, mas deixo comentado caso seja necessário voltar a usar algo semelhante.
 // ==========================
-// function toggleDescription(button) {
-//     const container = button.closest('.product-description');
-//     const shortText = container.querySelector('.description-text');
-//     const fullText = container.querySelector('.full-description');
+/*
+function toggleDescription(button) {
+    const container = button.closest('.product-description');
+    const shortText = container.querySelector('.description-text');
+    const fullText = container.querySelector('.full-description');
 
-//     if (fullText.style.display === 'none') {
-//         shortText.style.display = 'none';
-//         fullText.style.display = 'block';
-//         button.textContent = 'Menos...';
-//     } else {
-//         shortText.style.display = 'block';
-//         fullText.style.display = 'none';
-//         button.textContent = 'Mais...';
-//     }
-// }
+    if (fullText.style.display === 'none') {
+        shortText.style.display = 'none';
+        fullText.style.display = 'block';
+        button.textContent = 'Menos...';
+    } else {
+        shortText.style.display = 'block';
+        fullText.style.display = 'none';
+        button.textContent = 'Mais...';
+    }
+}
+*/
 
 // ==========================
 // SPA: Scripts locais da página carregada
@@ -116,7 +118,6 @@ function setupPageScripts(page) {
                 loadWithFilters();
             } 
         }
-        
 
         if(tagSection) {
             tagSection.remove();
@@ -261,7 +262,6 @@ function setupPageScripts(page) {
                 loadWithFilters();
             }
         }
-        
 
         const toggleContent = document.querySelector('.filter-section.custom-toggle-wrapper');
 
@@ -530,56 +530,3 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ==========================
-// Banner de Notícias (News)
-// ==========================
-function initNewsCarousel() {
-    let currentNews = 0;
-    const slides = document.querySelectorAll('.news-slide');
-    if (!slides.length) return;
-
-    const showSlide = index => {
-        slides.forEach(s => s.classList.remove('active'));
-        slides[index].classList.add('active');
-    };
-
-    const nextSlide = () => {
-        currentNews = (currentNews + 1) % slides.length;
-        showSlide(currentNews);
-    };
-
-    const prevSlide = () => {
-        currentNews = (currentNews - 1 + slides.length) % slides.length;
-        showSlide(currentNews);
-    };
-
-    document.querySelector('.news-nav.next')?.addEventListener('click', nextSlide);
-    document.querySelector('.news-nav.prev')?.addEventListener('click', prevSlide);
-
-    let autoSlide = setInterval(nextSlide, 7000);
-    const container = document.querySelector('.news-carousel-container');
-    if (container) {
-        container.addEventListener('mouseenter', () => clearInterval(autoSlide));
-        container.addEventListener('mouseleave', () => autoSlide = setInterval(nextSlide, 7000));
-    }
-
-    slides.forEach(slide => {
-        const button = slide.querySelector('.read-more-btn');
-        if (button) {
-            button.addEventListener('click', () => {
-                const title = slide.dataset.title;
-                const content = slide.dataset.content;
-                const date = slide.dataset.date;
-                const img = slide.dataset.img;
-
-                document.getElementById("modal-title").innerText = title;
-                document.getElementById("modal-text").innerText = content;
-                document.getElementById("modal-date").innerText = '🕒 ' + date;
-                document.getElementById("modal-img").src = img;
-                document.getElementById("post-modal").style.display = "flex";
-            });
-        }
-    });
-
-    showSlide(currentNews);
-}
