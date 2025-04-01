@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(':product_description', $_POST['product_description']);
         $stmt->bindParam(':category_id', $_POST['category_id']);
         $company_id = "4ce516e6-0be9-11f0-b0d3-020017000d59";
-        $stmt->bindParam(':company_id', $company_id, PDO::PARAM_INT);
+        $stmt->bindParam(':company_id', $company_id); // , PDO::PARAM_INT
         
 
         $stmt->execute();
