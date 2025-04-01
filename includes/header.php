@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="assets/css/filter.css">
     <link rel="stylesheet" href="assets/css/produtos.css">
     <link rel="stylesheet" href="assets/css/empresas.css">
+    <link rel="stylesheet" href="assets/css/criarProdutos.css">
     <script src="assets/js/app.js" defer></script>
 </head>
 <body>

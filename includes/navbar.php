@@ -13,7 +13,6 @@
                 <li><a href="?page=empresas" class="nav-link">Empresas</a></li>
                 <li><a href="?page=noticias" class="nav-link">Notícias</a></li>
                 <li><a href="?page=warroom" class="nav-link">Warroom</a></li>
-                <li><a href="?page=admin/criarProdutos" class="nav-link">Cr</a></li>
 
                 <?php if (isset($_SESSION['user'])): ?>
                     <li class="user-dropdown">

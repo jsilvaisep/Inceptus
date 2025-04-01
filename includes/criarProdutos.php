@@ -38,18 +38,12 @@ try {
 
 ?>
 
-<!DOCTYPE html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Insert Product</title>
-    <link rel="stylesheet" href="assets/css/criarProdutos.css">
-    <script defer src="app.js"></script>
-</head>
-<body>
-    <div class="container">
+<!-- Floating modal container -->
+<div id="modalOverlay" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+        <button id="closeModal" class="close-btn">&times;</button>
         <h2>Novo Produto</h2>
-        <form id="productForm" action="/pages/admin/criarProdutos.php" method="POST">
+        <form id="productForm" action="pages/admin/criarProdutos.php" method="POST">
             <label for="product_name">Nome do Produto:</label>
             <input type="text" id="product_name" name="product_name" required>
 
@@ -60,13 +54,13 @@ try {
             <select id="category_id" name="category_id" required>
                 <option value="">Selecione a categoria</option>
                 <?php foreach ($categories as $category): ?>
-                    <option value="<?php echo $category['CATEGORY_ID']; ?>">
+                    <option value="<?php echo htmlspecialchars($category['CATEGORY_ID']); ?>">
                         <?php echo htmlspecialchars($category['CATEGORY_NAME']); ?>
                     </option>
                 <?php endforeach; ?>
             </select>
+
             <button type="submit">Submit</button>
         </form>
     </div>
-</body>
-</html>
+</div>

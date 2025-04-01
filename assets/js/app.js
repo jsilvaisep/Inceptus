@@ -23,6 +23,19 @@ function loadPage(page, search = '') {
         });
 }
 
+function criarProduto(){
+    document.getElementById("openModal").addEventListener("click", function() {
+        document.getElementById("modalOverlay").style.display = "flex";
+    });
+    
+    document.getElementById("closeModal").addEventListener("click", function() {
+        document.getElementById("modalOverlay").style.display = "none";
+    });
+    
+}
+
+
+//Recebe o form e verifica os campos ao criar Produto
 document.addEventListener("submit", function () {
         let name = document.getElementById("product_name").value.trim();
         let description = document.getElementById("product_description").value.trim();
