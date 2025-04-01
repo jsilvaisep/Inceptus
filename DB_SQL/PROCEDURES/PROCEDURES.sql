@@ -124,6 +124,8 @@ BEGIN
 	VALUES (UUID(), V_USER_NAME, V_USER_EMAIL, V_USER_PASSWORD, V_IMG_URL);
 END
 
+DROP PROCEDURE INSERT_USER;
+
 /* 
 ####################################
 ####### CRIAR EMPRESAS #######################################################################################################################################################################
@@ -134,9 +136,10 @@ CREATE PROCEDURE INSERT_COMPANY (IN V_COMPANY_NAME VARCHAR(255), IN V_COMPANY_EM
 BEGIN
 	INSERT INTO USER 
 	(USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD, TYPE_ID, IMG_URL) 
-	VALUES (UUID(), V_COMPANY_NAME, V_COMPANY_EMAIL, V_COMPANY_PASSWORD, '50770bdc-0be6-11f0-b0d3-020017000d59', V_IMG_URL);
+	VALUES (UUID(), V_COMPANY_NAME, V_COMPANY_EMAIL, V_COMPANY_PASSWORD, V_IMG_URL);
 END
 
+DROP PROCEDURE INSERT_COMPANY;
 /* 
 ####################################
 ####### CRIAR PRODUTO #######################################################################################################################################################################
