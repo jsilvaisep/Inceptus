@@ -14,47 +14,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
+        // Query para buscar o usuário sem buscar o USER_TYPE (já é atribuído na base de dados)
         $stmt = $pdo->prepare(
-            "SELECT u.USER_ID, u.USER_NAME, u.USER_PASSWORD, u.USER_EMAIL, u.IMG_URL, ut.TYPE_ID, ut2.USER_TYPE FROM USER u 
-            INNER JOIN U_TYPE ut ON ut.USER_ID = u.USER_ID 
-            INNER JOIN USER_TYPE ut2 ON ut.TYPE_ID = ut2.TYPE_ID
-            WHERE USER_EMAIL = ?");
+            "SELECT USER_ID, USER_NAME, USER_PASSWORD, IMG_URL FROM USER WHERE USER_EMAIL = ?"
+        );
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['USER_PASSWORD'])) {
+            // Armazenar os dados do usuário na sessão
             $_SESSION['user'] = [
                 'user_id' => $user['USER_ID'],
                 'user_name' => $user['USER_NAME'],
-                //'user_type' => getUserTypeName($pdo, $user['TYPE_ID']),
-                'user_type' => $user['USER_TYPE'],
+                'user_type' => 'SUSER',  // Definir um tipo fixo ou buscar dinamicamente da base
                 'user_img' => $user['IMG_URL']
             ];
 
             session_regenerate_id(true);
             echo json_encode(['success' => true, 'message' => 'Login efetuado com sucesso!']);
-			$stmt = null;
         } else {
             echo json_encode(['success' => false, 'message' => 'Credenciais inválidas.']);
-			$stmt = null;
         }
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
-		$stmt = null;
     }
 
     $stmt = null;
     exit;
 }
-/*
-function getUserTypeName($pdo, $typeId) {
-    $stmt = $pdo->prepare("SELECT USER_TYPE FROM USER_TYPE WHERE TYPE_ID = ?");
-    $stmt->execute([$typeId]);
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    return $result ? $result['USER_TYPE'] : null;
-}*/
 ?>
 
+<!-- Formulário de login -->
 <div class="form-container">
     <form id="login-form" class="form-box">
         <h2>Login</h2>

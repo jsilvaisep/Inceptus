@@ -24,13 +24,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $check = $pdo->prepare("SELECT USER_ID FROM USER WHERE USER_EMAIL = ?");
         $check->execute([$email]);
         if ($check->fetch()) {
-            echo json_encode(['success' => true, 'message' => 'Conta já existente. Redirecionando para login...']);
+            echo json_encode(['success' => false, 'message' => 'Conta já existente.']);
             exit;
         }
 
+        // Lógica para carregar a imagem de perfil
         $imgPath = null;
         if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '/uploads/';
+            $uploadDir = 'uploads/';
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
             $filename = uniqid() . '_' . basename($_FILES['profile_img']['name']);
             $targetPath = $uploadDir . $filename;
@@ -47,23 +48,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $imgPath = 'uploads/' . $filename;
             }
         }
-        /* TODO workarround para inserir o caminho das imagens na BD No entanto não grava a imagem na pasta */
-        $imgPathteste = 'uploads/' . $filename;
 
+        // Criptografando a senha
         $hash = password_hash($password, PASSWORD_DEFAULT);
+
+        // Chama o procedimento armazenado para inserção do usuário
         $stmt = $pdo->prepare("CALL INSERT_USER(:name, :email, :password, :imgPath)");
         $stmt->bindParam(':name', $name);
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $hash);
-        $stmt->bindParam(':imgPath', $imgPathteste);
+        $stmt->bindParam(':imgPath', $imgPath);
         $stmt->execute();
 
         $userId = $pdo->lastInsertId();
 
+        // Atribui as variáveis de sessão
         $_SESSION['user'] = [
             'user_id' => $userId,
             'user_name' => $name,
-            'user_type' => 'SUSER',
+            'user_type' => 'SUSER', // Tipo atribuído automaticamente pelo banco de dados
             'user_img' => $imgPath
         ];
 
@@ -78,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
+<!-- Formulário de registro -->
 <div class="form-container">
     <form id="register-form" class="form-box" enctype="multipart/form-data">
         <h2>Registo</h2>
