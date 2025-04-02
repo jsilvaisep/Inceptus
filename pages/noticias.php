@@ -23,8 +23,10 @@ include '../includes/db.php';
                         <div class="news-info">
                             <h3><?php echo htmlspecialchars($row['COMPANY_NAME']); ?></h3><br>
                             <p><?php echo htmlspecialchars($row['POST_CONTENT']); ?></p>
-                            <button onclick="enviarResposta('<?php echo htmlspecialchars($row['POST_ID']); ?>')"
-                                class="visit-button">Responda a Notícia</button>
+                            <button onclick="enviarResposta('<?php echo htmlspecialchars($row['POST_ID'], ENT_QUOTES, 'UTF-8'); ?>')">
+    Responda a Notícia
+</button>
+
                             <input type="text" id="post_response<?php echo htmlspecialchars($row['POST_ID']); ?>"
                                 class="post_response" placeholder="Escreva uma resposta...">
 
@@ -83,29 +85,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_id'], $_POST['re
     }
 }
 ?>
-<!-- <script>
-    function enviarResposta(postId) {
-        const resposta = document.getElementById("post_response_" + postId).value;
-
-        if (resposta.trim() !== "") {
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        //alert(resposta);
-                        document.getElementById("post_response_" + postId).value = "";
-                    } else {
-                        alert("Erro ao enviar resposta.");
-                    }
-                }
-            };
-
-            xhr.send("post_id=" + encodeURIComponent(postId) + "&resposta=" + encodeURIComponent(resposta));
-        } else {
-            alert("Por favor, escreva uma resposta.");
-        }
-    }
-</script>  -->
