@@ -595,7 +595,7 @@ function initNewsCarousel() {
 
 // noticias
 function enviarResposta(postId) {
-    const resposta = document.getElementById("post_response_" + postId).value;
+    const resposta = document.getElementById("post_response" + postId).value;
 
     if (resposta.trim() !== "") {
         const xhr = new XMLHttpRequest();
@@ -606,7 +606,7 @@ function enviarResposta(postId) {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     //alert(resposta);
-                    document.getElementById("post_response_" + postId).value = "";
+                    document.getElementById("post_response" + postId).value = "";
                 } else {
                     alert("Erro ao enviar resposta.");
                 }
