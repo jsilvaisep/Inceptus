@@ -24,13 +24,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $check = $pdo->prepare("SELECT USER_ID FROM USER WHERE USER_EMAIL = ?");
         $check->execute([$email]);
         if ($check->fetch()) {
-            echo json_encode(['success' => false, 'message' => 'Conta já existente.']);
+            echo json_encode(['success' => true, 'message' => 'Conta já existente. Redirecionando para login...']);
             exit;
         }
 
         $imgPath = null;
         if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = 'uploads/';
+            $uploadDir = '../uploads/';
             if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
             $filename = uniqid() . '_' . basename($_FILES['profile_img']['name']);
             $targetPath = $uploadDir . $filename;
@@ -48,48 +48,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        $hash = password_hash($password, PASSWORD_DEFAULT);
+        $user_id = bin2hex(random_bytes(18));
+        $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-        $stmt = $pdo->prepare("CALL INSERT_USER(:name, :email, :password, :imgPath)");
-        $stmt->bindParam(':name', $name);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', $hash);
-        $stmt->bindParam(':imgPath', $imgPath);
-        $stmt->execute();
+        $type_stmt = $pdo->prepare("SELECT TYPE_ID FROM USER_TYPE WHERE USER_TYPE = 'SUSER'");
+        $type_stmt->execute();
+        $type_id = $type_stmt->fetchColumn();
 
-        $userId = $pdo->lastInsertId();
+        if (!$type_id) {
+            echo json_encode(['success' => false, 'message' => 'Tipo de utilizador SUSER não encontrado.']);
+            exit;
+        }
 
-       
+        $stmt = $pdo->prepare("INSERT INTO USER (USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD, USER_STATUS, IMG_URL)
+                               VALUES (UNHEX(?), ?, ?, ?, 'A', ?)");
+        $stmt->execute([$user_id, $name, $email, $password_hash, $imgPath]);
+
+        $stmt2 = $pdo->prepare("INSERT INTO U_TYPE (TYPE_ID, USER_ID) VALUES (?, UNHEX(?))");
+        $stmt2->execute([$type_id, $user_id]);
+
         $_SESSION['user'] = [
-            'user_id' => $userId,
+            'user_id' => $user_id,
             'user_name' => $name,
-            'user_type' => 'SUSER',
-            'user_img' => $imgPath
+            'user_email' => $email,
+            'img_url' => $imgPath,
+            'type_id' => $type_id
         ];
 
-        session_regenerate_id(true);
-        echo json_encode(['success' => true, 'message' => 'Registo efetuado com sucesso! Redirecionando...']);
+        echo json_encode(['success' => true, 'message' => 'Conta criada com sucesso.']);
+        exit;
     } catch (PDOException $e) {
+        http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
+        exit;
     }
-
-    $stmt = null;
-    exit;
 }
 ?>
 
-
 <div class="form-container">
-    <form id="register-form" class="form-box" enctype="multipart/form-data">
-        <h2>Registo</h2>
-        <input type="text" name="name" placeholder="Nome completo" required />
-        <input type="email" name="email" placeholder="Email" required />
-        <input type="password" name="password" placeholder="Password" required />
-        <input type="password" name="confirm_password" placeholder="Confirmar Password" required />
-        <label>Imagem de perfil: <input type="file" name="profile_img" accept="image/*" /></label>
-        <label><input type="checkbox" id="terms" required /> Aceito os termos e condições</label>
-        <button type="submit">Registar</button>
-        <div id="register-msg"></div>
-        <p>Já tem conta? <a href="?page=login">Entrar</a></p>
+    <form class="form-box" id="register-form" method="POST" enctype="multipart/form-data">
+        <h2>Criação de Conta</h2>
+        <label for="name">Nome:</label>
+        <input type="text" name="name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" required>
+
+        <label for="password">Palavra-passe:</label>
+        <input type="password" name="password" required>
+
+        <label for="confirm_password">Confirmar Palavra-passe:</label>
+        <input type="password" name="confirm_password" required>
+
+        <label for="profile_img">Foto de Perfil (opcional):</label>
+        <input type="file" name="profile_img" accept="image/*">
+
+        <button type="submit">Criar Conta</button>
+        <p id="register-msg" class="msg" style="margin-top: 10px;"></p>
     </form>
 </div>
