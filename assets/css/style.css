@@ -345,21 +345,28 @@ footer {
 
 .dropdown-menu {
     position: absolute;
-    top: 110%;
+    top: 120%; /* distância mais estável */
     right: 0;
     min-width: 180px;
     background-color: #fff;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-    display: none;
+    display: flex;
     flex-direction: column;
     padding: 8px 0;
     z-index: 1000;
-    animation: fadeIn 0.2s ease-in-out;
+
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: all 0.2s ease;
 }
 
-.user-dropdown:hover .dropdown-menu {
-    display: flex;
+.user-dropdown:hover .dropdown-menu,
+.user-dropdown .dropdown-menu:hover {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 .dropdown-menu a {

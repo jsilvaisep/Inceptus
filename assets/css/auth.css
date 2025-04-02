@@ -1,43 +1,96 @@
-.auth-container {
+.auth-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 70vh;
+  min-height: 90vh;
+  background-color: #f5f6fa;
 }
+
 .auth-box {
   background: #fff;
   padding: 40px;
-  border-radius: 10px;
-  width: 350px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 420px;
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
+
 .auth-box h2 {
-  text-align: center;
   margin-bottom: 20px;
+  color: #333;
+  text-align: center;
 }
-.auth-box input, .auth-box select {
-  width: 100%;
+
+.auth-toggle {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  background: #222;
+  border-radius: 12px;
+  padding: 6px;
+}
+
+.auth-toggle button {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  background: transparent;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.auth-toggle button.active {
+  background-color: #be3144;
+}
+
+.auth-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-box input,
+.auth-box textarea,
+.auth-box select {
   padding: 12px;
-  margin: 10px 0;
-  border-radius: 6px;
+  border-radius: 8px;
   border: 1px solid #ccc;
-}
-.auth-box button {
+  font-size: 14px;
   width: 100%;
-  padding: 12px;
+}
+
+.auth-box button[type="submit"] {
   background-color: #be3144;
   color: white;
-  font-weight: bold;
+  padding: 12px;
   border: none;
-  border-radius: 6px;
-  cursor: pointer;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background 0.2s;
 }
-.auth-box button:hover {
+
+.auth-box button[type="submit"]:hover {
   background-color: #d25062;
 }
+
 .auth-box p {
-  margin-top: 15px;
+  margin-top: 10px;
+  font-size: 14px;
   text-align: center;
 }
+
+.auth-box a {
+  color: #be3144;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.auth-box a:hover {
+  text-decoration: underline;
+}
+
 .success { color: green; text-align: center; }
 .error { color: red; text-align: center; }
