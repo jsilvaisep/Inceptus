@@ -3,17 +3,20 @@ session_start();
 include 'db.php';
 
 $userName = '';
-$userType = '';
 $userImg = 'assets/img/default-user.png';
+$userType = '';
 $isAdmin = false;
 
 if (isset($_SESSION['user'])) {
-    $userId = $_SESSION['user']['id'];
-    $userName = $_SESSION['user']['name'] ?? '';
-    $userImg = $_SESSION['user']['img'] ?? $userImg;
-    $userType = 'SUSER';
+    $userId = $_SESSION['user']['user_id'] ?? null;
+    $userName = $_SESSION['user']['user_name'] ?? '';
+    $imgFromSession = $_SESSION['user']['img_url'] ?? '';
 
-    // Verifica se é ADMIN na tabela U_TYPE
+    if (!empty($imgFromSession) && file_exists($imgFromSession)) {
+        $userImg = $imgFromSession;
+    }
+
+    // Verifica se é ADMIN
     $stmt = $pdo->prepare("
         SELECT ut.TYPE_ID, t.USER_TYPE 
         FROM U_TYPE ut
@@ -22,16 +25,16 @@ if (isset($_SESSION['user'])) {
     ");
     $stmt->execute([$userId]);
     $typeData = $stmt->fetch(PDO::FETCH_ASSOC);
+
     if ($typeData && $typeData['USER_TYPE'] === 'ADMIN') {
         $isAdmin = true;
         $userType = 'ADMIN';
+    } else {
+        $userType = 'SUSER';
     }
-} elseif (isset($_SESSION['company'])) {
-    $userName = $_SESSION['company']['name'] ?? '';
-    $userImg = $_SESSION['company']['img'] ?? $userImg;
-    $userType = 'COMPANY';
 }
 ?>
+
 <header class="main-header">
   <div class="container">
     <div class="logo">
@@ -59,16 +62,14 @@ if (isset($_SESSION['user'])) {
           </button>
           <div class="dropdown-menu">
             <a href="?page=profile">👤 Perfil</a>
-
             <?php if ($isAdmin): ?>
               <a href="?page=admin/dashboard">⚙️ Dashboard</a>
             <?php endif; ?>
-
             <a href="#" id="logout-link">🚪 Logout</a>
           </div>
         </li>
         <?php else: ?>
-          <li><a href="?page=login">Login</a></li>
+        <li><a href="?page=login" class="login-btn">Login</a></li>
         <?php endif; ?>
       </ul>
     </nav>
