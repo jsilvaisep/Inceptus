@@ -11,9 +11,8 @@ SELECT * FROM SEC_RST_CODE;
 SELECT * FROM TAG;
 SELECT * FROM USER;
 SELECT * FROM U_TYPE ; -- 4cc2f324-0be9-11f0-b0d3-020017000d59
-SELECT * FROM C_TYPE ;
 SELECT * FROM USER_TYPE;
-SELECT * FROM C_TYPE ct ;
+
 
 UPDATE COMPANY c SET COMPANY_STATUS = 'A';
 UPDATE PRODUCT p SET PRODUCT_STATUS = 'A';
@@ -38,5 +37,11 @@ INNER JOIN USER_TYPE ut2 ON ut.TYPE_ID = ut2.TYPE_ID
 
 call insert_user ('teste', 'e@e.pt', 'password', '/img_path');
 
+SELECT c.*, u.USER_NAME FROM COMPANY c
+                                INNER JOIN USER u ON u.USER_ID = c.USER_ID
+                                WHERE COMPANY_STATUS = 'A' 
+
+
+SELECT COUNT(*) FROM COMPANY c ;
 
 
