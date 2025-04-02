@@ -23,6 +23,7 @@ $maxViews = isset($_GET['max_views']) ? (int) $_GET['max_views'] : null;
 $page = isset($_GET['pg']) ? max(1, (int)$_GET['pg']) : 1;
 $perPage = 12;
 $offset = ($page - 1) * $perPage;
+$tags = isset($_GET['tags']) ? array_filter(array_map('trim', explode(',', $_GET['tags']))) : []; // array de strings
 
 // Modal de empresa
 if (isset($_GET['modal']) && isset($_GET['id'])) {
@@ -95,7 +96,10 @@ if (isset($_COOKIE['stars'])) {
 }
 
 $baseQuery = "FROM COMPANY 
+                LEFT JOIN TAG_COMPANY ON COMPANY.COMPANY_ID = TAG_COMPANY.COMPANY_ID
+                LEFT JOIN TAG ON TAG_COMPANY.TAG_ID = TAG.TAG_ID
                 WHERE COMPANY.COMPANY_STATUS = 'A' AND COMPANY.COMPANY_NAME LIKE ?";
+
 $params = [$searchTerm];
 
 if (!is_null($minViews) && !is_null($maxViews) && $minViews > 0 && $maxViews > $minViews) {
@@ -108,6 +112,17 @@ if ($rank > 0) {
     $baseQuery .= " AND COMPANY.COMPANY_RANK >= ? AND COMPANY.COMPANY_RANK < ?";
     $params[] = $rank;
     $params[] = $rank + 1;
+}
+
+if($tags && count($tags) > 0) {
+    $baseQuery .= " AND EXISTS (
+                    SELECT 1 
+                    FROM TAG_COMPANY tc2 
+                    INNER JOIN TAG t2 ON tc2.TAG_ID = t2.TAG_ID 
+                    WHERE tc2.COMPANY_ID = COMPANY.COMPANY_ID 
+                      AND t2.TAG_NAME IN (" . implode(',', array_fill(0, count($tags), '?')) . ")
+                )";
+    $params = array_merge($params, $tags);
 }
 
 $totalStmt = $pdo->prepare("SELECT COUNT(*) " . $baseQuery);
@@ -123,6 +138,7 @@ foreach ($params as $i => $param) {
 }
 $stmt->bindValue(count($params) + 1, $perPage, PDO::PARAM_INT);
 $stmt->bindValue(count($params) + 2, $offset, PDO::PARAM_INT);
+
 $stmt->execute();
 $companies = $stmt->fetchAll();
 ?>

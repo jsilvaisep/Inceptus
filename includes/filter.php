@@ -54,8 +54,7 @@ $tags = isset($_GET['tags']) ? explode(',', $_GET['tags']) : []; // array de str
     <div class="filter-section tags">
         <h3>Tags</h3>
         <div class="tag-filter">
-         <input id="tags" name="tags" placeholder="Escreve para procurar tags..." />
-
+            <input type="text" id="tags" name="tags" placeholder="Escreve para procurar tags..." />
         </div>
     </div>
 </div>

@@ -289,17 +289,51 @@ function setupPageScripts(page) {
         const minViewsInput = document.getElementById('min-views');
         const maxViewsInput = document.getElementById('max-views');
 
+        //TAGS
+        const tagInput = document.getElementById('tags');
+        if (tagInput) {
+            var tagify = new Tagify(tagInput);
+
+            let initialTags = new URLSearchParams(window.location.search).get('tags');
+            if (initialTags) {
+                let tagArray = initialTags.split(',').map(t => ({ value: t.trim() }));
+                tagify.addTags(tagArray);
+            }
+
+            tagify.on('add', onTagChange);
+            tagify.on('remove', onTagChange);
+        }
+
+        function onTagChange(e) {
+            let tagsData = tagify.value;
+            let tagStr = tagsData.map(tag => tag.value).join(',');
+
+            tags = tagStr;
+
+            loadWithFilters();
+        }
+
+        let tags = new URLSearchParams(window.location.search).get('tags');
+
+        console.log(tags);
+
         let minViews = new URLSearchParams(window.location.search).get('min_views');
         let maxViews = new URLSearchParams(window.location.search).get('max_views');
 
-        // Preencher os inputs se vierem da URL
         if (minViewsInput && maxViewsInput) {
             if (minViews) minViewsInput.value = minViews;
             if (maxViews) maxViewsInput.value = maxViews;
 
-            // Adiciona listeners aos inputs
             minViewsInput.addEventListener('input', triggerViewsFilter);
             maxViewsInput.addEventListener('input', triggerViewsFilter);
+        }
+
+        if (tags) {
+            tagInput.value = tags;
+            tagInput.addEventListener('input', () => {
+                tags = tagInput.value;
+                loadWithFilters();
+            });
         }
 
         function triggerViewsFilter() {
@@ -312,7 +346,6 @@ function setupPageScripts(page) {
                 loadWithFilters();
             }
         }
-        
 
         const toggleContent = document.querySelector('.filter-section.custom-toggle-wrapper');
 
@@ -410,11 +443,10 @@ function setupPageScripts(page) {
                 url.set('min_views', minViews);
                 url.set('max_views', maxViews);
             }
-        
+            if(tags) url.set('tags', tags);
             url.set('pg', '1');
             loadPage('empresas', url.toString());
         }
-
     }
 
     // Clique em cartão → Modal
