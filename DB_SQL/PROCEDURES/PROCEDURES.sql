@@ -148,3 +148,14 @@ BEGIN
 	INSERT INTO PRODUCT (PRODUCT_ID, PRODUCT_NAME, PRODUCT_DESCRIPTION, CATEGORY_ID, COMPANY_ID, IMG_URL)
 	VALUES (UUID(), V_PRODUCT_NAME, V_PRODUCT_DESCRIPTION, V_CATEGORY_ID, V_COMPANY_ID, V_IMG_URL);
 END
+
+/* 
+####################################
+####### CRIAR RESPOSTA A POST #######################################################################################################################################################################
+####################################
+*/
+CREATE PROCEDURE INSERT_POST_EXT (IN V_POST_ID VARCHAR(255), IN V_POST_EXT_CONTENT VARCHAR(1000))
+BEGIN
+	INSERT INTO DB_INCEPTUS_PP.POST_EXT	(POST_EXT_ID, POST_ID, POST_EXT_CONTENT)
+	VALUES(UUID(), V_POST_ID , V_POST_EXT_CONTENT);
+END
