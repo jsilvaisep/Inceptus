@@ -36,9 +36,22 @@ function criarProduto(){
     
 }
 
-
 //Recebe o form e verifica os campos ao criar Produto
-document.addEventListener("submit", function () {
+document.addEventListener("submit", function (event) {
+    form = document.getElementById("productForm");
+    let formData = new FormData(form);
+
+    fetch('/includes/criarProdutos.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text()) // Handle response
+    .then(data => {
+        console.log("Success:", data);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+    });
     document.getElementById("product_images").addEventListener("change", function (event) {
         const previewContainer = document.getElementById("preview-container");
         previewContainer.innerHTML = "";

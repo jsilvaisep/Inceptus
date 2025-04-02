@@ -57,7 +57,7 @@
 .modal-content input:focus,
 .modal-content textarea:focus,
 .modal-content select:focus {
-    border-color: #2e6eea;
+    border-color: #be3144;
     box-shadow: 0px 0px 5px rgba(46, 110, 234, 0.5);
 }
 
@@ -70,7 +70,7 @@
 .modal-content button {
     width: 100%;
     padding: 12px;
-    background-color: #2e6eea;
+    background-color: #be3144;
     color: white;
     border: none;
     border-radius: 8px;
@@ -80,7 +80,7 @@
     transition: background-color 0.3s;
 }
 .modal-content button:hover {
-    background-color: #244fc3;
+    background-color: #be3144;
 }
 
 /* Fade-in animation */
@@ -109,7 +109,7 @@
   /* Open modal button */
   .open-modal-btn {
     padding: 12px 20px;
-    background-color: #2e6eea;
+    background-color: #be3144;
     color: white;
     border: none;
     border-radius: 5px;
@@ -120,6 +120,6 @@
   }
   
   .open-modal-btn:hover {
-    background-color: #244fc3;
+    background-color: #be3144;
   }
   

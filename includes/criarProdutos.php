@@ -73,7 +73,7 @@ try {
     <div class="modal-content">
         <button id="closeModal" class="close-btn">&times;</button>
         <h2>Novo Produto</h2>
-        <form id="productForm" action="/includes/criarProdutos.php" method="POST" enctype="multipart/form-data">
+        <form id="productForm" method="POST" enctype="multipart/form-data">
             <label for="product_name">Nome do Produto:</label>
             <input type="text" id="product_name" name="product_name" required>
 
