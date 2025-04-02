@@ -27,8 +27,7 @@ $offset = ($page - 1) * $perPage;
 // Modal de empresa
 if (isset($_GET['modal']) && isset($_GET['id'])) {
     $companyId = $_GET['id'];
-    $stmt = $pdo->prepare("SELECT c.*, u.USER_NAME FROM COMPANY 
-                                INNER JOIN USER u ON u.USER_ID = COMPANY.USER_ID
+    $stmt = $pdo->prepare("SELECT * FROM COMPANY 
                                 WHERE COMPANY_STATUS = 'A' AND COMPANY_ID = ?");
     $stmt->execute([$companyId]);
     $company = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -48,10 +47,10 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
     echo '<div class="modal-box show">';
     echo '<button class="modal-close" onclick="closeModal()">&times;</button>';
     echo '<div class="modal-content">';
-    echo '<img src="' . htmlspecialchars($company['IMG_URL']) . '" alt="' . htmlspecialchars($company['USER_NAME']) . '" class="modal-img">';
+    echo '<img src="' . htmlspecialchars($company['IMG_URL']) . '" alt="' . htmlspecialchars($company['COMPANY_NAME']) . '" class="modal-img">';
 
     echo '<div class="modal-header">';
-    echo '<div><h2>' . htmlspecialchars($company['USER_NAME']) . '</h2></div>';
+    echo '<div><h2>' . htmlspecialchars($company['COMPANY_NAME']) . '</h2></div>';
     echo '<div class="header-actions">';
     echo '<a href="' . $siteUrl . '" class="visit-button" target="_blank" rel="noopener noreferrer">Visite</a>';
     echo '</div></div>';
@@ -64,7 +63,7 @@ if (isset($_GET['modal']) && isset($_GET['id'])) {
     echo '<p>' . nl2br(htmlspecialchars($company['COMPANY_DESCRIPTION'])) . '</p>';
     echo '</div>';
 
-    echo '<p class="products-title"><strong>Produtos lançados pela ' . htmlspecialchars($company['USER_NAME']) . ':</strong></p>';
+    echo '<p class="products-title"><strong>Produtos lançados pela ' . htmlspecialchars($company['COMPANY_NAME']) . ':</strong></p>';
 
     // Selecionar produtos reais da BD (para já com imagens mock locais e link vazio)
     $sql = "SELECT PRODUCT_ID, PRODUCT_NAME, IMG_URL FROM PRODUCT WHERE COMPANY_ID = ? LIMIT 3";
@@ -96,8 +95,7 @@ if (isset($_COOKIE['stars'])) {
 }
 
 $baseQuery = "FROM COMPANY 
-                INNER JOIN USER u ON u.USER_ID = COMPANY.USER_ID
-                WHERE COMPANY.COMPANY_STATUS = 'A' AND u.USER_NAME LIKE ?";
+                WHERE COMPANY.COMPANY_STATUS = 'A' AND COMPANY.COMPANY_NAME LIKE ?";
 $params = [$searchTerm];
 
 if (!is_null($minViews) && !is_null($maxViews) && $minViews > 0 && $maxViews > $minViews) {
@@ -149,9 +147,9 @@ $companies = $stmt->fetchAll();
             <div class="company-grid">
                 <?php foreach ($companies as $company): ?>
                     <div class="company-card clickable-card" data-id="<?= $company['COMPANY_ID'] ?>">
-                        <img src="<?= htmlspecialchars($company['IMG_URL']) ?>" alt="<?= htmlspecialchars($company['USER_NAME']) ?>" class="company-img">
+                        <img src="<?= htmlspecialchars($company['IMG_URL']) ?>" alt="<?= htmlspecialchars($company['COMPANY_NAME']) ?>" class="company-img">
                         <div class="company-info">
-                            <h3><?= htmlspecialchars($company['USER_NAME']) ?></h3>
+                            <h3><?= htmlspecialchars($company['COMPANY_NAME']) ?></h3>
                             <p><?= htmlspecialchars($company['COMPANY_DESCRIPTION']) ?></p>
                         </div>
                     </div>

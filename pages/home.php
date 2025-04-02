@@ -54,7 +54,7 @@
                     <div class='card-content'>
                         <img src='{$row['IMG_URL']}' class='card-image'>
                         <div>
-                            <strong>{$row['USER_NAME']}</strong><br>
+                            <strong>{$row['PRODUCT_NAME']}</strong><br>
                             <small>{$row['PRODUCT_DESCRIPTION']}</small>
                         </div>
                     </div>
@@ -89,7 +89,7 @@
                     <div class='card-content'>
                         <img src='{$row['IMG_URL']}' class='card-image'>
                         <div>
-                            <strong>{$row['USER_NAME']}</strong><br>
+                            <strong>{$row['COMPANY_NAME']}</strong><br>
                             <small>{$row['COMPANY_DESCRIPTION']}</small>
                         </div>
                     </div>
