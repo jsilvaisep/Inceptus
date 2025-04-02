@@ -1,4 +1,5 @@
 <?php
+
 include '../includes/db.php';
 include '../includes/criarProdutos.php';
 
@@ -105,8 +106,6 @@ try {
     $categories = [];
 }
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    echo 'olaaaaaaa';
-    sleep(5);
     try {
         $conn = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8", $user, $pass);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -143,9 +142,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div id="search-results" class="search-results-box"></div>
             </form>
         </div>
-    <!-- Button to open the modal -->
-<button id="openModal" class="open-modal-btn" onclick="criarProduto()">Novo Produto</button>
-
+<?php
+if (isset($_SESSION['user'])) {
+    if ($_SESSION['user']['user_type'] === 'COMPANY') {
+        echo '<button id="openModal" class="open-modal-btn" onclick="criarProduto()">Novo Produto</button>';
+    } 
+}
+?>
 
 
 
