@@ -6,6 +6,7 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 999;
 }
+
 .modal-box {
     position: fixed;
     top: 50%; left: 50%;
@@ -19,6 +20,7 @@
     z-index: 1000;
     animation: fadeIn 0.3s ease;
 }
+
 .modal-close {
     position: absolute;
     top: 10px;
@@ -29,6 +31,7 @@
     cursor: pointer;
     color: #be3144;
 }
+
 .modal-content img.modal-img {
     width: 100%;
     height: auto;
@@ -86,7 +89,6 @@
     line-height: 1.5;
 }
 
-
 .modal-content h2 {
     margin: 0 0 10px;
     color: #be3144;
@@ -123,7 +125,6 @@
     margin-top: 30px;
 }
 
-/* Cartões das empresas */
 .company-card {
     background-color: white;
     border-radius: 12px;
@@ -143,7 +144,7 @@
 .company-img {
     width: 100%;
     height: 150px;
-    object-fit: contain !important; 
+    object-fit: contain !important;
     object-position: center;
     border-bottom: 2px solid #be3144;
     display: block;
@@ -163,6 +164,28 @@
     margin-top: 8px;
     font-size: 14px;
     color: #555;
+}
+
+.product-list {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 25px;
+    margin-bottom: 30px;
+}
+
+.product-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.2s;
+    border: 2px solid #dcdcdc;
+}
+
+.product-item img:hover {
+    transform: scale(1.05);
+    border-color: #be3144;
 }
 
 @keyframes fadeIn {
