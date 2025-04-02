@@ -370,6 +370,7 @@ function setupPageScripts(page) {
             url.set('pg', '1');
             loadPage('empresas', url.toString());
         }
+
     }
 
     // Clique em cartão → Modal
@@ -590,6 +591,7 @@ function initNewsCarousel() {
 
     showSlide(currentNews);
 }
+
 
 // noticias
 function enviarResposta(postId) {
