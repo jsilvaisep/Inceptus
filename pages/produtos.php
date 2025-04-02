@@ -153,8 +153,6 @@ if (isset($_SESSION['user'])) {
 }
 ?>
 
-
-
         <?php if (count($products) > 0): ?>
             <div class="product-grid">
                 <?php foreach ($products as $product): ?>
