@@ -14,18 +14,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        $stmt = $pdo->prepare(
-            "SELECT USER_ID, USER_NAME, USER_PASSWORD, IMG_URL FROM USER WHERE USER_EMAIL = ?"
-        );
+        // Obter dados do utilizador
+        $stmt = $pdo->prepare("SELECT * FROM USER WHERE USER_EMAIL = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['USER_PASSWORD'])) {
+            // Obter o TYPE_ID real via tabela U_TYPE
+            $stmtType = $pdo->prepare("SELECT T.TYPE_ID, UT.USER_TYPE 
+                                       FROM U_TYPE T 
+                                       JOIN USER_TYPE UT ON T.TYPE_ID = UT.TYPE_ID 
+                                       WHERE T.USER_ID = ?");
+            $stmtType->execute([$user['USER_ID']]);
+            $typeInfo = $stmtType->fetch(PDO::FETCH_ASSOC);
+
             $_SESSION['user'] = [
                 'user_id' => $user['USER_ID'],
                 'user_name' => $user['USER_NAME'],
-                'user_type' => 'SUSER', 
-                'user_img' => $user['IMG_URL']
+                'user_email' => $user['USER_EMAIL'],
+                'type_id' => $typeInfo['TYPE_ID'] ?? null,
+                'user_type' => $typeInfo['USER_TYPE'] ?? null,
+                'img_url' => $user['IMG_URL']
             ];
 
             session_regenerate_id(true);
@@ -34,21 +43,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['success' => false, 'message' => 'Credenciais inválidas.']);
         }
     } catch (PDOException $e) {
+        http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
     }
 
-    $stmt = null;
     exit;
 }
 ?>
 
+<!-- Formulário HTML de login -->
 <div class="form-container">
-    <form id="login-form" class="form-box">
+    <form id="login-form" class="form-box" method="POST">
         <h2>Login</h2>
         <input type="email" name="email" placeholder="Email" required />
-        <input type="password" name="password" placeholder="Password" required />
+        <input type="password" name="password" placeholder="Palavra-passe" required />
         <button type="submit">Entrar</button>
-        <div id="login-msg"></div>
+        <div id="login-msg" style="margin-top: 10px;"></div>
         <p>Não tem conta? <a href="?page=register">Criar conta</a></p>
     </form>
 </div>
