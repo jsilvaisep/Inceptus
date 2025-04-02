@@ -16,7 +16,10 @@ $offset = ($page - 1) * $perPage;
 // Modal handler
 if (isset($_GET['modal']) && isset($_GET['id'])) {
     $productId = $_GET['id'];
-    $stmt = $pdo->prepare("SELECT p.*, c.COMPANY_NAME FROM PRODUCT p INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID WHERE p.PRODUCT_STATUS = 'A' AND p.PRODUCT_ID = ?");
+    $stmt = $pdo->prepare("SELECT p.*, u.USER_NAME FROM PRODUCT p 
+                                INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID 
+                                INNER JOIN USER u ON u.USER_ID = p.USER_ID
+                                WHERE p.PRODUCT_STATUS = 'A' AND p.PRODUCT_ID = ?");
     $stmt->execute([$productId]);
     $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -149,8 +152,6 @@ if (isset($_SESSION['user'])) {
     } 
 }
 ?>
-
-
 
         <?php if (count($products) > 0): ?>
             <div class="product-grid">
