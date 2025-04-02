@@ -60,12 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $stmt = $pdo->prepare("INSERT INTO USER (USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD, USER_STATUS, IMG_URL)
-                               VALUES (UNHEX(?), ?, ?, ?, 'A', ?)");
+        $stmt = $pdo->prepare("INSERT INTO USER (USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD, USER_STATUS, IMG_URL, USER_TYPE_ID)
+                               VALUES (UNHEX(?), ?, ?, ?, 'A', ?, '89a9c26a-100b-11f0-ab2e-020017000d59')");
         $stmt->execute([$user_id, $name, $email, $password_hash, $imgPath]);
-
-        $stmt2 = $pdo->prepare("INSERT INTO U_TYPE (TYPE_ID, USER_ID) VALUES (?, UNHEX(?))");
-        $stmt2->execute([$type_id, $user_id]);
 
         $_SESSION['user'] = [
             'user_id' => $user_id,
