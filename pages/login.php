@@ -21,10 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($user && password_verify($password, $user['USER_PASSWORD'])) {
             // Obter o TYPE_ID real via tabela U_TYPE
-            $stmtType = $pdo->prepare("SELECT T.TYPE_ID, UT.USER_TYPE 
-                                       FROM U_TYPE T 
-                                       JOIN USER_TYPE UT ON T.TYPE_ID = UT.TYPE_ID 
-                                       WHERE T.USER_ID = ?");
+            $stmtType = $pdo->prepare("SELECT u.USER_ID, ut.USER_TYPE 
+                                       FROM USER u 
+                                       JOIN USER_TYPE ut ON u.USER_TYPE_ID = ut.TYPE_ID 
+                                       WHERE u.USER_ID = ?");
             $stmtType->execute([$user['USER_ID']]);
             $typeInfo = $stmtType->fetch(PDO::FETCH_ASSOC);
 

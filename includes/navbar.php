@@ -18,10 +18,10 @@ if (isset($_SESSION['user'])) {
 
     // Verifica se é ADMIN
     $stmt = $pdo->prepare("
-        SELECT ut.TYPE_ID, t.USER_TYPE 
-        FROM U_TYPE ut
-        JOIN USER_TYPE t ON ut.TYPE_ID = t.TYPE_ID
-        WHERE ut.USER_ID = ?
+        SELECT u.USER_TYPE_ID, ut.USER_TYPE 
+        FROM USER u
+        JOIN USER_TYPE ut ON u.USER_TYPE_ID = ut.TYPE_ID
+        WHERE u.USER_ID = ?
     ");
     $stmt->execute([$userId]);
     $typeData = $stmt->fetch(PDO::FETCH_ASSOC);
