@@ -23,6 +23,32 @@ function loadPage(page, search = '') {
         });
 }
 
+function criarProduto(){
+    document.getElementById("openModal").addEventListener("click", function() {
+        document.getElementById("modalOverlay").style.display = "flex";
+    });
+    
+    document.getElementById("closeModal").addEventListener("click", function() {
+        document.getElementById("modalOverlay").style.display = "none";
+    });
+    
+}
+
+
+//Recebe o form e verifica os campos ao criar Produto
+document.addEventListener("submit", function () {
+        let name = document.getElementById("product_name").value.trim();
+        let description = document.getElementById("product_description").value.trim();
+        let category = document.getElementById("category_id").value;
+        let company = "4ce516e6-0be9-11f0-b0d3-020017000d59";
+        alert(name);
+
+        if (!name || !description || !category || !company) {
+            alert("Todos os campos são obrigatórios.");
+        }
+    });
+
+
 // ==========================
 // Atualiza a barra de navegação, mantendo a lógica do SPA, sem recarregar a página inteira.
 // ==========================
@@ -566,27 +592,27 @@ function initNewsCarousel() {
 }
 
 // noticias
-    function enviarResposta(postId) {
-        const resposta = document.getElementById("post_response_" + postId).value;
+function enviarResposta(postId) {
+    const resposta = document.getElementById("post_response_" + postId).value;
 
-        if (resposta.trim() !== "") {
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "", true);
-            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    if (resposta.trim() !== "") {
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "", true);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        //alert(resposta);
-                        document.getElementById("post_response_" + postId).value = "";
-                    } else {
-                        alert("Erro ao enviar resposta.");
-                    }
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    //alert(resposta);
+                    document.getElementById("post_response_" + postId).value = "";
+                } else {
+                    alert("Erro ao enviar resposta.");
                 }
-            };
+            }
+        };
 
-            xhr.send("post_id=" + encodeURIComponent(postId) + "&resposta=" + encodeURIComponent(resposta));
-        } else {
-            alert("Por favor, escreva uma resposta.");
-        }
+        xhr.send("post_id=" + encodeURIComponent(postId) + "&resposta=" + encodeURIComponent(resposta));
+    } else {
+        alert("Por favor, escreva uma resposta.");
     }
+}
