@@ -13,9 +13,10 @@ include '../includes/db.php';
                 <?php
                 try {
                     if (!empty($pdo)) {
-                        $stmt = $pdo->query("SELECT p.POST_ID, p.POST_CONTENT, c.COMPANY_NAME, c.IMG_URL
+                        $stmt = $pdo->query("SELECT p.POST_ID, p.POST_CONTENT, u.USER_NAME, c.IMG_URL
                                         FROM POST p 
                                         INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID
+                                        INNER JOIN USER u ON u.USER_ID = c.USER_ID
                                         WHERE p.POST_STATUS = 'A'");
                     }
                     while ($row = $stmt->fetch(mode: PDO::FETCH_ASSOC)) { ?>
