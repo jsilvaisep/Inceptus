@@ -595,7 +595,6 @@ function initNewsCarousel() {
 
 // noticias
 function enviarResposta(postId) {
-    alert(postId);
     const resposta = document.getElementById("post_response" + postId).value;
 
     if (resposta.trim() !== "") {
