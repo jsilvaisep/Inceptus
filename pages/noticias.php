@@ -27,8 +27,8 @@
                                 Responda a Notícia
                             </button>
                             <div></div>
-                            <input type="text" id="post_response<?php echo htmlspecialchars($row['POST_ID']); ?>"
-                                class="post_response" placeholder="Escreva uma resposta...">
+                            <textarea rows="5" cols="30" id="post_response<?php echo htmlspecialchars($row['POST_ID']); ?>"
+                                class="post_response" placeholder="Escreva uma resposta..."></textarea>
                             <div class="news-grid">
                                 <?php
 
