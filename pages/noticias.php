@@ -1,6 +1,5 @@
-<?php
-include '../includes/db.php';
-?>
+<?php include '../includes/db.php'; ?>
+
 <div class="wrapper">
     <div class="news-left">
         <div class="filtros">
@@ -20,35 +19,37 @@ include '../includes/db.php';
                     }
                     while ($row = $stmt->fetch(mode: PDO::FETCH_ASSOC)) { ?>
                         <img src="<?php echo $row['IMG_URL'] ?>" alt="<?php $row['COMPANY_NAME'] ?>" class="company-img">
-                        <div class="news-grid">
+                        <div class="news-card">
                             <h3><?php echo htmlspecialchars($row['COMPANY_NAME']); ?></h3><br>
                             <p><?php echo htmlspecialchars($row['POST_CONTENT']); ?></p>
-                            <button
+                            <button class="visit-button"
                                 onclick="enviarResposta('<?php echo htmlspecialchars($row['POST_ID'], ENT_QUOTES, 'UTF-8'); ?>')">
                                 Responda a Notícia
                             </button>
-
+                            <div></div>
                             <input type="text" id="post_response<?php echo htmlspecialchars($row['POST_ID']); ?>"
                                 class="post_response" placeholder="Escreva uma resposta...">
+                            <div class="news-grid">
+                                <?php
 
-                            <?php
-                            try {
-                                $stmt2 = $pdo->prepare("SELECT pe.POST_EXT_CONTENT
+                                try {
+                                    $stmt2 = $pdo->prepare("SELECT pe.POST_EXT_CONTENT
                                                                 FROM POST_EXT pe
                                                                 INNER JOIN POST p ON p.POST_ID = pe.POST_ID
                                                                 WHERE p.POST_STATUS = 'A'
                                                                 AND p.POST_ID = ?");
-                                $stmt2->execute([$row['POST_ID']]); ?>
-                                <?php
-                                while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-                                    echo "<div><p>" . ($row2['POST_EXT_CONTENT']) . "</p></div><br>";
-                                }
-                            } catch (PDOException $e) {
-                                echo "<small>Erro ao buscar respostas: " . $e->getMessage() . "</small>";
-                                $stmt = null;
-                            } ?>
-                        </div>
+                                    $stmt2->execute([$row['POST_ID']]); ?>
+                                    <?php
 
+                                    while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
+                                        echo "<div class='post_messages' ><p>" . ($row2['POST_EXT_CONTENT']) . "</p></div>";
+                                    }
+                                } catch (PDOException $e) {
+                                    echo "<small>Erro ao buscar respostas: " . $e->getMessage() . "</small>";
+                                    $stmt = null;
+                                } ?>
+                            </div>
+                        </div>
                     <?php }
                 } catch (PDOException $e) {
                     echo "<p>Erro ao buscar empresas: " . $e->getMessage() . "</p>";

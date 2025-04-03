@@ -7,8 +7,9 @@
 .wrapper .news-layout {
     display: flex;
     flex-direction: column;
-    width: 70vw;
+    width: 50vw;
     margin-left: auto;
+    margin-right: auto;
     gap: 20px;
     padding: 20px;
     min-height: 100vh;
@@ -40,9 +41,11 @@
 }
 .news-grid {
     display: grid;
+    border-radius: 20px;
     gap: 24px;
-    padding: 20px 0;
-    margin-top: 30px;
+    padding: 20px 20px;
+    margin-top: 30px ;
+    background-color: #f0f0f0;
 }
 
 .visit-button {
@@ -58,6 +61,8 @@
     font-weight: bold;
     text-decoration: none;
     transition: all 0.3s;
+    max-width: fit-content;
+    text-align: center;
 }
 
 .visit-button:hover {
@@ -112,3 +117,15 @@
     margin: 10px 10px;
 }
 
+.post_messages{
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    padding: 20px 2;
+    margin: 20px 20px;
+}
