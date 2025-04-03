@@ -61,8 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
         // TODO - Colocar um IF para empresa ou user normal "CALL INSERT_COMPANY (?, ?, ?, ?)"
-        $stmt = $pdo->prepare("CALL INSERT_USER (?, ?, ?, ?)");
-        $stmt->execute([$name, $email, $password_hash, $imgPath]);
+        $stmt = $pdo->prepare("CALL INSERT_USER (?, ?, ?, ?, ?)");
+        $stmt->execute([$name, $user_login, $email, $password_hash, $imgPath]);
 
         $_SESSION['user'] = [
             'user_id' => $user_id,
