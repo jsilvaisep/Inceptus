@@ -697,3 +697,8 @@ function redirectToProduct(productId) {
     loadPage('produtocompleto', searchParams);
 }
 
+function redirectToCompany(productId) {
+    // Carrega a página do produto específico com o ID fornecido
+    const searchParams = `id=${productId}`;
+    loadPage('empresacompleta', searchParams);
+}
