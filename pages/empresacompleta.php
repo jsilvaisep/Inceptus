@@ -51,7 +51,7 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars($product['PRODUCT_NAME']) ?> - Divulgação de Produto</title>
-    <link rel="stylesheet" href="assets/css/produtocompleto.css">
+    <link rel="stylesheet" href="assets/css/empresacompleta.css">
 </head>
 <body>
 <div class="produto-completo-container">
