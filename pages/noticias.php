@@ -26,9 +26,8 @@
                                 onclick="enviarResposta('<?php echo htmlspecialchars($row['POST_ID'], ENT_QUOTES, 'UTF-8'); ?>')">
                                 Responda a Notícia
                             </button>
-                            <div></div>
-                            <input type="text" id="post_response<?php echo htmlspecialchars($row['POST_ID']); ?>"
-                                class="post_response" placeholder="Escreva uma resposta...">
+                            <textarea rows="5" cols="30" id="post_response<?php echo htmlspecialchars($row['POST_ID']); ?>"
+                                      class="post_response" placeholder="Escreva uma resposta..."></textarea>
                             <div class="news-grid">
                                 <?php
 
@@ -37,12 +36,13 @@
                                                                 FROM POST_EXT pe
                                                                 INNER JOIN POST p ON p.POST_ID = pe.POST_ID
                                                                 WHERE p.POST_STATUS = 'A'
-                                                                AND p.POST_ID = ?");
+                                                                AND p.POST_ID = ?
+                                                                ORDER BY pe.CREATED_AT DESC");
                                     $stmt2->execute([$row['POST_ID']]); ?>
                                     <?php
 
                                     while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-                                        echo "<div class='post_messages' ><p>" . ($row2['POST_EXT_CONTENT']) . "</p></div>";
+                                        echo "<div class='post_messages' ><textarea>" . ($row2['POST_EXT_CONTENT']) . "</textarea></div>";
                                     }
                                 } catch (PDOException $e) {
                                     echo "<small>Erro ao buscar respostas: " . $e->getMessage() . "</small>";

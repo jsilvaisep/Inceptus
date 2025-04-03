@@ -41,7 +41,6 @@
 }
 .news-grid {
     display: grid;
-    border-radius: 20px;
     gap: 24px;
     padding: 20px 20px;
     margin-top: 30px ;
@@ -113,13 +112,11 @@
     color: #555;
 }
 .post_response {
-    border-radius: 15px;
     margin: 10px 10px;
 }
 
 .post_messages{
     background-color: white;
-    border-radius: 12px;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -128,4 +125,10 @@
     text-align: left;
     padding: 20px 2;
     margin: 20px 20px;
+}
+
+textarea{
+    border-radius: 15px;
+    resize: none;
+    padding: 20px;
 }
