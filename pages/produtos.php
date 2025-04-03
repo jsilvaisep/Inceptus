@@ -1,7 +1,6 @@
 <?php
-
-include '../includes/db.php';
 include '../includes/criarProdutos.php';
+include '../includes/db.php';
 
 $search = $_GET['search'] ?? '';
 $searchTerm = '%' . $search . '%';
@@ -100,23 +99,18 @@ $stmt->bindValue(count($params) + 2, $offset, PDO::PARAM_INT);
 $stmt->execute();
 $products = $stmt->fetchAll();
 try {
-    $conn = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8", $user, $pass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $query = $conn->query("SELECT CATEGORY_ID, CATEGORY_NAME FROM CATEGORY");
+    $query = $pdo->query("SELECT CATEGORY_ID, CATEGORY_NAME FROM CATEGORY");
     $categories = $query->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $categories = [];
 }
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
-        $conn = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8", $user, $pass);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $stmt = $conn->prepare("CALL INSERT_PRODUCT(:product_name, :product_description, :category_id, :company_id)");
+        $stmt = $pdo->prepare("CALL INSERT_PRODUCT(:product_name, :product_description, :category_id, :company_id)");
         $stmt->bindParam(':product_name', $_POST['product_name']);
         $stmt->bindParam(':product_description', $_POST['product_description']);
         $stmt->bindParam(':category_id', $_POST['category_id']);
-        $company_id = "4ce516e6-0be9-11f0-b0d3-020017000d59";
+        $company_id = $company_id = $_SESSION['user']['user_id'] ?? null;
         $stmt->bindParam(':company_id', $company_id); // , PDO::PARAM_INT
         
 
@@ -125,7 +119,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } catch (PDOException $e) {
         echo "<p class='error'>Error: " . $e->getMessage() . "</p>";
     }
-    $conn = null;   
+    $pdo = null;   
+    $stmt = null;
 }
 ?>
 

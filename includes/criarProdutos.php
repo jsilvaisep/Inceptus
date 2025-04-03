@@ -1,10 +1,6 @@
 <?php
+include '../includes/db.php';
 session_start();
-$host = '143.47.56.69';
-$port = '3306';
-$dbname = 'DB_INCEPTUS_PP';
-$user = 'vaadin_user';
-$pass = '#"6o6VB7!2';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $uploadDir = __DIR__ . "/../produtos/"; // Path to "produtos/" inside project
     $uploadedFiles = [];
@@ -35,10 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $imagePaths = implode(";", $uploadedFiles);
 
     try {
-        $conn = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8", $user, $pass);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        $stmt = $conn->prepare("CALL INSERT_PRODUCT(:product_name, :product_description, :category_id, :company_id, :img_url)");
+        $stmt = $pdo->prepare("CALL INSERT_PRODUCT(:product_name, :product_description, :category_id, :company_id, :img_url)");
         $stmt->bindParam(':product_name', $_POST['product_name']);
         $stmt->bindParam(':product_description', $_POST['product_description']);
         $stmt->bindParam(':category_id', $_POST['category_id']);
@@ -52,20 +45,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } catch (PDOException $e) {
         echo "<p class='error'>Error: " . $e->getMessage() . "</p>";
     }
-    $conn = null;   
-    $stmt = null;
 }
 // Fetch categories from the database
 try {
-    $conn = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8", $user, $pass);
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $query = $conn->query("SELECT CATEGORY_ID, CATEGORY_NAME FROM CATEGORY");
+    $query = $pdo->query("SELECT CATEGORY_ID, CATEGORY_NAME FROM CATEGORY");
     $categories = $query->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $categories = [];
 }
-
-
+$pdo = null;   
+$stmt = null;
 ?>
 
 <!-- Floating modal container -->
