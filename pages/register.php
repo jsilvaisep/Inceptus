@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['success' => false, 'message' => 'Tipo de utilizador SUSER não encontrado.']);
             exit;
         }
-
+        // TODO - Colocar um IF para empresa ou user normal "CALL INSERT_COMPANY (?, ?, ?, ?)"
         $stmt = $pdo->prepare("CALL INSERT_USER (?, ?, ?, ?)");
         $stmt->execute([$name, $email, $password_hash, $imgPath]);
 
