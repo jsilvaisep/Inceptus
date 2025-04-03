@@ -20,12 +20,13 @@ include '../includes/db.php';
                     }
                     while ($row = $stmt->fetch(mode: PDO::FETCH_ASSOC)) { ?>
                         <img src="<?php echo $row['IMG_URL'] ?>" alt="<?php $row['COMPANY_NAME'] ?>" class="company-img">
-                        <div class="news-info">
+                        <div class="">
                             <h3><?php echo htmlspecialchars($row['COMPANY_NAME']); ?></h3><br>
                             <p><?php echo htmlspecialchars($row['POST_CONTENT']); ?></p>
-                            <button onclick="enviarResposta('<?php echo htmlspecialchars($row['POST_ID'], ENT_QUOTES, 'UTF-8'); ?>')">
-    Responda a Notícia
-</button>
+                            <button
+                                onclick="enviarResposta('<?php echo htmlspecialchars($row['POST_ID'], ENT_QUOTES, 'UTF-8'); ?>')">
+                                Responda a Notícia
+                            </button>
 
                             <input type="text" id="post_response<?php echo htmlspecialchars($row['POST_ID']); ?>"
                                 class="post_response" placeholder="Escreva uma resposta...">
@@ -47,15 +48,16 @@ include '../includes/db.php';
                                 $stmt = null;
                             } ?>
                         </div>
-                    </div>
-                </div>
-            <?php }
+
+                    <?php }
                 } catch (PDOException $e) {
                     echo "<p>Erro ao buscar empresas: " . $e->getMessage() . "</p>";
                     $stmt = null;
                 }
                 $stmt = null;
                 ?>
+            </div>
+        </div>
     </div>
 </div>
 <?php

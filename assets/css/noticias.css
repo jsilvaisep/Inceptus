@@ -1,13 +1,19 @@
-.news-layout {
+.wrapper {
+    display: flex;         
+    width: 100%; 
+    height: 100%;         
+}
+
+.wrapper .news-layout {
     display: flex;
     flex-direction: column;
     width: 70vw;
     margin-left: auto;
     gap: 20px;
     padding: 20px;
+    min-height: 100vh;
 }
-.news-esq{
-    height: 100%;
+.wrapper .news-left{
     display: flex;
     flex-direction: column;
     width: 30vw;
@@ -15,7 +21,6 @@
     gap: 20px;
     padding: 20px;
     min-height: 100vh;
-    
 
 }
 .news-container {
@@ -107,8 +112,3 @@
     margin: 10px 10px;
 }
 
-.wrapper {
-    display: flex;         
-    width: 100%; 
-    height: 100%;         
-}
