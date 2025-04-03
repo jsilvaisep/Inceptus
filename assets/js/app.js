@@ -3,6 +3,14 @@
 // Garante que o que temos é um SPA.
 // o fetch faz o carregamento da página.
 // O setupPageScripts vai buscar o que é suposto apresentar.
+let currentPage = null;
+
+function navigateTo(page, search = '') {
+    if (page === currentPage) return;
+    currentPage = page;
+    loadPage(page, search);
+}
+
 // ==========================
 function loadPage(page, search = '') {
     let url = 'pages/' + page + '.php';
@@ -589,7 +597,8 @@ window.addEventListener('DOMContentLoaded', () => {
     const page = params.get('page') || 'home';
     params.delete('page');
     const search = params.toString();
-    loadPage(page, search);
+
+    navigateTo(page, search);
 
     document.body.addEventListener('click', e => {
         const link = e.target.closest('a');
@@ -597,9 +606,10 @@ window.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const urlParams = new URL(link.href).searchParams;
             const pageParam = urlParams.get('page') || 'home';
+
             urlParams.delete('page');
             const searchParam = urlParams.toString();
-            loadPage(pageParam, searchParam);
+            navigateTo(pageParam, searchParam);
         }
 
         if (e.target.id === 'logout-link') {
