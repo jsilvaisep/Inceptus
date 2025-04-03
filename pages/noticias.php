@@ -27,7 +27,7 @@
                                 Responda a Notícia
                             </button>
                             <textarea rows="5" cols="30" id="post_response<?php echo htmlspecialchars($row['POST_ID']); ?>"
-                                      class="post_response" placeholder="Escreva uma resposta..."></textarea>
+                                      class="post_text" placeholder="Escreva uma resposta..."></textarea>
                             <div class="news-grid">
                                 <?php
 
@@ -42,8 +42,11 @@
                                     <?php
 
                                     while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-                                        echo "<div class='post_messages' ><textarea>" . ($row2['POST_EXT_CONTENT']) . "</textarea></div>";
+                                        echo "<div class='post_messages' >
+                                                <textarea disabled class='post_retrieved'>" . ($row2['POST_EXT_CONTENT']) . "</textarea>
+                                            </div>";
                                     }
+
                                 } catch (PDOException $e) {
                                     echo "<small>Erro ao buscar respostas: " . $e->getMessage() . "</small>";
                                     $stmt = null;
