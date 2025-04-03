@@ -20,7 +20,7 @@ include '../includes/db.php';
                     }
                     while ($row = $stmt->fetch(mode: PDO::FETCH_ASSOC)) { ?>
                         <img src="<?php echo $row['IMG_URL'] ?>" alt="<?php $row['COMPANY_NAME'] ?>" class="company-img">
-                        <div class="">
+                        <div class="news-grid">
                             <h3><?php echo htmlspecialchars($row['COMPANY_NAME']); ?></h3><br>
                             <p><?php echo htmlspecialchars($row['POST_CONTENT']); ?></p>
                             <button

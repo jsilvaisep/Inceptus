@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'] ?? '';
     $password = $_POST['password'] ?? '';
     $imgPath = null;
-    $stmt=null;
+    // $stmt=null;
 
     if (!$name || !$email) {
         echo json_encode(['success' => false, 'message' => 'Preencha nome e email.']);
@@ -24,8 +24,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Upload imagem
     if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = '/uploads/';
-        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+        $uploadDir = 'uploads/';
+        if (!is_dir($uploadDir))
+            mkdir($uploadDir, 0755, true);
 
         $filename = uniqid() . '_' . basename($_FILES['profile_img']['name']);
         $targetPath = $uploadDir . $filename;
@@ -52,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $query .= " WHERE USER_ID = ?";
         $params[] = $user_id;
-
         $stmt = $pdo->prepare($query);
         $stmt->execute($params);
 
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (PDOException $e) {
         echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
     }
-    $stmt=null;
+    $stmt = null;
     exit;
 }
 
@@ -76,7 +76,7 @@ $user_id = $_SESSION['user']['user_id'];
 $stmt = $pdo->prepare("SELECT * FROM USER WHERE USER_ID = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
-$stmt=null;
+$stmt = null;
 ?>
 
 <div class="profile-container">
@@ -95,8 +95,8 @@ $stmt=null;
 </div>
 
 <script>
-function previewAvatar(event) {
-    const output = document.getElementById('avatar-preview');
-    output.src = URL.createObjectURL(event.target.files[0]);
-}
+    function previewAvatar(event) {
+        const output = document.getElementById('avatar-preview');
+        output.src = URL.createObjectURL(event.target.files[0]);
+    }
 </script>

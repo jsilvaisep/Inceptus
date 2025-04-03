@@ -31,7 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $imgPath = null;
         if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = '../uploads/';
-            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+            if (!is_dir($uploadDir))
+                mkdir($uploadDir, 0755, true);
             $filename = uniqid() . '_' . basename($_FILES['profile_img']['name']);
             $targetPath = $uploadDir . $filename;
 
@@ -60,9 +61,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $stmt = $pdo->prepare("INSERT INTO USER (USER_ID, USER_NAME, USER_EMAIL, USER_PASSWORD, USER_STATUS, IMG_URL, USER_TYPE_ID)
-                               VALUES (UNHEX(?), ?, ?, ?, 'A', ?, '89a9c26a-100b-11f0-ab2e-020017000d59')");
-        $stmt->execute([$user_id, $name, $email, $password_hash, $imgPath]);
+        $stmt = $pdo->prepare("CALL INSERT_USER (?, ?, ?, ?)");
+        $stmt->execute([$name, $email, $password_hash, $imgPath]);
 
         $_SESSION['user'] = [
             'user_id' => $user_id,
