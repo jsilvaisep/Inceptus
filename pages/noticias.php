@@ -1,5 +1,13 @@
-<?php include '../includes/db.php'; ?>
-
+<?php include '../includes/db.php';
+session_start();
+if (isset($_SESSION['user'])) {
+    $userID = $_SESSION['user']['user_id'];
+    // echo "O ID do usuário é: " . $userID;
+} else {
+    // echo "Usuário não está logado.";
+    exit;
+}
+?>
 <div class="wrapper">
     <div class="news-left">
         <div class="filtros">
@@ -32,9 +40,10 @@
                                 <?php
 
                                 try {
-                                    $stmt2 = $pdo->prepare("SELECT pe.POST_EXT_CONTENT
+                                    $stmt2 = $pdo->prepare("SELECT pe.POST_EXT_CONTENT, u.USER_NAME
                                                                 FROM POST_EXT pe
                                                                 INNER JOIN POST p ON p.POST_ID = pe.POST_ID
+                                                                INNER JOIN USER u ON u.USER_ID = pe.USER_ID
                                                                 WHERE p.POST_STATUS = 'A'
                                                                 AND p.POST_ID = ?
                                                                 ORDER BY pe.CREATED_AT DESC");
@@ -43,6 +52,7 @@
 
                                     while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
                                         echo "<div class='post_messages' >
+                                                <h4>Comentário de: ". ($row2['USER_NAME']) . "</h4>
                                                 <textarea disabled class='post_retrieved'>" . ($row2['POST_EXT_CONTENT']) . "</textarea>
                                             </div>";
                                     }
@@ -65,15 +75,15 @@
     </div>
 </div>
 <?php
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_id'], $_POST['resposta'])) {
     $postId = $_POST['post_id'];
     $resposta = $_POST['resposta'];
 
     try {
         if (!empty($pdo)) {
-            $stmt = $pdo->prepare("CALL INSERT_POST_EXT(:post_id, :resposta)");
+            $stmt = $pdo->prepare("CALL INSERT_POST_EXT(:post_id, :user_id, :resposta)");
             $stmt->bindParam(':post_id', $postId);
+            $stmt->bindParam(':user_id', $userID);
             $stmt->bindParam(':resposta', $resposta);
             $stmt->execute();
             echo "Resposta enviada com sucesso!";
