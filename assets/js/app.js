@@ -696,3 +696,4 @@ function redirectToProduct(productId) {
     const searchParams = `id=${productId}`;
     loadPage('produtocompleto', searchParams);
 }
+

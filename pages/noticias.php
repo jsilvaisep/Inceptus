@@ -2,9 +2,8 @@
 session_start();
 if (isset($_SESSION['user'])) {
     $userID = $_SESSION['user']['user_id'];
-    // echo "O ID do usuário é: " . $userID;
 } else {
-    // echo "Usuário não está logado.";
+    header("Location: /pages/login.php");
     exit;
 }
 ?>
