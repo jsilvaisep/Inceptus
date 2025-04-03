@@ -693,3 +693,8 @@ function enviarResposta(postId) {
         alert("Por favor, escreva uma resposta.");
     }
 }
+function redirectToProduct(productId) {
+    // Carrega a página do produto específico com o ID fornecido
+    const searchParams = `id=${productId}`;
+    loadPage('produtocompleto', searchParams);
+}

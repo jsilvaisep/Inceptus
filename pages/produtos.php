@@ -12,37 +12,7 @@ $page = isset($_GET['pg']) ? max(1, (int)$_GET['pg']) : 1;
 $perPage = 12;
 $offset = ($page - 1) * $perPage;
 
-// Modal handler
-if (isset($_GET['modal']) && isset($_GET['id'])) {
-    $productId = $_GET['id'];
-    $stmt = $pdo->prepare("SELECT p.*, c.COMPANY_NAME FROM PRODUCT p 
-                                        INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID 
-                                        WHERE p.PRODUCT_STATUS = 'A' AND p.PRODUCT_ID = ?");
-    $stmt->execute([$productId]);
-    $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$product) {
-        echo '<p>Produto inválido.</p>';
-        exit;
-    }
-
-    $description = substr(nl2br(htmlspecialchars($product['PRODUCT_DESCRIPTION'])), 0, 200);
-
-    echo '<div class="modal-overlay" onclick="closeModal()"></div>';
-    echo '<div class="modal-box fade-in">';
-    echo '<button class="modal-close" onclick="closeModal()">&times;</button>';
-    echo '<div class="modal-content">';
-    echo '<img src="' . htmlspecialchars($product['IMG_URL']) . '" alt="' . htmlspecialchars($product['PRODUCT_NAME']) . '" class="modal-img">';
-    echo '<h2>' . htmlspecialchars($product['PRODUCT_NAME']) . '</h2>';
-    echo '<div class="product-description">';
-    echo '<p class="description-text">' . $description . '</p>';
-    echo '</div>';
-    echo '<p style="color:black;"><strong>Visualizações:</strong> ' . $product['PRODUCT_VIEW_QTY'] . '</p>';
-    echo '<p style="color:black;"><strong>Produzido por:</strong> '. $product['COMPANY_NAME'] . '</p>';;
-    echo '</div></div>';
-    $stmt=null;
-    exit;
-}
 
 if (isset($_COOKIE['stars'])) {
     echo $_COOKIE["stars"]; 
@@ -151,9 +121,10 @@ if (isset($_SESSION['user'])) {
             <div class="product-grid">
                 <?php foreach ($products as $product): ?>
                     <?php
-                        $img = !empty($product['IMG_URL']) ? htmlspecialchars($product['IMG_URL']) : '/produtos/sem_imagem.png';
+                    $img = !empty($product['IMG_URL']) ? htmlspecialchars($product['IMG_URL']) : '/produtos/sem_imagem.png';
+                    $productId = urlencode($product['PRODUCT_ID']);
                     ?>
-                    <div class="product-card clickable-card" data-id="<?= $product['PRODUCT_ID'] ?>">
+                    <div class="product-card" data-id="<?= $productId ?>" onclick="redirectToProduct('<?= $productId ?>')">
                         <img src="<?= $img ?>" alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>" class="product-img" onerror="this.onerror=null;this.src='/produtos/sem_imagem.png';">
                         <div class="product-info">
                             <h3><?= htmlspecialchars($product['PRODUCT_NAME']) ?></h3>
