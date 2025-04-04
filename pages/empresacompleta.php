@@ -21,21 +21,20 @@ function renderStars($rating)
     return $starsHTML;
 }
 
-$productId = $_GET['id'] ?? '';
-if (!$productId) {
-    echo '<p>Produto inválido.</p>';
+$companyId = $_GET['id'] ?? '';
+if (!$companyId) {
+    echo '<p>Empresa inválido.</p>';
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT p.*, c.COMPANY_NAME 
-                       FROM PRODUCT p 
-                       INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID
-                       WHERE p.PRODUCT_ID = ? AND p.PRODUCT_STATUS = 'A'");
-$stmt->execute([$productId]);
-$product = $stmt->fetch(PDO::FETCH_ASSOC);
+$stmt = $pdo->prepare("SELECT c.* 
+                       FROM COMPANY c
+                       WHERE c.COMPANY_ID = ? AND c.COMPANY_STATUS = 'A'");
+$stmt->execute([$companyId]);
+$company = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$product) {
-    echo '<p>Produto não encontrado.</p>';
+if (!$company) {
+    echo '<p>Empresa não encontrado.</p>';
     exit;
 }
 
@@ -43,17 +42,17 @@ if (!$product) {
 $commentStmt = $pdo->prepare("SELECT c.COMMENT_TEXT, c.COMMENT_RANK, c.CREATED_AT, u.USER_NAME 
                               FROM COMMENT c 
                               INNER JOIN USER u ON u.USER_ID = c.USER_ID 
-                              WHERE c.PRODUCT_ID = ? AND c.COMMENT_STATUS = 'A' 
+                              WHERE c.COMPANY_ID = ? AND c.COMMENT_STATUS = 'A' 
                               ORDER BY c.CREATED_AT DESC"); // Ordena pelos mais recentes
-$commentStmt->execute([$productId]);
+$commentStmt->execute([$companyId]);
 $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($product['PRODUCT_NAME']) ?> - Divulgação de Produto</title>
-    <link rel="stylesheet" href="assets/css/produtocompleto.css">
+    <title><?= htmlspecialchars($company['COMPANY_NAME']) ?> - Divulgação de Empresa</title>
+    <link rel="stylesheet" href="assets/css/empresacompleta.css">
 </head>
 
 <body>
@@ -65,10 +64,10 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
 
         <!-- Cabeçalho do Produto -->
         <div class="produto-header">
-            <h1><?= htmlspecialchars($product['PRODUCT_NAME']) ?></h1>
+            <h1><?= htmlspecialchars($company['COMPANY_NAME']) ?></h1>
             <p class="product-rating">
-                <span><?= renderStars($product['PRODUCT_RANK']) ?></span>
-                (<?= htmlspecialchars($product['PRODUCT_RANK']) ?>)
+                <span><?= renderStars($company['COMPANY_RANK']) ?></span>
+                (<?= htmlspecialchars($company['COMPANY_RANK']) ?>)
             </p>
         </div>
 
@@ -76,8 +75,8 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="produto-imagens-container">
             <!-- Imagem Principal -->
             <div class="imagem-principal">
-                <img src="<?= htmlspecialchars($product['IMG_URL']) ?>"
-                    alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>" class="imagem-principal-img">
+                <img src="<?= htmlspecialchars($company['IMG_URL']) ?>"
+                    alt="<?= htmlspecialchars($company['COMPANY_NAME']) ?>" class="imagem-principal-img">
             </div>
 
             <!-- Imagens Menores -->
@@ -90,14 +89,14 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
         <!-- Seção de Descrição -->
         <div class="produto-detalhes">
             <h2>Descrição</h2>
-            <p><?= nl2br(htmlspecialchars($product['PRODUCT_DESCRIPTION'])) ?></p>
-            <p><strong>Visualizações:</strong> <?= $product['PRODUCT_VIEW_QTY'] ?></p>
-            <p><strong>Produzido por:</strong> <?= htmlspecialchars($product['COMPANY_NAME']) ?></p>
+            <p><?= nl2br(htmlspecialchars($company['COMPANY_DESCRIPTION'])) ?></p>
+            <p><strong>Visualizações:</strong> <?= $company['COMPANY_VIEW_QTY'] ?></p>
+            <p><strong>Produzido por:</strong> <?= htmlspecialchars($company['USER_NAME']) ?></p>
         </div>
 
         <!-- Seção de Comentários -->
         <div class="comentarios">
-            <h2>Reviews de <?= htmlspecialchars($product['PRODUCT_NAME']) ?></h2>
+            <h2>Reviews de <?= htmlspecialchars($company['COMPANY_NAME']) ?></h2>
             <?php if (count($comments) > 0): ?>
                 <div class="comentarios-carrossel">
                     <?php foreach ($comments as $comment): ?>

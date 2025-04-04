@@ -620,7 +620,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     loadPage('login');
                     reloadNavbar();
                 });
-        }
+        } 
     });
 });
 
@@ -707,3 +707,75 @@ function redirectToProduct(productId) {
     loadPage('produtocompleto', searchParams);
 }
 
+function redirectToCompany(productId) {
+    // Carrega a página do produto específico com o ID fornecido
+    const searchParams = `id=${productId}`;
+    loadPage('empresacompleta', searchParams);
+}
+
+function redirectToLogin() {
+    loadPage('login');
+}
+// teste para elimnar o carregamento em duplicado 
+
+let isPageLoading = false;
+
+function loadPage(page, search = '') {
+    if (isPageLoading) return;  // Evita carregamento duplicado
+
+    isPageLoading = true;
+    let url = 'pages/' + page + '.php';
+    if (search) url += '?' + search;
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) throw new Error('Erro ao carregar');
+            return response.text();
+        })
+        .then(html => {
+            document.getElementById('content').innerHTML = html;
+            history.replaceState(null, '', '?page=' + page + (search ? '&' + search : ''));
+            setupPageScripts(page);
+            isPageLoading = false;  // Libera o carregamento
+        })
+        .catch(() => {
+            document.getElementById('content').innerHTML = '<h3>Página não encontrada.</h3>';
+            isPageLoading = false;
+        });
+}
+
+let debounce;
+searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim();
+    clearTimeout(debounce);
+    debounce = setTimeout(() => {
+        if (!query) {
+            resultsDiv.innerHTML = '';
+            return;
+        }
+
+        fetch(`includes/search-products.php?q=${encodeURIComponent(query)}`)
+            .then(res => res.text())
+            .then(html => {
+                resultsDiv.innerHTML = html;
+            });
+    }, 300);  // Evita múltiplas requisições em um curto espaço de tempo
+});
+
+function closeModal() {
+    const modalContainer = document.getElementById('modal-container');
+    modalContainer.innerHTML = '';  // Limpa o conteúdo do modal
+    document.body.classList.remove('no-scroll');  // Libera o scroll
+}
+
+document.querySelectorAll('.clickable-card').forEach(card => {
+    card.addEventListener('click', () => {
+        console.log('Card clicado');
+        const id = card.dataset.id;
+        fetch(`pages/${page}.php?id=${id}&modal=true`)
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById("modal-container").innerHTML = html;
+            });
+    });
+});
