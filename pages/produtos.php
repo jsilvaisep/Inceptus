@@ -8,14 +8,14 @@ $rank = isset($_GET['rank']) ? (float) $_GET['rank'] : 0;
 $type = $_GET['type'] ?? 'both';
 $minViews = isset($_GET['min_views']) ? (int) $_GET['min_views'] : '';
 $maxViews = isset($_GET['max_views']) ? (int) $_GET['max_views'] : '';
-$page = isset($_GET['pg']) ? max(1, (int)$_GET['pg']) : 1;
+$page = isset($_GET['pg']) ? max(1, (int) $_GET['pg']) : 1;
 $perPage = 12;
 $offset = ($page - 1) * $perPage;
 
 
 
 if (isset($_COOKIE['stars'])) {
-    echo $_COOKIE["stars"]; 
+    echo $_COOKIE["stars"];
 }
 
 // BASE DA QUERY
@@ -35,7 +35,7 @@ if ($type === 'products') {
 }
 
 // Views
-if($minViews !== null && $maxViews !== null && $minViews > 0 && ($maxViews > 0 && $maxViews > $minViews)) {
+if ($minViews !== null && $maxViews !== null && $minViews > 0 && ($maxViews > 0 && $maxViews > $minViews)) {
     $baseQuery .= " AND PRODUCT.PRODUCT_VIEW_QTY >= ? AND PRODUCT.PRODUCT_VIEW_QTY <= ?";
     $params[] = $minViews;
     $params[] = $maxViews;
@@ -82,14 +82,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(':category_id', $_POST['category_id']);
         $company_id = $company_id = $_SESSION['user']['user_id'] ?? null;
         $stmt->bindParam(':company_id', $company_id); // , PDO::PARAM_INT
-        
+
 
         $stmt->execute();
         echo "<p class='success'Produto inserido com sucesso!</p>";
     } catch (PDOException $e) {
         echo "<p class='error'>Error: " . $e->getMessage() . "</p>";
     }
-    $pdo = null;   
+    $pdo = null;
     $stmt = null;
 }
 ?>
@@ -109,13 +109,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div id="search-results" class="search-results-box"></div>
             </form>
         </div>
-<?php
-if (isset($_SESSION['user'])) {
-    if ($_SESSION['user']['user_type'] === 'COMPANY') {
-        echo '<button id="openModal" class="open-modal-btn" onclick="criarProduto()">Novo Produto</button>';
-    } 
-}
-?>
+        <?php
+        if (isset($_SESSION['user'])) {
+            if ($_SESSION['user']['user_type'] === 'COMPANY') {
+                echo '<button id="openModal" class="open-modal-btn" onclick="criarProduto()">Novo Produto</button>';
+            }
+        }
+        ?>
 
         <?php if (count($products) > 0): ?>
             <div class="product-grid">
@@ -125,7 +125,8 @@ if (isset($_SESSION['user'])) {
                     $productId = urlencode($product['PRODUCT_ID']);
                     ?>
                     <div class="product-card" data-id="<?= $productId ?>" onclick="redirectToProduct('<?= $productId ?>')">
-                        <img src="<?= $img ?>" alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>" class="product-img" onerror="this.onerror=null;this.src='/produtos/sem_imagem.png';">
+                        <img src="<?= $img ?>" alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>" class="product-img"
+                            onerror="this.onerror=null;this.src='/produtos/sem_imagem.png';">
                         <div class="product-info">
                             <h3><?= htmlspecialchars($product['PRODUCT_NAME']) ?></h3>
                             <p><?= htmlspecialchars($product['PRODUCT_DESCRIPTION']) ?></p>
@@ -136,7 +137,8 @@ if (isset($_SESSION['user'])) {
 
             <div class="pagination">
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <button class="page-btn<?= $i == $page ? ' active' : '' ?>" onclick="loadPage('produtos', '<?= http_build_query(['search' => $search, 'pg' => $i]) ?>')">
+                    <button class="page-btn<?= $i == $page ? ' active' : '' ?>"
+                        onclick="loadPage('produtos', '<?= http_build_query(['search' => $search, 'pg' => $i]) ?>')">
                         <?= $i ?>
                     </button>
                 <?php endfor; ?>
