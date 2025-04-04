@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 if (!isset($_SESSION['user'])) {
-    echo "<p class='error'>Acesso não autorizado.</p>";
+    header("Location: /pages/redirect.php");
     exit;
 }
 
