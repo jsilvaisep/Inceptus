@@ -218,7 +218,7 @@ DROP PROCEDURE INSERT_POST_EXT;
 
 /* 
 ####################################
-####### CRIAR COMENTÁRIO A POST #######################################################################################################################################################################
+####### CRIAR COMENTÁRIO  #######################################################################################################################################################################
 ####################################
 */
 
@@ -228,7 +228,19 @@ BEGIN
 	VALUES (UUID(), V_USER_ID, V_COMPANY_ID, V_PRODUCT_ID, V_COMMENT_RANK,V_COMMENT_TEXT);
 END
 
-DROP PROCEDURE INSERT_COMMENT
+DROP PROCEDURE INSERT_COMMENT;
 
 
+/* 
+####################################
+####### CRIAR RESPOSTA COMENTÁRIO  #######################################################################################################################################################################
+####################################
+*/
 
+CREATE PROCEDURE INSERT_COMMENT_EXT (IN V_COMMENT_ID BINARY(36), IN V_COMMENT_EXT_TEXT VARCHAR(2000))
+BEGIN
+	INSERT INTO COMMENT_EXT (COMMENT_EXT_ID, COMMENT_ID, COMMENT_EXT_TEXT)
+	VALUES (UUID(), V_COMMENT_ID, V_COMMENT_EXT_TEXT);
+END
+
+DROP PROCEDURE INSERT_COMMENT_EXT;
