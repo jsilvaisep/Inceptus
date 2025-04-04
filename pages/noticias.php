@@ -7,75 +7,77 @@ if (isset($_SESSION['user'])) {
     exit;
 }
 ?>
-
-<div class="wrapper">
-    <div class="news-left">
-        <div class="filtros">
-            <?php include '../includes/filter_test.php'; ?>
-        </div>
-    </div>
-    <div class="news-layout">
+    <div class="wrapper">
         <div class="news-container">
+            <div class="news-sidebar">
+                <?php include_once '../includes/filter.php'; ?>
+            </div>
+            <div class="news-page">
+                <h1>Notícias</h1>
             <div class="news-grid">
                 <?php
                 try {
                     if (!empty($pdo)) {
-                        $stmt = $pdo->query("SELECT p.POST_ID, p.POST_CONTENT, c.COMPANY_NAME, c.IMG_URL
-                                        FROM POST p 
-                                        INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID
-                                        WHERE p.POST_STATUS = 'A'");
+                        // Definir a quantidade de itens por página
+                        $itens_por_pagina = 10;
+
+                        // Página atual
+                        $pagina = isset($_GET['pagina']) ? intval($_GET['pagina']) : 1;
+                        $offset = ($pagina - 1) * $itens_por_pagina;
+
+                        // Contar o total de posts para calcular páginas
+                        $total_posts = $pdo->query("SELECT COUNT(*) FROM POST WHERE POST_STATUS = 'A'")->fetchColumn();
+                        $total_paginas = ceil($total_posts / $itens_por_pagina);
+
+                        // Buscar posts com paginação
+                        $stmt = $pdo->prepare("SELECT p.POST_ID, p.POST_CONTENT, p.CREATED_AT,
+                           c.COMPANY_NAME, c.IMG_URL, u.USER_NAME
+                            FROM POST p
+                            INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID
+                            INNER JOIN USER u ON u.USER_ID = c.USER_ID
+                            WHERE p.POST_STATUS = 'A'
+                            ORDER BY p.CREATED_AT DESC
+                            LIMIT :limit OFFSET :offset");
+                        $stmt->bindParam(':limit', $itens_por_pagina, PDO::PARAM_INT);
+                        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+                        $stmt->execute();
                     }
-                    while ($row = $stmt->fetch(mode: PDO::FETCH_ASSOC)) { ?>
-                        <img src="<?php echo $row['IMG_URL'] ?>" alt="<?php $row['COMPANY_NAME'] ?>" class="company-img">
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                        // Truncar o conteúdo a 100 caracteres
+                        $truncatedContent = strlen($row['POST_CONTENT']) > 100 ?
+                            substr($row['POST_CONTENT'], 0, 100) . '...' :
+                            $row['POST_CONTENT'];
 
-
-                        <h3><?php echo htmlspecialchars($row['COMPANY_NAME']); ?></h3><br>
-                        <p><?php echo htmlspecialchars($row['POST_CONTENT']); ?></p>
-                        <button class="visit-button"
-                            onclick="enviarResposta('<?php echo htmlspecialchars($row['POST_ID'], ENT_QUOTES, 'UTF-8'); ?>')">
-                            Responda a Notícia
-                        </button>
-                        <textarea rows="5" cols="30" id="post_response<?php echo htmlspecialchars($row['POST_ID']); ?>"
-                            class="post_text" placeholder="Escreva uma resposta..."></textarea>
-
-                        <?php
-
-                        try {
-                            $stmt2 = $pdo->prepare("SELECT pe.POST_EXT_CONTENT, u.USER_NAME
-                                                                FROM POST_EXT pe
-                                                                INNER JOIN POST p ON p.POST_ID = pe.POST_ID
-                                                                INNER JOIN USER u ON u.USER_ID = pe.USER_ID
-                                                                WHERE p.POST_STATUS = 'A'
-                                                                AND p.POST_ID = ?
-                                                                ORDER BY pe.CREATED_AT DESC");
-                            $stmt2->execute([$row['POST_ID']]); ?>
-                            <?php
-
-                            while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) {
-                                echo "<div class='post_messages' >
-                                    <h4>Comentário de: " . ($row2['USER_NAME']) . "</h4>
-                                    <textarea disabled class='post_retrieved'>" . ($row2['POST_EXT_CONTENT']) . "</textarea>
-                                  </div>";
-                            }
-
-                        } catch (PDOException $e) {
-                            echo "<small>Erro ao buscar respostas: " . $e->getMessage() . "</small>";
-                            $stmt = null;
-                        } ?>
-
-
+                        // Formatação da data
+                        $date = new DateTime($row['CREATED_AT']);
+                        $formattedDate = $date->format('d/m/Y H:i');
+                        ?>
+                        <div class="news-card" data-id="<?php echo htmlspecialchars($row['POST_ID']); ?>">
+                            <div class="news-card-header">
+                                <img src="<?php echo htmlspecialchars($row['IMG_URL']); ?>" alt="<?php echo htmlspecialchars($row['COMPANY_NAME']); ?>" class="company-logo">
+                                <h3><?php echo htmlspecialchars($row['COMPANY_NAME']); ?></h3>
+                            </div>
+                            <div class="news-card-content">
+                                <p class="news-text"><?php echo htmlspecialchars($truncatedContent); ?></p>
+                            </div>
+                            <div class="news-card-footer">
+                                <span class="news-author">Por: <?php echo htmlspecialchars($row['USER_NAME']); ?></span>
+                                <span class="news-date"><?php echo $formattedDate; ?></span>
+                            </div>
+                            <button class="open-modal-btn" data-id="<?php echo htmlspecialchars($row['POST_ID']); ?>">
+                                Ler mais
+                            </button>
+                        </div>
                     <?php }
                 } catch (PDOException $e) {
-                    echo "<p>Erro ao buscar empresas: " . $e->getMessage() . "</p>";
+                    echo "<p class='error'>Erro ao buscar notícias: " . $e->getMessage() . "</p>";
                     $stmt = null;
                 }
                 $stmt = null;
                 ?>
-
             </div>
         </div>
     </div>
-</div>
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_id'], $_POST['resposta'])) {
     $postId = $_POST['post_id'];
@@ -103,3 +105,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_id'], $_POST['re
     }
 }
 ?>
+
+<script>
+    function enviarResposta(postId) {
+        const resposta = document.getElementById("post_response" + postId).value;
+        if (resposta.trim() !== "") {
+            const formData = new FormData();
+            formData.append('post_id', postId);
+            formData.append('resposta', resposta);
+
+            fetch('/pages/noticias.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById("post_response" + postId).value = "";
+                    loadPage('noticias'); // Recarregar a página para mostrar o novo comentário
+                })
+                .catch(error => {
+                    alert("Erro ao enviar resposta: " + error);
+                });
+        } else {
+            alert("Por favor, escreva uma resposta.");
+        }
+    }
+</script>

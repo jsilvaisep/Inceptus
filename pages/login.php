@@ -14,25 +14,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // Obter dados do utilizador
         $stmt = $pdo->prepare("SELECT * FROM USER WHERE USER_EMAIL = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user && password_verify($password, $user['USER_PASSWORD'])) {
-            // Obter o TYPE_ID real via tabela U_TYPE
-            $stmtType = $pdo->prepare("SELECT u.USER_ID, ut.USER_TYPE 
-                                       FROM USER u 
-                                       JOIN USER_TYPE ut ON u.USER_TYPE_ID = ut.TYPE_ID 
-                                       WHERE u.USER_ID = ?");
-            $stmtType->execute([$user['USER_ID']]);
+            $stmtType = $pdo->prepare("SELECT ut.USER_TYPE, ut.TYPE_ID 
+                                       FROM USER_TYPE ut 
+                                       WHERE ut.TYPE_ID = ?");
+            $stmtType->execute([$user['USER_TYPE_ID']]);
             $typeInfo = $stmtType->fetch(PDO::FETCH_ASSOC);
 
             $_SESSION['user'] = [
-                'user_id' => $user['USER_ID'],
+                'user_id' => bin2hex($user['USER_ID']),
                 'user_name' => $user['USER_NAME'],
                 'user_email' => $user['USER_EMAIL'],
-                'type_id' => $typeInfo['TYPE_ID'] ?? null,
+                'type_id' => bin2hex($user['USER_TYPE_ID']),
                 'user_type' => $typeInfo['USER_TYPE'] ?? null,
                 'img_url' => $user['IMG_URL']
             ];
@@ -51,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!-- Formulário HTML de login -->
 <div class="form-container">
     <form id="login-form" class="form-box" method="POST">
         <h2>Login</h2>
@@ -59,6 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="password" name="password" placeholder="Palavra-passe" required />
         <button type="submit">Entrar</button>
         <div id="login-msg" style="margin-top: 10px;"></div>
-        <p>Não tem conta? <a href="?page=register">Criar conta</a></p>
+        <p>Não tem conta? <a href="#" onclick="loadPage('register')">Criar conta</a></p>
     </form>
 </div>
