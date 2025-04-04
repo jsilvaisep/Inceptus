@@ -4,21 +4,21 @@ include 'db.php';
 
 $userName = '';
 $userImg = 'assets/img/default-user.png';
-$userType = '';
 $isAdmin = false;
 
 if (isset($_SESSION['user'])) {
-    $userId = $_SESSION['user']['user_id'] ?? null;
+    $userId = hex2bin($_SESSION['user']['user_id'] ?? '');
     $userName = $_SESSION['user']['user_name'] ?? '';
     $imgFromSession = $_SESSION['user']['img_url'] ?? '';
 
-    if (!empty($imgFromSession) && file_exists($imgFromSession)) {
-        $userImg = $imgFromSession;
+    // Se existir e for uma imagem válida (não precisa de existir fisicamente com file_exists)
+    if (!empty($imgFromSession)) {
+        $userImg = htmlspecialchars($imgFromSession);
     }
 
-    // Verifica se é ADMIN
+    // Confirma se é ADMIN
     $stmt = $pdo->prepare("
-        SELECT u.USER_TYPE_ID, ut.USER_TYPE 
+        SELECT u.USER_TYPE_ID, ut.USER_TYPE
         FROM USER u
         JOIN USER_TYPE ut ON u.USER_TYPE_ID = ut.TYPE_ID
         WHERE u.USER_ID = ?
@@ -28,9 +28,6 @@ if (isset($_SESSION['user'])) {
 
     if ($typeData && $typeData['USER_TYPE'] === 'ADMIN') {
         $isAdmin = true;
-        $userType = 'ADMIN';
-    } else {
-        $userType = 'SUSER';
     }
 }
 ?>
@@ -53,7 +50,7 @@ if (isset($_SESSION['user'])) {
         <?php if (!empty($userName)): ?>
         <li class="user-dropdown">
           <button class="dropdown-toggle">
-            <img src="<?= htmlspecialchars($userImg) ?>" alt="Avatar" class="avatar">
+            <img src="<?= $userImg ?>" alt="Avatar" class="avatar">
             <span><?= htmlspecialchars($userName) ?></span>
             <svg class="chevron" width="12" height="12" viewBox="0 0 320 512">
               <path fill="currentColor"
@@ -74,22 +71,4 @@ if (isset($_SESSION['user'])) {
       </ul>
     </nav>
   </div>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const dropdown = document.querySelector('.user-dropdown');
-      const dropdownMenu = document.querySelector('.dropdown-menu');
-      if (dropdown && dropdownMenu) {
-        dropdown.addEventListener('click', function () {
-          dropdownMenu.classList.toggle('show');
-        });
-
-        window.addEventListener('click', function (event) {
-          if (!dropdown.contains(event.target)) {
-            dropdownMenu.classList.remove('show');
-          }
-        });
-      }
-    });
-  </script>
 </header>
