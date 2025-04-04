@@ -1,5 +1,5 @@
-<?php
-include '../includes/db.php';
+<?php include '../includes/db.php';
+session_start();
 
 // Funções auxiliares
 function renderStars($rating) {
@@ -161,8 +161,9 @@ $companies = $stmt->fetchAll();
 
         <?php if (count($companies) > 0): ?>
             <div class="company-grid">
-                <?php foreach ($companies as $company): ?>
-                    <div class="company-card clickable-card" data-id="<?= $company['COMPANY_ID'] ?>">
+                <?php foreach ($companies as $company):
+                    $companyId = urlencode($company['COMPANY_ID']);?>
+                    <div class="company-card clickable-card" data-id="<?= $companyId ?>" onclick="redirectToCompany('<?= $companyId ?>')">
                         <img src="<?= htmlspecialchars($company['IMG_URL']) ?>" alt="<?= htmlspecialchars($company['COMPANY_NAME']) ?>" class="company-img">
                         <div class="company-info">
                             <h3><?= htmlspecialchars($company['COMPANY_NAME']) ?></h3>

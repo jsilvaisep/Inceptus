@@ -672,7 +672,6 @@ function initNewsCarousel() {
 // noticias
 function enviarResposta(postId) {
     const resposta = document.getElementById("post_response" + postId).value;
-
     if (resposta.trim() !== "") {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "/pages/noticias.php", true);
@@ -681,7 +680,6 @@ function enviarResposta(postId) {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
-                    //alert(resposta);
                     document.getElementById("post_response" + postId).value = "";
                 } else {
                     alert("Erro ao enviar resposta.");
@@ -697,4 +695,10 @@ function redirectToProduct(productId) {
     // Carrega a página do produto específico com o ID fornecido
     const searchParams = `id=${productId}`;
     loadPage('produtocompleto', searchParams);
+}
+
+function redirectToCompany(productId) {
+    // Carrega a página do produto específico com o ID fornecido
+    const searchParams = `id=${productId}`;
+    loadPage('empresacompleta', searchParams);
 }

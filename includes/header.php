@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="assets/css/empresas.css">
     <link rel="stylesheet" href="assets/css/criarProdutos.css">
     <link rel="stylesheet" href="assets/css/noticias.css">
+    <link rel="stylesheet" href="assets/css/produtocompleto.css">
+    <link rel="stylesheet" href="assets/css/empresacompleta.css">
     <script src="assets/js/app.js" defer></script>
 
     <!-- Tagify -->
