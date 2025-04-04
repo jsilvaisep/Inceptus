@@ -157,6 +157,7 @@ function setupPageScripts(page) {
     const searchInput = document.getElementById('search-input');
     const resultsDiv = document.getElementById('search-results');
     const starContainer = document.getElementById('stars');
+    const starInput = document.getElementById('.filter-section.stars');
     const toggleInputs = document.querySelectorAll('#projectToggle input[name="type"]');
     const tagSection = document.querySelector('.filter-section.tags');
     const tagInput = document.getElementById('tags');
@@ -326,8 +327,6 @@ function setupPageScripts(page) {
 
         let tags = new URLSearchParams(window.location.search).get('tags');
 
-        console.log(tags);
-
         let minViews = new URLSearchParams(window.location.search).get('min_views');
         let maxViews = new URLSearchParams(window.location.search).get('max_views');
 
@@ -360,9 +359,7 @@ function setupPageScripts(page) {
 
         const toggleContent = document.querySelector('.filter-section.custom-toggle-wrapper');
 
-        if (toggleContent) {
-            toggleContent.remove();
-        }
+        if (toggleContent)    toggleContent.remove();
 
         let selectedRank = parseInt(new URLSearchParams(window.location.search).get('rank')) || null;
 
@@ -532,6 +529,11 @@ function setupPageScripts(page) {
     }
 
     if (page === 'noticias') {
+        // $(".filter-section").remove();
+        // $(".filter-section.custom-toggle-wrapper").remove();
+        // $(".filter-section.views-filter").remove();
+        // $(".filter-section.tags").remove();
+
         document.querySelectorAll('.pagination a').forEach(link => {
             link.addEventListener('click', function (e) {
                 e.preventDefault();
