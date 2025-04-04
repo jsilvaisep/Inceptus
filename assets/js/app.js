@@ -135,6 +135,59 @@ function closeModal() {
 // SPA: Scripts locais da página carregada
 // ==========================
 function setupPageScripts(page) {
+    if (page === 'produtocompleto') {
+        const starContainer = document.getElementById('stars');
+        let value = 0; // Store the selected star rating
+    
+        if (starContainer) {
+            const stars = starContainer.querySelectorAll('.star');
+    
+            // Handle star rating selection
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    value = parseInt(star.getAttribute('data-value'));
+    
+                    // Remove 'selected' from all stars
+                    stars.forEach(s => s.classList.remove('selected'));
+    
+                    // Add 'selected' to stars up to the clicked one
+                    stars.forEach(s => {
+                        if (parseInt(s.getAttribute('data-value')) <= value) {
+                            s.classList.add('selected');
+                        }
+                    });
+                });
+            });
+    
+            document.getElementById('submit-review').addEventListener('click', () => {
+                const comentario = document.getElementById('comment').value;
+    
+                const form = new FormData();
+                form.append('rank', value);
+                form.append('comment_text', comentario);
+                const productId = document.getElementById('product-data').getAttribute('data-product-id');
+
+                fetch('?page=produtocompleto&id=' + productId , {
+                    method: 'POST',
+                    body: form
+                })
+                .then(response => response.text())  // Read the response as text
+                .then(responseText => {
+                    console.log("Response from server:", responseText);  // Debug: Check response
+                    if (responseText.includes('Comentário enviado com sucesso!')) {
+                        alert('Comentário enviado com sucesso!');
+                    } else {
+                        alert('Erro ao enviar o comentário.');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error with the fetch operation:", error);
+                });
+                
+            });
+        }
+    }
+    
     // Pesquisa AJAX dinâmica para produtos e empresas
     if (page === 'produtos') {
         const searchInput = document.getElementById('search-input');

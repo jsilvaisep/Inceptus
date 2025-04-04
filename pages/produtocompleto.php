@@ -1,12 +1,37 @@
 <?php include '../includes/db.php';
 session_start();
+
 if (isset($_SESSION['user'])) {
     $userID = $_SESSION['user']['user_id'];
     $userName = $_SESSION['user']['user_name'] ?? '';
-} else {
-    header("Location: /pages/redirect.php");
-    exit;
 }
+
+$userID = $_SESSION['user']['user_id'];
+$productId = $_GET['id'] ?? '';
+
+if (isset($_POST['rank'], $_POST['comment_text'])) {
+    $rank = $_POST['rank'];
+    $comment_text = $_POST['comment_text'];
+    $companyid = $_GET['COMPANY_ID'] ?? '';
+
+    try {
+        $stmt = $pdo->prepare("CALL INSERT_COMMENT(:user_id, :company_id, :product_id, :rank, :comment_text)");
+        $stmt->bindParam(':user_id', $userID, PDO::PARAM_INT);
+        $stmt->bindParam(':company_id', $companyid, PDO::PARAM_INT);
+        $stmt->bindParam(':product_id', $productId, PDO::PARAM_INT);
+        $stmt->bindParam(':rank', $rank, PDO::PARAM_INT);
+        $stmt->bindParam(':comment_text', $comment_text, PDO::PARAM_STR);
+
+        if ($stmt->execute()) {
+            echo 'Comentário enviado com sucesso!';
+        } else {
+            echo 'Erro ao enviar o comentário.';
+        }
+    } catch (PDOException $e) {
+        echo 'Erro ao processar a requisição: ' . $e->getMessage();
+    }
+}
+
 function renderStars($rating)
 {
     $fullStars = floor($rating);
@@ -22,10 +47,6 @@ function renderStars($rating)
 }
 
 $productId = $_GET['id'] ?? '';
-if (!$productId) {
-    echo '<p>Produto inválido.</p>';
-    exit;
-}
 
 $stmt = $pdo->prepare("SELECT p.*, c.COMPANY_NAME 
                        FROM PRODUCT p 
@@ -34,10 +55,6 @@ $stmt = $pdo->prepare("SELECT p.*, c.COMPANY_NAME
 $stmt->execute([$productId]);
 $product = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$product) {
-    echo '<p>Produto não encontrado.</p>';
-    exit;
-}
 
 // Buscar comentários no banco de dados
 $commentStmt = $pdo->prepare("SELECT c.COMMENT_TEXT, c.COMMENT_RANK, c.CREATED_AT, u.USER_NAME 
@@ -49,14 +66,6 @@ $commentStmt->execute([$productId]);
 $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($product['PRODUCT_NAME']) ?> - Divulgação de Produto</title>
-    <link rel="stylesheet" href="assets/css/produtocompleto.css">
-</head>
-
-<body>
     <div class="produto-completo-container">
         <!-- Botão "Voltar" -->
         <div class="botao-voltar-modal">
@@ -114,4 +123,20 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
                 <p>Não existem comentários para este produto.</p>
             <?php endif; ?>
         </div>
+        <br>
+        <div class="review-section">
+            <h2>Leave a Review</h2>
+                <h3>Avaliação</h3>
+                <form id="review-form" action="?page=produtocompleto&id=<?= htmlspecialchars($productId) ?>" method="POST">
+                <div id="product-data" data-product-id="<?= htmlspecialchars($productId) ?>"></div>
+                <div id="stars" class="stars">
+                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                        <span class="star <?= $rank === $i ? 'selected' : '' ?>" data-value="<?= $i ?>">★</span>
+                    <?php endfor; ?>
+                </div>
+            <textarea id="comment" placeholder="Write your comment here..."></textarea>
+            <button id="submit-review">Submit</button>
+            </form>
+        </div>
+
     </div>
