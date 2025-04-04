@@ -11,12 +11,10 @@ if (isset($_SESSION['user'])) {
     $userName = $_SESSION['user']['user_name'] ?? '';
     $imgFromSession = $_SESSION['user']['img_url'] ?? '';
 
-    // Se existir e for uma imagem válida (não precisa de existir fisicamente com file_exists)
     if (!empty($imgFromSession)) {
         $userImg = htmlspecialchars($imgFromSession);
     }
 
-    // Confirma se é ADMIN
     $stmt = $pdo->prepare("
         SELECT u.USER_TYPE_ID, ut.USER_TYPE
         FROM USER u
