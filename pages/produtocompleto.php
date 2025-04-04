@@ -27,10 +27,9 @@ if (!$productId) {
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT p.*, u.USER_NAME 
+$stmt = $pdo->prepare("SELECT p.*, c.COMPANY_NAME 
                        FROM PRODUCT p 
-                       INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID  
-                       INNER JOIN USER u ON u.USER_ID = c.USER_ID  
+                       INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID
                        WHERE p.PRODUCT_ID = ? AND p.PRODUCT_STATUS = 'A'");
 $stmt->execute([$productId]);
 $product = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -93,7 +92,7 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
             <h2>Descrição</h2>
             <p><?= nl2br(htmlspecialchars($product['PRODUCT_DESCRIPTION'])) ?></p>
             <p><strong>Visualizações:</strong> <?= $product['PRODUCT_VIEW_QTY'] ?></p>
-            <p><strong>Produzido por:</strong> <?= htmlspecialchars($product['USER_NAME']) ?></p>
+            <p><strong>Produzido por:</strong> <?= htmlspecialchars($product['COMPANY_NAME']) ?></p>
         </div>
 
         <!-- Seção de Comentários -->
@@ -106,7 +105,8 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
                             <p>"<?= htmlspecialchars($comment['COMMENT_TEXT']) ?>"</p>
                             <p class="product-rating"><?= renderStars($comment['COMMENT_RANK']) ?></p>
                             <footer>- <?= htmlspecialchars($comment['USER_NAME']) ?>, em
-                                <?= date('d/m/Y', strtotime($comment['CREATED_AT'])) ?></footer>
+                                <?= date('d/m/Y', strtotime($comment['CREATED_AT'])) ?>
+                            </footer>
                         </div>
                     <?php endforeach; ?>
                 </div>
