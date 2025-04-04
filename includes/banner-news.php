@@ -189,7 +189,7 @@ $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 </style>
 
-<script>
+<!-- <script>
     document.addEventListener("DOMContentLoaded", () => {
         let slides = document.querySelectorAll('.news-slide');
         let current = 0;
@@ -240,4 +240,4 @@ $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
             showSlide(current);
         }, 7000);
     });
-</script>
+</script> -->
