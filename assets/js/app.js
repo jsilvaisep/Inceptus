@@ -32,16 +32,27 @@ function loadPage(page, search = '') {
 }
 
 
+function abrirNoticia(postId) {
+    fetch(`pages/noticias.php?id=${postId}&modal=true`)
+        .then(res => res.text())
+        .then(html => {
+            const modal = document.getElementById("modal-container");
+            modal.innerHTML = html;
+            modal.style.display = "block"; // <- essencial!
+            document.body.classList.add("no-scroll");
+            setupGlobalModalListeners(); // se tiveres coisas como ESC ou fechar
+        });
+}
 
 
 //Abre o form após clicar no botão de Criar Produto
 function criarProduto(){
         document.getElementById("modalOverlay").style.display = "flex";
-    
+
     document.getElementById("closeModal").addEventListener("click", function() {
         document.getElementById("modalOverlay").style.display = "none";
     });
-    
+
 }
 
 //Recebe o form e verifica os campos ao criar Produto
@@ -64,22 +75,22 @@ document.addEventListener("submit", function (event) {
         const previewContainer = document.getElementById("preview-container");
         previewContainer.innerHTML = "";
         const files = event.target.files;
-    
+
         if (files.length < 1 || files.length > 5) {
             alert("Você deve selecionar no mínimo 1 e no máximo 5 imagens.");
             event.target.value = "";
             return;
         }
-    
+
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
-    
+
             if (!file.type.match("image.*")) {
                 alert("Apenas arquivos de imagem são permitidos.");
                 event.target.value = "";
                 return;
             }
-    
+
             const reader = new FileReader();
             reader.onload = function (e) {
                 const imgElement = document.createElement("img");
@@ -115,9 +126,9 @@ function reloadNavbar() {
 // ==========================
 // Fecha algum modal que esteja aberto.
 // ==========================
-function closeModal() {
-    document.getElementById('modal-container').innerHTML = '';
-}
+// function closeModal() {
+//     document.getElementById('modal-container').innerHTML = '';
+// }
 
 // ==========================
 // Para alternar entre mostrar todo o texto ou apenas um pouco.
@@ -143,23 +154,24 @@ function closeModal() {
 // SPA: Scripts locais da página carregada
 // ==========================
 function setupPageScripts(page) {
+    const searchInput = document.getElementById('search-input');
+    const resultsDiv = document.getElementById('search-results');
+    const starContainer = document.getElementById('stars');
+    const toggleInputs = document.querySelectorAll('#projectToggle input[name="type"]');
+    const tagSection = document.querySelector('.filter-section.tags');
+    const tagInput = document.getElementById('tags');
+    const minViewsInput = document.getElementById('min-views');
+    const maxViewsInput = document.getElementById('max-views');
+
     // Pesquisa AJAX dinâmica para produtos e empresas
     if (page === 'produtos') {
-        const searchInput = document.getElementById('search-input');
-        const resultsDiv = document.getElementById('search-results');
-        const starContainer = document.getElementById('stars');
-        const toggleInputs = document.querySelectorAll('#projectToggle input[name="type"]');
-        const tagSection = document.querySelector('.filter-section.tags');
-        const minViewsInput = document.getElementById('min-views');
-        const maxViewsInput = document.getElementById('max-views');
-
         let minViews = new URLSearchParams(window.location.search).get('min_views');
         let maxViews = new URLSearchParams(window.location.search).get('max_views');
 
         if (minViewsInput && maxViewsInput) {
             if (minViews) minViewsInput.value = minViews;
             if (maxViews) maxViewsInput.value = maxViews;
-        
+
             // Adiciona listeners aos inputs
             minViewsInput.addEventListener('input', triggerViewsFilter);
             maxViewsInput.addEventListener('input', triggerViewsFilter);
@@ -168,14 +180,13 @@ function setupPageScripts(page) {
         function triggerViewsFilter() {
             const min = minViewsInput.value;
             const max = maxViewsInput.value;
-        
+
             if (min && max) {
                 minViews = min;
                 maxViews = max;
                 loadWithFilters();
-            } 
+            }
         }
-        
 
         if(tagSection) {
             tagSection.remove();
@@ -290,15 +301,7 @@ function setupPageScripts(page) {
     if (page === 'empresas') {
         filterCompanies();
 
-        const searchInput = document.getElementById('search-input');
-        const resultsDiv = document.getElementById('search-results');
-        const starContainer = document.getElementById('stars');
-        // 👁 FILTRO DE VIEWS
-        const minViewsInput = document.getElementById('min-views');
-        const maxViewsInput = document.getElementById('max-views');
-
         //TAGS
-        const tagInput = document.getElementById('tags');
         if (tagInput) {
             var tagify = new Tagify(tagInput);
 
@@ -347,7 +350,7 @@ function setupPageScripts(page) {
         function triggerViewsFilter() {
             const min = minViewsInput.value;
             const max = maxViewsInput.value;
-        
+
             if (min && max) {
                 minViews = min;
                 maxViews = max;
@@ -360,7 +363,7 @@ function setupPageScripts(page) {
         if (toggleContent) {
             toggleContent.remove();
         }
-        
+
         let selectedRank = parseInt(new URLSearchParams(window.location.search).get('rank')) || null;
 
         // 🌟 ESTRELAS
@@ -444,7 +447,7 @@ function setupPageScripts(page) {
         function loadWithFilters() {
             const search = document.getElementById('search-input')?.value.trim() || '';
             const url = new URLSearchParams();
-        
+
             if (search) url.set('search', search);
             if (selectedRank !== null) url.set('rank', selectedRank);
             if (minViews && maxViews) {
@@ -526,6 +529,29 @@ function setupPageScripts(page) {
                 }
             });
         }
+    }
+
+    if (page === 'noticias') {
+        document.querySelectorAll('.pagination a').forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                const urlParams = new URL(this.href).searchParams;
+                const pageNum = urlParams.get('page');
+                if (pageNum) {
+                    const currentParams = new URLSearchParams(window.location.search);
+                    currentParams.set('page', pageNum);
+                    loadPage('noticias', currentParams.toString());
+                }
+            });
+        });
+        document.querySelectorAll('.open-modal-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const postId = this.getAttribute('data-id');
+                if (postId) {
+                    abrirNoticia(postId);
+                }
+            });
+        });
     }
 
     setupGlobalModalListeners();
@@ -701,6 +727,7 @@ function enviarResposta(postId) {
         alert("Por favor, escreva uma resposta.");
     }
 }
+
 function redirectToProduct(productId) {
     // Carrega a página do produto específico com o ID fornecido
     const searchParams = `id=${productId}`;
@@ -716,66 +743,3 @@ function redirectToCompany(productId) {
 function redirectToLogin() {
     loadPage('login');
 }
-// teste para elimnar o carregamento em duplicado 
-
-let isPageLoading = false;
-
-function loadPage(page, search = '') {
-    if (isPageLoading) return;  // Evita carregamento duplicado
-
-    isPageLoading = true;
-    let url = 'pages/' + page + '.php';
-    if (search) url += '?' + search;
-
-    fetch(url)
-        .then(response => {
-            if (!response.ok) throw new Error('Erro ao carregar');
-            return response.text();
-        })
-        .then(html => {
-            document.getElementById('content').innerHTML = html;
-            history.replaceState(null, '', '?page=' + page + (search ? '&' + search : ''));
-            setupPageScripts(page);
-            isPageLoading = false;  // Libera o carregamento
-        })
-        .catch(() => {
-            document.getElementById('content').innerHTML = '<h3>Página não encontrada.</h3>';
-            isPageLoading = false;
-        });
-}
-
-let debounce;
-searchInput.addEventListener('input', () => {
-    const query = searchInput.value.trim();
-    clearTimeout(debounce);
-    debounce = setTimeout(() => {
-        if (!query) {
-            resultsDiv.innerHTML = '';
-            return;
-        }
-
-        fetch(`includes/search-products.php?q=${encodeURIComponent(query)}`)
-            .then(res => res.text())
-            .then(html => {
-                resultsDiv.innerHTML = html;
-            });
-    }, 300);  // Evita múltiplas requisições em um curto espaço de tempo
-});
-
-function closeModal() {
-    const modalContainer = document.getElementById('modal-container');
-    modalContainer.innerHTML = '';  // Limpa o conteúdo do modal
-    document.body.classList.remove('no-scroll');  // Libera o scroll
-}
-
-document.querySelectorAll('.clickable-card').forEach(card => {
-    card.addEventListener('click', () => {
-        console.log('Card clicado');
-        const id = card.dataset.id;
-        fetch(`pages/${page}.php?id=${id}&modal=true`)
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById("modal-container").innerHTML = html;
-            });
-    });
-});
