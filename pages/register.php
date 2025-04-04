@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'] ?? '';
     $confirm = $_POST['confirm_password'] ?? '';
+    $is_company = isset($_POST['is_company']) && $_POST['is_company'] === '1';
 
     if (!$name || !$email || !$password || !$confirm) {
         echo json_encode(['success' => false, 'message' => 'Preencha todos os campos.']);
@@ -49,28 +50,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        $user_id = bin2hex(random_bytes(18));
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-        $type_stmt = $pdo->prepare("SELECT TYPE_ID FROM USER_TYPE WHERE USER_TYPE = 'SUSER'");
-        $type_stmt->execute();
-        $type_id = $type_stmt->fetchColumn();
-
-        if (!$type_id) {
-            echo json_encode(['success' => false, 'message' => 'Tipo de utilizador SUSER não encontrado.']);
-            exit;
+        if ($is_company) {
+            $stmt = $pdo->prepare("CALL INSERT_COMPANY (?, ?, ?, ?, ?, ?, ?)");
+            $login = 'company_' . uniqid();
+            $stmt->execute([$name, 'Nome da Empresa', $login, $email, $password_hash, $imgPath, $email]);
+        } else {
+           
+           
+           
+           // TODO - Colocar um IF para empresa ou user normal "CALL INSERT_COMPANY (?, ?, ?, ?)"
+            $stmt = $pdo->prepare("CALL INSERT_USER (?, ?, ?, ?, ?)");
+            $login = 'user_' . uniqid();
+            $stmt->execute([$name, $login, $email, $password_hash, $imgPath]);
         }
-        // TODO - Colocar um IF para empresa ou user normal "CALL INSERT_COMPANY (?, ?, ?, ?)"
-        $stmt = $pdo->prepare("CALL INSERT_USER (?, ?, ?, ?, ?)");
-        $stmt->execute([$name, $user_login, $email, $password_hash, $imgPath]);
-
-        $_SESSION['user'] = [
-            'user_id' => $user_id,
-            'user_name' => $name,
-            'user_email' => $email,
-            'img_url' => $imgPath,
-            'type_id' => $type_id
-        ];
 
         echo json_encode(['success' => true, 'message' => 'Conta criada com sucesso.']);
         exit;
@@ -81,6 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 
 <div class="form-container">
     <form class="form-box" id="register-form" method="POST" enctype="multipart/form-data">
@@ -99,6 +94,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <label for="profile_img">Foto de Perfil (opcional):</label>
         <input type="file" name="profile_img" accept="image/*">
+
+        <label>
+            <input type="checkbox" name="is_company" value="1" />
+            Registar como empresa
+        </label>
 
         <button type="submit">Criar Conta</button>
         <p id="register-msg" class="msg" style="margin-top: 10px;"></p>
