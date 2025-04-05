@@ -15,8 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $company_email = $_POST['company_email'] ?? '';
     $site = $_POST['site'] ?? '';
 
-    if (!$name || !$email || !$password || !$confirm) {
-        echo json_encode(['success' => false, 'message' => 'Preencha todos os campos.']);
+    if (!$name || !$email || !$password || !$confirm || !$login) {
+        echo json_encode(['success' => false, 'message' => 'Preencha todos os campos obrigatórios.']);
         exit;
     }
 
@@ -35,10 +35,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $imgPath = null;
         if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = '../uploads/';
-            if (!is_dir($uploadDir))
+            $uploadDir = __DIR__ . '/../uploads/';
+            if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0755, true);
-            $filename = uniqid() . '_' . basename($_FILES['profile_img']['name']);
+            }
+
+            $ext = pathinfo($_FILES['profile_img']['name'], PATHINFO_EXTENSION);
+            $filename = uniqid('img_', true) . '.' . $ext;
             $targetPath = $uploadDir . $filename;
 
             $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -51,6 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (move_uploaded_file($_FILES['profile_img']['tmp_name'], $targetPath)) {
                 $imgPath = 'uploads/' . $filename;
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Erro ao guardar a imagem.']);
+                exit;
             }
         }
 
@@ -58,14 +64,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($is_company) {
             $stmt = $pdo->prepare("CALL INSERT_COMPANY (?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$name, $company_name, $login, $email, $password_hash, $imgPath, $company_email, $site]);
+            $stmt->execute([$name, $company_name, $login, $email, $password_hash, $imgPath, $company_email, $site]);
         } else {
             $stmt = $pdo->prepare("CALL INSERT_USER (?, ?, ?, ?, ?)");
             $stmt->execute([$name, $login, $email, $password_hash, $imgPath]);
         }
 
+        // Buscar o utilizador recém-criado para iniciar sessão
+        $stmt = $pdo->prepare("SELECT USER_ID, USER_NAME, USER_TYPE_ID, IMG_URL FROM USER WHERE USER_EMAIL = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            $_SESSION['user'] = [
+                'user_id' => bin2hex($user['USER_ID']),
+                'user_name' => $user['USER_NAME'],
+                'user_type' => $user['USER_TYPE_ID'],
+                'img_url' => $user['IMG_URL']
+            ];
+        }
+
         echo json_encode(['success' => true, 'message' => 'Conta criada com sucesso.']);
         exit;
+
     } catch (PDOException $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
@@ -74,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-
+<!-- HTML do formulário -->
 <div class="form-container">
     <form class="form-box" id="register-form" method="POST" enctype="multipart/form-data">
         <h2>Criação de Conta</h2>

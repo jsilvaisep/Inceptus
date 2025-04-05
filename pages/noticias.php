@@ -105,29 +105,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_id'], $_POST['re
     }
 }
 ?>
-
-<script>
-    function enviarResposta(postId) {
-        const resposta = document.getElementById("post_response" + postId).value;
-        if (resposta.trim() !== "") {
-            const formData = new FormData();
-            formData.append('post_id', postId);
-            formData.append('resposta', resposta);
-
-            fetch('/pages/noticias.php', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById("post_response" + postId).value = "";
-                    loadPage('noticias'); // Recarregar a página para mostrar o novo comentário
-                })
-                .catch(error => {
-                    alert("Erro ao enviar resposta: " + error);
-                });
-        } else {
-            alert("Por favor, escreva uma resposta.");
-        }
-    }
-</script>
