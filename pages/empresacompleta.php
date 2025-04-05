@@ -91,7 +91,7 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
             <h2>Descrição</h2>
             <p><?= nl2br(htmlspecialchars($company['COMPANY_DESCRIPTION'])) ?></p>
             <p><strong>Visualizações:</strong> <?= $company['COMPANY_VIEW_QTY'] ?></p>
-            <p><strong>Produzido por:</strong> <?= htmlspecialchars($company['USER_NAME']) ?></p>
+            <p><strong>Produzido por:</strong> <?= htmlspecialchars($company['COMPANY_NAME']) ?></p>
         </div>
 
         <!-- Seção de Comentários -->

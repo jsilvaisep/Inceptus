@@ -329,6 +329,17 @@
 
             //TAGS
             if (tagInput) {
+                if (window.Tagify) {
+                    const originalNumberFormat = Intl.NumberFormat;
+                    
+                    Intl.NumberFormat = function(locale, options) {
+                        if (options && options.style === 'currency' && !options.currency) {
+                            options.currency = 'EUR'; 
+                        }
+                        return new originalNumberFormat(locale, options);
+                    };
+                }
+                
                 var tagify = new Tagify(tagInput);
 
                 let initialTags = new URLSearchParams(window.location.search).get('tags');
@@ -596,31 +607,14 @@
 
 
         if (page === 'noticias') {
-            // $(".filter-section").remove();
-            // $(".filter-section.custom-toggle-wrapper").remove();
-            // $(".filter-section.views-filter").remove();
-            // $(".filter-section.tags").remove();
-
-            document.querySelectorAll('.pagination a').forEach(link => {
-                link.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const urlParams = new URL(this.href).searchParams;
-                    const pageNum = urlParams.get('page');
-                    if (pageNum) {
-                        const currentParams = new URLSearchParams(window.location.search);
-                        currentParams.set('page', pageNum);
-                        loadPage('noticias', currentParams.toString());
+            document.querySelectorAll('.open-modal-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const postId = this.getAttribute('data-id');
+                    if (postId) {
+                        abrirNoticia(postId);
                     }
                 });
             });
-            // document.querySelectorAll('.open-modal-btn').forEach(btn => {
-            //     btn.addEventListener('click', function () {
-            //         const postId = this.getAttribute('data-id');
-            //         if (postId) {
-            //             abrirNoticia(postId);
-            //         }
-            //     });
-            // });
         }
 
         setupGlobalModalListeners();
@@ -807,15 +801,18 @@
         const searchParams = `id=${productId}`;
         loadPage('produtocompleto', searchParams);
     }
+    window.redirectToProduct = redirectToProduct;
 
     function redirectToCompany(productId) {
         // Carrega a página do produto específico com o ID fornecido
         const searchParams = `id=${productId}`;
         loadPage('empresacompleta', searchParams);
     }
+    window.redirectToCompany = redirectToCompany;
 
     function redirectToLogin() {
         loadPage('login');
     }
+    window.redirectToLogin = redirectToLogin;
 
 })();
