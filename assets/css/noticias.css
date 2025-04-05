@@ -6,13 +6,19 @@
 }
 
 .news-page {
-    width: 100%;
+    width: 80%;
     text-align: center;
 }
 
-.news-page h1 {
+.news-title {
     margin-bottom: 2rem;
+    text-align: left;
     color: #be3144;
+}
+
+.news-subtitle {
+    text-align: left;
+    padding-bottom: 10px;
 }
 
 .news-grid {
@@ -31,6 +37,10 @@
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
+}
+
+.news-body{
+    text-align: left;
 }
 
 .news-card:hover {
@@ -143,10 +153,6 @@
 .news-sidebar {
     width: 20%;
     padding-right: 10px;
-}
-
-.news-page {
-    width: 80%;
 }
 
 /* Responsividade */

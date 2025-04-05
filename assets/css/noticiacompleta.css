@@ -1,0 +1,136 @@
+/* Estilo base */
+.news-container.full {
+    padding: 40px 20px;
+    max-width: 800px;
+    margin: auto;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff;
+    color: #333;
+  }
+  
+  /* Título e subtítulo */
+  .news-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .news-page h1 {
+    margin:0;
+  }
+
+  .news-subtitle {
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: #555;
+    margin: 0;
+  }
+  
+  /* Meta da empresa */
+  .news-meta {
+    display: flex;
+    align-items: center;
+  }
+  
+  .company-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 1px solid #ddd;
+  }
+  
+  .meta-info {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .company-name {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  
+  .news-date {
+    font-size: 0.85rem;
+    color: #888;
+  }
+  
+  /* Corpo da notícia */
+  .news-body {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+  
+  /* Comentários */
+  .news-comments h4 {
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-top: 1px solid #eee;
+    padding-top: 30px;
+  }
+  
+  /* Cartão de comentário */
+  .news-card.comment {
+    border: 1px solid #eaeaea;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 15px;
+    background-color: #fafafa;
+  }
+  
+  .news-card.comment .news-text {
+    margin: 0 0 8px;
+  }
+  
+  .news-card-footer {
+    font-size: 0.8rem;
+    color: #999;
+  }
+  
+  /* Formulário de comentário */
+  .news-comments form {
+    margin-top: 20px;
+  }
+  
+  .news-comments textarea {
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: inherit;
+    resize: vertical;
+    margin-bottom: 10px;
+  }
+  
+  .news-comments button {
+    background-color: #b42e34;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+  }
+  
+  .news-comments button:hover {
+    background-color: #941d22;
+  }
+
+  .news-page.full {
+    width: 100%;
+  }
+  
+  /* Responsivo */
+  @media (max-width: 600px) {
+    .news-meta {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  
+    .company-logo {
+      margin-bottom: 10px;
+    }
+  }
+  

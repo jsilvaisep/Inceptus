@@ -772,29 +772,33 @@
 
 
     // noticias
-    function enviarResposta(postId) {
-        const resposta = document.getElementById("post_response" + postId).value;
-        if (resposta.trim() !== "") {
-            const formData = new FormData();
-            formData.append('post_id', postId);
-            formData.append('resposta', resposta);
-
-            fetch('/pages/noticias.php', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => response.text())
-                .then(data => {
-                    document.getElementById("post_response" + postId).value = "";
-                    loadPage('noticias'); // Recarrega a página para mostrar o novo comentário
-                })
-                .catch(error => {
-                    alert("Erro ao enviar resposta: " + error);
-                });
-        } else {
-            alert("Por favor, escreva uma resposta.");
+    function enviarRespostaNoticia(postId) {
+        const textarea = document.getElementById("post_response" + postId);
+        const resposta = textarea.value.trim();
+        if (!resposta) {
+            alert("Por favor, escreva um comentário.");
+            return false;
         }
+    
+        fetch(`pages/noticiacompleta.php?id=${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: `resposta=${encodeURIComponent(resposta)}`
+        })
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById("comment-section").innerHTML = html;
+            textarea.value = "";
+        })
+        .catch(() => {
+            alert("Erro ao submeter o comentário.");
+        });
+    
+        return false;
     }
+    
 
     function redirectToProduct(productId) {
         // Carrega a página do produto específico com o ID fornecido
