@@ -122,16 +122,15 @@ $products = $productStmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <!-- Seção de Notícias -->
     <div class="noticias">
         <h2>Notícias de <?= htmlspecialchars($company['COMPANY_NAME']) ?></h2>
         <?php if (count($posts) > 0): ?>
             <div class="noticias-lista">
                 <?php foreach ($posts as $post): ?>
-                    <div class="noticia-item">
+                    <a href="?page=noticiacompleta&id=<?= urlencode($post['POST_ID']) ?>">
                         <p><strong>Publicado em:</strong> <?= htmlspecialchars(date("d/m/Y H:i", strtotime($post['CREATED_AT']))) ?></p>
                         <p><?= nl2br(htmlspecialchars($post['POST_CONTENT'])) ?></p>
-                    </div>
+                    </a>
                     <hr>
                 <?php endforeach; ?>
             </div>
