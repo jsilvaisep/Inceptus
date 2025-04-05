@@ -38,16 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resposta'])) {
         ORDER BY pe.CREATED_AT DESC");
     $stmt->execute([$postId]);
     $comentarios = $stmt->fetchAll();
-    foreach ($comentarios as $comentario): ?>
-        <div class="news-card comment">
-            <div class="news-card-content">
-                <p class="news-text"><strong><?= htmlspecialchars($comentario['USER_NAME']) ?>:</strong> <?= nl2br(htmlspecialchars($comentario['POST_EXT_CONTENT'])) ?></p>
-            </div>
-            <div class="news-card-footer">
-                <span class="news-date">🕒 <?= htmlspecialchars($comentario['CREATED_AT']) ?></span>
-            </div>
-        </div>
-    <?php endforeach;
     return;
 }
 
@@ -66,7 +56,6 @@ $comentarios = $stmt->fetchAll();
             <div class="news-article">
                 <h1 class="news-title"><?= htmlspecialchars($noticia['TITLE']) ?></h1>
                 <h2 class="news-subtitle"><?= htmlspecialchars($noticia['SUBTITLE']) ?></h2>
-
                 <div class="news-meta">
                     <img src="<?= htmlspecialchars($noticia['IMG_URL']) ?>" alt="<?= htmlspecialchars($noticia['COMPANY_NAME']) ?>" class="company-logo">
                     <div class="meta-info">
@@ -86,9 +75,10 @@ $comentarios = $stmt->fetchAll();
                 <?php foreach ($comentarios as $comentario): ?>
                     <div class="news-card comment">
                         <div class="news-card-content">
-                            <p class="news-text"><strong><?= htmlspecialchars($comentario['USER_NAME']) ?>:</strong> <?= nl2br(htmlspecialchars($comentario['POST_EXT_CONTENT'])) ?></p>
+                            <p class="news-text"><?= nl2br(htmlspecialchars($comentario['POST_EXT_CONTENT'])) ?></p>
                         </div>
                         <div class="news-card-footer">
+                            <span class="news-author">👤 <?= htmlspecialchars($comentario['USER_NAME']) ?></span>
                             <span class="news-date">🕒 <?= htmlspecialchars($comentario['CREATED_AT']) ?></span>
                         </div>
                     </div>
