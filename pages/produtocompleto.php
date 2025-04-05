@@ -7,8 +7,7 @@ if (isset($_SESSION['user'])) {
     header("Location: /pages/redirect.php");
     exit;
 }
-function renderStars($rating)
-{
+function renderStars($rating){
     $fullStars = floor($rating);
     $halfStar = ($rating - $fullStars) >= 0.5 ? 1 : 0;
     $emptyStars = 5 - ($fullStars + $halfStar);
