@@ -19,7 +19,7 @@
     border-top: 2px solid #be3144;
     border-bottom: 2px solid #be3144;
     background-color: #fff;
-    padding: 10px 0;
+    padding: 20px 0;
 }
 
 .carousel-track {

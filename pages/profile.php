@@ -16,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Atualiza imagem de perfil (se enviada)
     if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = __DIR__ . '/../uploads/';
         if (!is_dir($uploadDir)) {
@@ -44,11 +43,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // Atualizar dados do utilizador
         $stmt = $pdo->prepare("UPDATE USER SET USER_NAME = ?, USER_EMAIL = ?, IMG_URL = ? WHERE USER_ID = ?");
         $stmt->execute([$userName, $userEmail, $imgPath, $userId]);
 
-        // Atualizar dados da empresa se aplicável
         if ($isCompany) {
             $companyName = $_POST['company_name'] ?? '';
             $companyEmail = $_POST['company_email'] ?? '';
@@ -58,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$companyName, $companyEmail, $companySite, $userId]);
         }
 
-        // Atualizar sessão
         $_SESSION['user']['user_name'] = $userName;
         $_SESSION['user']['user_email'] = $userEmail;
         $_SESSION['user']['img_url'] = $imgPath;
@@ -70,7 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// GET: Mostrar formulário
 $user = $_SESSION['user'] ?? [];
 $isCompany = ($user['user_type'] ?? '') === 'COMPANY';
 

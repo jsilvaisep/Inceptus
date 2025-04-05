@@ -549,6 +549,30 @@ function setupPageScripts(page) {
                 }
             });
         }
+        // Toggle de empresa → mostra campos extra
+const toggle = document.getElementById('toggleCompany');
+const companyFields = document.getElementById('company-fields');
+
+if (toggle && companyFields) {
+    toggle.addEventListener('change', () => {
+        companyFields.style.display = toggle.checked ? 'block' : 'none';
+
+        // Campos obrigatórios apenas se for empresa
+        const name = document.getElementById('company_name');
+        const email = document.getElementById('company_email');
+        const site = document.getElementById('company_site');
+
+        if (name && email && site) {
+            name.required = toggle.checked;
+            email.required = toggle.checked;
+            site.required = toggle.checked;
+        }
+    });
+
+    // Trigger inicial se já estiver selecionado
+    toggle.dispatchEvent(new Event('change'));
+}
+
     }
 
     // Profile
