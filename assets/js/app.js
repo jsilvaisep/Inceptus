@@ -111,6 +111,27 @@ document.addEventListener("submit", function (event) {
         }
     });
 
+    // ==========================
+// Dropdown do utilizador
+// ==========================
+function setupUserDropdownHoverFix() {
+    const dropdowns = document.querySelectorAll('.user-dropdown');
+    dropdowns.forEach(dropdown => {
+        let timeout;
+
+        dropdown.addEventListener('mouseenter', () => {
+            clearTimeout(timeout);
+            dropdown.classList.add('show');
+        });
+
+        dropdown.addEventListener('mouseleave', () => {
+            timeout = setTimeout(() => {
+                dropdown.classList.remove('show');
+            }, 300);
+        });
+    });
+}
+
 
 // ==========================
 // Atualiza a barra de navegação, mantendo a lógica do SPA, sem recarregar a página inteira.
@@ -120,6 +141,8 @@ function reloadNavbar() {
         .then(res => res.text())
         .then(html => {
             document.querySelector('.main-header').outerHTML = html;
+            setupUserDropdownHoverFix();
+            
         });
 }
 
@@ -487,9 +510,9 @@ function setupPageScripts(page) {
                     .then(data => {
                         msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
                         if (data.success) {
+                            reloadNavbar();
                             setTimeout(() => {
                                 loadPage('home');
-                                reloadNavbar();
                             }, 1000);
                         }
                     })
@@ -517,8 +540,8 @@ function setupPageScripts(page) {
 
                     if (data.success) {
                         setTimeout(() => {
-                            loadPage('home');
                             reloadNavbar();
+                            loadPage('home');
                         }, 2000);
                     }
                 } catch {
@@ -527,6 +550,48 @@ function setupPageScripts(page) {
             });
         }
     }
+
+    // Profile
+    if (page === 'profile') {
+        const profileForm = document.getElementById('profile-form');
+        if (profileForm) {
+            profileForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const formData = new FormData(profileForm);
+                const msg = document.getElementById('profile-msg');
+                msg.textContent = 'A atualizar...';
+    
+                try {
+                    const res = await fetch('pages/profile.php', {
+                        method: 'POST',
+                        body: formData
+                    });
+    
+                    const data = await res.json();
+                    msg.textContent = data.message;
+                    msg.className = data.success ? 'success' : 'error';
+    
+                    if (data.success) {
+                        reloadNavbar(); // Atualiza a navbar com novo nome/imagem
+                    }
+                } catch {
+                    msg.textContent = 'Erro no servidor.';
+                    msg.className = 'error';
+                }
+            });
+    
+            const fileInput = document.querySelector('input[name="profile_img"]');
+            if (fileInput) {
+                fileInput.addEventListener('change', function (event) {
+                    const preview = document.getElementById('avatar-preview');
+                    if (event.target.files[0]) {
+                        preview.src = URL.createObjectURL(event.target.files[0]);
+                    }
+                });
+            }
+        }
+    }
+    
 
     if (page === 'noticias') {
         // $(".filter-section").remove();
@@ -621,12 +686,15 @@ function filterCompanies() {
 // SPA: Inicialização
 // ==========================
 window.addEventListener('DOMContentLoaded', () => {
+    
     const params = new URLSearchParams(window.location.search);
     const page = params.get('page') || 'home';
     params.delete('page');
     const search = params.toString();
 
     navigateTo(page, search);
+    setupUserDropdownHoverFix();
+
 
     document.body.addEventListener('click', e => {
         const link = e.target.closest('a');

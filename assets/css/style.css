@@ -428,7 +428,9 @@ footer {
 .profile-card input[type="text"],
 .profile-card input[type="email"],
 .profile-card input[type="password"],
-.profile-card input[type="file"] {
+.profile-card input[type="file"] ,
+.profile-card input[type="url"] {
+
     width: 100%;
     padding: 10px;
     margin-bottom: 12px;
@@ -581,4 +583,31 @@ footer {
 .top-rated-title {
     text-align: center;
     margin-bottom: 20px;
+}
+.success {
+    color: #28a745;
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+.error {
+    color: #dc3545;
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+.profile-card input[type="url"] {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-card input[type="url"]:focus {
+    white-space: normal;
+}
+
+.user-dropdown.show .dropdown-menu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }

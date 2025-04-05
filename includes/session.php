@@ -7,14 +7,28 @@ if (!file_exists(session_save_path())) {
 
 session_start();
 
+/**
+ * Verifica se o utilizador está autenticado
+ */
 function isLoggedIn() {
-    return isset($_SESSION['user']);
+    return isset($_SESSION['user']) && !empty($_SESSION['user']['user_id']);
 }
 
+/**
+ * Verifica se o utilizador está desautenticado
+ */
 function isLoggedOut() {
-    return !isset($_SESSION['user']);
+    return !isLoggedIn();
 }
-if (!isset($_SESSION['user']['user_id'])) {
-    header("Location: /auth/login.php");
-    exit();
+
+/**
+ * Se necessário forçar autenticação, utiliza esta função.
+ * Ideal para páginas não carregadas por SPA.
+ */
+function requireLogin() {
+    if (isLoggedOut()) {
+        // Redirecionar para login tradicional (ex: caso aceda direto a profile.php sem SPA)
+        header("Location: /?page=login");
+        exit();
+    }
 }
