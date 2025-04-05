@@ -779,20 +779,22 @@ function initNewsCarousel() {
 function enviarResposta(postId) {
     const resposta = document.getElementById("post_response" + postId).value;
     if (resposta.trim() !== "") {
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/pages/noticias.php", true);
+        const formData = new FormData();
+        formData.append('post_id', postId);
+        formData.append('resposta', resposta);
 
-        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    document.getElementById("post_response" + postId).value = "";
-                } else {
-                    alert("Erro ao enviar resposta.");
-                }
-            }
-        };
-        xhr.send("post_id=" + encodeURIComponent(postId) + "&resposta=" + encodeURIComponent(resposta));
+        fetch('/pages/noticias.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("post_response" + postId).value = "";
+                loadPage('noticias'); // Recarrega a página para mostrar o novo comentário
+            })
+            .catch(error => {
+                alert("Erro ao enviar resposta: " + error);
+            });
     } else {
         alert("Por favor, escreva uma resposta.");
     }
