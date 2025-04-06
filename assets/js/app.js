@@ -829,10 +829,11 @@
     }
     window.submitComentarioNoticia = submitComentarioNoticia;
 
-    function submitComentarioProduto(product_Id) {
+    function submitComentarioProduto(product_Id, company_id) {
         const textarea = document.getElementById('comment');
         const resposta = textarea.value.trim();
         const rank = document.getElementById('review');
+        const company = company_id.value;
         
 
         if (!resposta || !rank) {
@@ -849,12 +850,13 @@
             credentials: 'include',
             body: new URLSearchParams({
                 resposta: resposta,
-                rank: rank
+                rank: rank,
+                company: company
             })
         })
         .then(response => response.text())
         .then(html => {
-            console.log(product_Id, textarea.value, rank.value);
+            console.log(product_Id, company_id, textarea.value, rank.value);
             console.log("Comentário enviado com sucesso");
             textarea.value = '';
             document.getElementById('review').value = '';
