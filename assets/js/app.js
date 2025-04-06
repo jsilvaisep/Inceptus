@@ -833,7 +833,7 @@
     function submitComentarioProduto(product_Id) {
         const textarea = document.getElementById('comment');
         const resposta = textarea.value.trim();
-        const rank = document.getElementById('review');
+        const rank = document.getElementById('review')?.value;
         
 
         if (!resposta || !rank) {

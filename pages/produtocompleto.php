@@ -1,3 +1,4 @@
+
 <?php
 include '../includes/db.php';
 session_start();
@@ -14,17 +15,10 @@ if (isset($_SESSION['user'])) {
 // Verificar se a requisição é AJAX e se é um POST
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
-if ($isAjax && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($_POST['comment_rank'])) {
-    // Recuperar dados do POST
-    $resposta = trim($_POST['comment']);
-    $rank = $_POST['review'];
+if ($isAjax && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resposta']) && isset($_POST['rank'])) {
+    $resposta = trim($_POST['resposta']);
+    $rank = $_POST['rank'];
     $productId = $_GET['id'] ?? '';
-    $compamny_Id = $product['COMPANY_ID'] ?? '';
-
-    if (empty($productId)) {
-        echo 'ID do produto não fornecido.';
-        exit;
-    }
 
     // Recuperar o produto do banco de dados
     $stmt = $pdo->prepare("SELECT * FROM PRODUCT WHERE PRODUCT_ID = ?");
@@ -36,10 +30,12 @@ if ($isAjax && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])
         exit;
     }
 
-    // Inserir comentário no banco
+    $company_Id = $product['COMPANY_ID'] ?? '';
+
+    // Inserir comentário via stored procedure
     if (!empty($resposta) && !empty($rank)) {
         $stmt = $pdo->prepare("CALL INSERT_COMMENT (?, ?, ?, ?, ?)");
-        $stmt->execute([$userID, $compamny_Id, $productId, $rank, $resposta]);
+        $stmt->execute([$userID, $company_Id, $productId, $rank, $resposta]);
         echo 'Comentário inserido com sucesso!';
     } else {
         echo 'Por favor, preencha o comentário e a classificação.';
@@ -72,7 +68,7 @@ $commentStmt = $pdo->prepare("SELECT c.COMMENT_TEXT, c.COMMENT_RANK, c.CREATED_A
                               FROM COMMENT c 
                               INNER JOIN USER u ON u.USER_ID = c.USER_ID 
                               WHERE c.PRODUCT_ID = ? AND c.COMMENT_STATUS = 'A' 
-                              ORDER BY c.CREATED_AT DESC"); // Ordena pelos mais recentes
+                              ORDER BY c.CREATED_AT DESC");
 $commentStmt->execute([$productId]);
 $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -91,6 +87,7 @@ function renderStars($rating)
     return $starsHTML;
 }
 ?>
+
 
 <div class="produto-completo-container">
     <!-- Botão "Voltar" -->
