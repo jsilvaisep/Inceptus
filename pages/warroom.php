@@ -1,5 +1,13 @@
 <?php
 include '../includes/db.php';
+session_start();
+if (isset($_SESSION['user'])) {
+    $userID = $_SESSION['user']['user_id'];
+    $userName = $_SESSION['user']['user_name'] ?? '';
+} else {
+    header("Location: /pages/redirect.php");
+    exit;
+}
 
 // Buscar categorias e produtos
 $stmtCategories = $pdo->query("SELECT CATEGORY_ID, CATEGORY_NAME FROM CATEGORY WHERE CATEGORY_TYPE = 'PRODUTO'");
@@ -52,17 +60,19 @@ foreach ($products as $p) {
         <!-- Tabela de comparação -->
         <table class="comparison-table" id="comparison-table" style="display: none;">
             <thead>
-            <tr>
-                <!-- Cabeçalho gerado dinamicamente pelo JS -->
-            </tr>
+                <tr>
+                    <!-- Cabeçalho gerado dinamicamente pelo JS -->
+                </tr>
             </thead>
             <tbody id="comparison-body">
-            <!-- Corpo da tabela preenchido dinamicamente pelo JS -->
+                <!-- Corpo da tabela preenchido dinamicamente pelo JS -->
             </tbody>
         </table>
 
 
         <!-- Dados para o JavaScript -->
-        <div id="warroom-data" data-products='<?= json_encode($productMap, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>'></div>
+        <div id="warroom-data"
+            data-products='<?= json_encode($productMap, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>'>
+        </div>
     <?php endif; ?>
 </div>

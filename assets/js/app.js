@@ -825,164 +825,33 @@
     }
     window.submitComentarioNoticia = submitComentarioNoticia;
 
-    (function () {
-        let currentPage = null;
+    function submitComentarioProdutos(postId) {
+        const textarea = document.getElementById('comment');
+        const stars = document.getElementById('rank');
+        const resposta = textarea.value.trim();
+        const rank = stars.value;
 
-        window.navigateTo = function (page, search = '') {
-            if (page === currentPage) return;
-            currentPage = page;
-            loadPage(page, search);
-        };
+        if (!resposta) return;
 
-        function loadPage(page, search = '') {
-            let url = 'pages/' + page + '.php';
-            if (search) url += '?' + search;
+        fetch(`pages/noticiacompleta.php?id=${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'include', // ← ISTO É ESSENCIAL
+            body: new URLSearchParams({
+                resposta: [resposta, rank]
+            })
+        })
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('').innerHTML = html;
+                textarea.value = '';
+                //rank.value = '';
+            })
+            .catch(error => console.error('Erro ao enviar comentário:', error));
+    }
+    window.submitComentarioProdutos = submitComentarioProdutos;
 
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) throw new Error(`Erro ao carregar página: ${page}`);
-                    return response.text();
-                })
-                .then(html => {
-                    document.getElementById('content').innerHTML = html;
-                    history.replaceState(null, '', '?page=' + page + (search ? '&' + search : ''));
-                    setupPageScripts(page); // Configura scripts específicos da página
-                })
-                .catch(() => {
-                    document.getElementById('content').innerHTML = '<h3>Página não encontrada.</h3>';
-                });
-        }
-
-        /** Configurar JavaScript da página Warroom */
-        function setupPageScripts(page) {
-            if (page === 'warroom') {
-                setupWarroomPage();
-            }
-        }
-
-        /** Função principal da Warroom */
-        function setupWarroomPage() {
-            const categoryFilter = document.getElementById('category-filter'); // Dropdown de categoria
-            const productContainers = document.querySelectorAll('.product-select'); // Blocos de produtos
-            const productData = JSON.parse(document.getElementById('warroom-data').dataset.products); // Produtos raw
-            const comparisonTable = document.getElementById('comparison-table'); // Tabela de comparação
-            const comparisonBody = document.getElementById('comparison-body'); // Corpo da tabela de comparação
-            const selectedProducts = {}; // Produtos selecionados para cada slot (máx. 3)
-
-            /** Popula os produtos nos blocos de seleção com base na categoria */
-            function populateProductContainers(categoryId) {
-                // Filtrar produtos pela categoria ou listar todos
-                const products = categoryId === 'all'
-                    ? Object.values(productData).flat()
-                    : productData[categoryId] || [];
-
-                // Preencher cada container de produtos
-                productContainers.forEach(container => {
-                    container.innerHTML = ''; // Limpa o conteúdo anterior
-
-                    products.forEach(product => {
-                        const productOption = document.createElement('div');
-                        productOption.className = 'product-option';
-                        productOption.dataset.id = product.PRODUCT_ID;
-                        productOption.textContent = product.PRODUCT_NAME;
-
-                        productOption.addEventListener('click', function () {
-                            const slot = container.dataset.slot; // Em qual bloco estamos?
-                            const productId = this.dataset.id;
-
-                            // Desmarca produtos previamente selecionados no mesmo bloco
-                            container.querySelectorAll('.product-option.selected').forEach(el =>
-                                el.classList.remove('selected')
-                            );
-
-                            if (selectedProducts[slot] && selectedProducts[slot] === productId) {
-                                // Clique novamente no mesmo produto: remover seleção
-                                delete selectedProducts[slot];
-                            } else {
-                                // Marca o produto como selecionado
-                                this.classList.add('selected');
-                                selectedProducts[slot] = productId;
-                            }
-
-                            // Atualiza a tabela de comparação
-                            updateComparisonTable(Object.values(selectedProducts).map(id => {
-                                return Object.values(productData).flat().find(p => p.PRODUCT_ID == id);
-                            }));
-                        });
-
-                        container.appendChild(productOption);
-                    });
-                });
-            }
-
-            /** Atualiza a tabela de comparação com os dados dos produtos */
-            function updateComparisonTable(products) {
-                comparisonBody.innerHTML = ''; // Limpa o corpo da tabela anterior
-
-                if (products.length === 0) {
-                    comparisonTable.style.display = 'none';
-                    return;
-                }
-                comparisonTable.style.display = 'table';
-
-                // Atualiza o cabeçalho com os nomes dos produtos selecionados
-                const tableHeader = comparisonTable.querySelector('thead tr');
-                tableHeader.innerHTML = ''; // Limpa o cabeçalho
-
-                // Coluna inicial fixa ("Especificações")
-                const specHeader = document.createElement('th');
-                specHeader.textContent = 'Especificações';
-                tableHeader.appendChild(specHeader);
-
-                // Header dinâmica para cada produto selecionado
-                for (let i = 0; i < 3; i++) {
-                    const headerCell = document.createElement('th');
-                    headerCell.textContent = products[i] ? products[i].PRODUCT_NAME : 'Vazio'; // Nome do produto ou "Vazio"
-                    tableHeader.appendChild(headerCell);
-                }
-
-                // Linhas de especificações (atributos a comparar)
-                const attributes = [
-                    { label: 'Ranking do Produto', key: 'PRODUCT_RANK' },
-                    { label: 'Visualizações', key: 'PRODUCT_VIEW_QTY' }
-                ];
-
-                attributes.forEach(attribute => {
-                    const row = document.createElement('tr');
-
-                    // Primeira coluna: "Especificação"
-                    const specCell = document.createElement('td');
-                    specCell.textContent = attribute.label;
-                    specCell.classList.add('spec-column');
-                    row.appendChild(specCell);
-
-                    // Colunas com valores dos produtos
-                    products.forEach(product => {
-                        const valueCell = document.createElement('td');
-                        valueCell.textContent = product ? product[attribute.key] || '—' : '—'; // Valor ou "—"
-                        row.appendChild(valueCell);
-                    });
-
-                    // Preenche colunas vazias para garantir 3 colunas no total
-                    for (let i = 0; i < 3 - products.length; i++) {
-                        const emptyCell = document.createElement('td');
-                        emptyCell.textContent = '—';
-                        row.appendChild(emptyCell);
-                    }
-
-                    // Adiciona a linha ao corpo da tabela
-                    comparisonBody.appendChild(row);
-                });
-            }
-
-            // Listener do dropdown de categorias
-            categoryFilter.addEventListener('change', function () {
-                const categoryId = this.value; // Obtém ID da categoria selecionada
-                populateProductContainers(categoryId);
-            });
-
-            // Inicializa com todos os produtos
-            populateProductContainers('all');
-        }
-    })();
 })();
