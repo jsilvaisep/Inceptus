@@ -5,15 +5,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     include '../includes/db.php';
     header('Content-Type: application/json');
 
-    $name         = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    $email        = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
-    $password     = $_POST['password'] ?? '';
-    $confirm      = $_POST['confirm_password'] ?? '';
-    $login        = $_POST['login'] ?? '';
-    $is_company   = isset($_POST['is_company']) && $_POST['is_company'] === '1';
+    $name = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
+    $password = $_POST['password'] ?? '';
+    $confirm = $_POST['confirm_password'] ?? '';
+    $is_company = isset($_POST['is_company']) && $_POST['is_company'] === '1';
+    $login = $_POST['login'] ?? '';
     $company_name = $_POST['company_name'] ?? '';
-    $company_email= $_POST['company_email'] ?? '';
-    $site         = $_POST['site'] ?? '';
+    $company_email = $_POST['company_email'] ?? '';
+    $site = $_POST['site'] ?? '';
 
     if (!$name || !$email || !$password || !$confirm || !$login) {
         echo json_encode(['success' => false, 'message' => 'Preencha todos os campos obrigatórios.']);
@@ -70,17 +70,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$name, $login, $email, $password_hash, $imgPath]);
         }
 
-        $stmt = $pdo->prepare("SELECT USER_ID, USER_NAME, USER_TYPE_ID, IMG_URL, USER_EMAIL FROM USER WHERE USER_EMAIL = ?");
+        // Buscar o utilizador recém-criado para iniciar sessão
+        $stmt = $pdo->prepare("SELECT USER_ID, USER_NAME, USER_TYPE_ID, IMG_URL FROM USER WHERE USER_EMAIL = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($user) {
             $_SESSION['user'] = [
-                'user_id'    => bin2hex($user['USER_ID']),
-                'user_name'  => $user['USER_NAME'],
-                'user_type'  => $user['USER_TYPE_ID'],
-                'user_email' => $user['USER_EMAIL'],
-                'img_url'    => $user['IMG_URL']
+                'user_id' => bin2hex($user['USER_ID']),
+                'user_name' => $user['USER_NAME'],
+                'user_type' => $user['USER_TYPE_ID'],
+                'img_url' => $user['IMG_URL']
             ];
         }
 
@@ -95,45 +95,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
+<!-- HTML do formulário -->
 <div class="form-container">
-  <form class="form-box" id="register-form" method="POST" enctype="multipart/form-data">
-    <h2>Criação de Conta</h2>
+    <form class="form-box" id="register-form" method="POST" enctype="multipart/form-data">
+        <h2>Criação de Conta</h2>
+        <label for="name">Nome:</label>
+        <input type="text" name="name" required>
 
-    <label for="name">Nome:</label>
-    <input type="text" name="name" required>
+        <label for="login">Username:</label>
+        <input type="text" name="login" required>
 
-    <label for="login">Username:</label>
-    <input type="text" name="login" required>
+        <label for="email">Email:</label>
+        <input type="email" name="email" required>
 
-    <label for="email">Email:</label>
-    <input type="email" name="email" required>
+        <label for="password">Palavra-passe:</label>
+        <input type="password" name="password" required>
 
-    <label for="password">Palavra-passe:</label>
-    <input type="password" name="password" required>
+        <label for="confirm_password">Confirmar Palavra-passe:</label>
+        <input type="password" name="confirm_password" required>
 
-    <label for="confirm_password">Confirmar Palavra-passe:</label>
-    <input type="password" name="confirm_password" required>
+        <label for="profile_img">Foto de Perfil (opcional):</label>
+        <input type="file" name="profile_img" accept="image/*">
 
-    <label for="profile_img">Foto de Perfil (opcional):</label>
-    <input type="file" name="profile_img" accept="image/*">
+        <label>
+            <input type="checkbox" name="is_company" value="1" />
+            Registar como empresa
+        </label>
 
-    <label class="toggle-wrapper">
-      <input type="checkbox" id="toggleCompanyReg" name="is_company" value="1">
-      <span class="slider"></span> Registar como empresa
-    </label>
+        <label for="company_name">Nome Empresa:</label>
+        <input type="text" name="company_name">
 
-    <div id="company-fields" style="display: none;">
-      <label for="company_name">Nome da Empresa:</label>
-      <input type="text" name="company_name" id="company_name">
+        <label for="company_email">Email da Empresa:</label>
+        <input type="email" name="company_email">
 
-      <label for="company_email">Email da Empresa:</label>
-      <input type="email" name="company_email" id="company_email">
+        <label for="site">Site Empresa:</label>
+        <input type="url" name="site">
 
-      <label for="site">Website da Empresa:</label>
-      <input type="url" name="site" id="company_site">
-    </div>
-
-    <button type="submit">Criar Conta</button>
-    <p id="register-msg" class="msg" style="margin-top: 10px;"></p>
-  </form>
+        <button type="submit">Criar Conta</button>
+        <p id="register-msg" class="msg" style="margin-top: 10px;"></p>
+    </form>
 </div>

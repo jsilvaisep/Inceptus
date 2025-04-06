@@ -5,7 +5,7 @@ include '../includes/db.php';
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $userId = isset($_SESSION['user']['user_id']) ? hex2bin($_SESSION['user']['user_id']) : null;
+    $userId = isset($_SESSION['user']['user_id']) ? $_SESSION['user']['user_id'] : null;
     $userName = $_POST['user_name'] ?? '';
     $userEmail = $_POST['user_email'] ?? '';
     $isCompany = ($_SESSION['user']['user_type'] ?? '') === 'COMPANY';
@@ -16,36 +16,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // Atualiza imagem de perfil (se enviada)
     if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = __DIR__ . '/../uploads/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
+        // Verifica se é uma imagem diferente da atual
+        $isNewImage = true;
+
+        if ($imgPath) {
+            // Extrair apenas o nome do arquivo da imagem atual
+            $currentImagePath = $_SERVER['DOCUMENT_ROOT'] . '/' . $imgPath;
+
+            // Calcular hash da imagem atual (se existir)
+            if (file_exists($currentImagePath)) {
+                $currentHash = md5_file($currentImagePath);
+                $newHash = md5_file($_FILES['profile_img']['tmp_name']);
+
+                // Se os hashes forem iguais, é a mesma imagem
+                if ($currentHash === $newHash) {
+                    $isNewImage = false;
+                }
+            }
         }
 
-        $ext = pathinfo($_FILES['profile_img']['name'], PATHINFO_EXTENSION);
-        $filename = uniqid('img_', true) . '.' . $ext;
-        $targetPath = $uploadDir . $filename;
+        // Só processa o upload se for uma imagem diferente
+        if ($isNewImage) {
+            $uploadDir = __DIR__ . '/../uploads/';
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
 
-        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-        $mimeType = mime_content_type($_FILES['profile_img']['tmp_name']);
+            $ext = pathinfo($_FILES['profile_img']['name'], PATHINFO_EXTENSION);
+            $filename = uniqid('img_', true) . '.' . $ext;
+            $targetPath = $uploadDir . $filename;
 
-        if (!in_array($mimeType, $allowedTypes)) {
-            echo json_encode(['success' => false, 'message' => 'Tipo de imagem inválido.']);
-            exit;
-        }
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+            $mimeType = mime_content_type($_FILES['profile_img']['tmp_name']);
 
-        if (move_uploaded_file($_FILES['profile_img']['tmp_name'], $targetPath)) {
-            $imgPath = 'uploads/' . $filename;
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Erro ao guardar a imagem.']);
-            exit;
+            if (!in_array($mimeType, $allowedTypes)) {
+                echo json_encode(['success' => false, 'message' => 'Tipo de imagem inválido.']);
+                exit;
+            }
+
+            if (move_uploaded_file($_FILES['profile_img']['tmp_name'], $targetPath)) {
+                $imgPath = 'uploads/' . $filename;
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Erro ao guardar a imagem.']);
+                exit;
+            }
         }
     }
 
     try {
+        // Atualizar dados do utilizador
         $stmt = $pdo->prepare("UPDATE USER SET USER_NAME = ?, USER_EMAIL = ?, IMG_URL = ? WHERE USER_ID = ?");
         $stmt->execute([$userName, $userEmail, $imgPath, $userId]);
 
+        // Atualizar dados da empresa se aplicável
         if ($isCompany) {
             $companyName = $_POST['company_name'] ?? '';
             $companyEmail = $_POST['company_email'] ?? '';
@@ -55,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$companyName, $companyEmail, $companySite, $userId]);
         }
 
+        // Atualizar sessão
         $_SESSION['user']['user_name'] = $userName;
         $_SESSION['user']['user_email'] = $userEmail;
         $_SESSION['user']['img_url'] = $imgPath;
@@ -66,13 +92,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
+// GET: Mostrar formulário
 $user = $_SESSION['user'] ?? [];
 $isCompany = ($user['user_type'] ?? '') === 'COMPANY';
 
 $companyData = null;
 if ($isCompany) {
     $stmt = $pdo->prepare("SELECT COMPANY_NAME, COMPANY_EMAIL, COMPANY_SITE FROM COMPANY WHERE USER_ID = ?");
-    $stmt->execute([hex2bin($user['user_id'] ?? '')]);
+    $stmt->execute([$user['user_id'] ?? '']);
     $companyData = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 ?>

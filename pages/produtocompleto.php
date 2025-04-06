@@ -40,7 +40,7 @@ if ($isAjax && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment'])
     if (!empty($resposta) && !empty($rank)) {
         $stmt = $pdo->prepare("CALL INSERT_COMMENT (?, ?, ?, ?, ?)");
         $stmt->execute([$userID, $compamny_Id, $productId, $rank, $resposta]);
-        echo '<script>alert("Comentário inserido com sucesso!" )</script>';
+        echo 'Comentário inserido com sucesso!';
     } else {
         echo 'Por favor, preencha o comentário e a classificação.';
     }
@@ -137,8 +137,7 @@ function renderStars($rating)
             <textarea id="comment" placeholder="Escreva o seu comentário..." rows="4" style="width:100%;"></textarea>
             <label for="rank">Rank</label>
             <input type="number" id="review" min="0" max="5">
-            <button type="button"
-                onclick="submitComentarioProduto('<?= $product['PRODUCT_ID'] ?>','<?= $product['COMPANY_ID'] ?>' )">Comentar</button>
+            <button type="button" onclick="submitComentarioProduto('<?= $product['PRODUCT_ID'] ?>')">Comentar</button>
         </form>
 
         <h2>Reviews de <?= htmlspecialchars($product['PRODUCT_NAME']) ?></h2>

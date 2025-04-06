@@ -6,17 +6,11 @@ if (!file_exists(session_save_path())) {
 
 session_start();
 
-function isLoggedIn()
-{
+function isLoggedIn() {
     return isset($_SESSION['user']);
 }
-function isLoggedOut()
-{
-    return !isLoggedIn();
-}
 
-function requireLogin()
-{
+function requireLogin() {
     if (!isLoggedIn()) {
         // Verifica se é chamada AJAX (SPA) → mostra erro 403
         if (

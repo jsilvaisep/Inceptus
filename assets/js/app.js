@@ -627,10 +627,6 @@
             });
         }
 
-        if (page === 'warroom') {
-            setupWarroomPage();
-        }
-        
         setupGlobalModalListeners();
     }
 
@@ -829,11 +825,10 @@
     }
     window.submitComentarioNoticia = submitComentarioNoticia;
 
-    function submitComentarioProduto(product_Id, company_id) {
+    function submitComentarioProduto(product_Id) {
         const textarea = document.getElementById('comment');
         const resposta = textarea.value.trim();
         const rank = document.getElementById('review');
-        const company = company_id.value;
         
 
         if (!resposta || !rank) {
@@ -850,13 +845,12 @@
             credentials: 'include',
             body: new URLSearchParams({
                 resposta: resposta,
-                rank: rank,
-                company: company
+                rank: rank
             })
         })
         .then(response => response.text())
         .then(html => {
-            console.log(product_Id, company_id, textarea.value, rank.value);
+            console.log(product_Id, textarea.value, rank.value);
             console.log("Comentário enviado com sucesso");
             textarea.value = '';
             document.getElementById('review').value = '';
@@ -865,127 +859,4 @@
     }
     window.submitComentarioProduto = submitComentarioProduto;
 
-    function setupWarroomPage() {
-        const categoryFilter = document.getElementById('category-filter'); // Dropdown de categoria
-        const productContainers = document.querySelectorAll('.product-select'); // Blocos de produtos
-        const productData = JSON.parse(document.getElementById('warroom-data').dataset.products); // Produtos raw
-        const comparisonTable = document.getElementById('comparison-table'); // Tabela de comparação
-        const comparisonBody = document.getElementById('comparison-body'); // Corpo da tabela de comparação
-        const selectedProducts = {}; // Produtos selecionados para cada slot (máx. 3)
-
-        /** Popula os produtos nos blocos de seleção com base na categoria */
-        function populateProductContainers(categoryId) {
-            // Filtrar produtos pela categoria ou listar todos
-            const products = categoryId === 'all'
-                ? Object.values(productData).flat()
-                : productData[categoryId] || [];
-
-            // Preencher cada container de produtos
-            productContainers.forEach(container => {
-                container.innerHTML = ''; // Limpa o conteúdo anterior
-
-                products.forEach(product => {
-                    const productOption = document.createElement('div');
-                    productOption.className = 'product-option';
-                    productOption.dataset.id = product.PRODUCT_ID;
-                    productOption.textContent = product.PRODUCT_NAME;
-
-                    productOption.addEventListener('click', function () {
-                        const slot = container.dataset.slot; // Em qual bloco estamos?
-                        const productId = this.dataset.id;
-
-                        // Desmarca produtos previamente selecionados no mesmo bloco
-                        container.querySelectorAll('.product-option.selected').forEach(el =>
-                            el.classList.remove('selected')
-                        );
-
-                        if (selectedProducts[slot] && selectedProducts[slot] === productId) {
-                            // Clique novamente no mesmo produto: remover seleção
-                            delete selectedProducts[slot];
-                        } else {
-                            // Marca o produto como selecionado
-                            this.classList.add('selected');
-                            selectedProducts[slot] = productId;
-                        }
-
-                        // Atualiza a tabela de comparação
-                        updateComparisonTable(Object.values(selectedProducts).map(id => {
-                            return Object.values(productData).flat().find(p => p.PRODUCT_ID == id);
-                        }));
-                    });
-
-                    container.appendChild(productOption);
-                });
-            });
-        }
-
-        /** Atualiza a tabela de comparação com os dados dos produtos */
-        function updateComparisonTable(products) {
-            comparisonBody.innerHTML = ''; // Limpa o corpo da tabela anterior
-
-            if (products.length === 0) {
-                comparisonTable.style.display = 'none';
-                return;
-            }
-            comparisonTable.style.display = 'table';
-
-            // Atualiza o cabeçalho com os nomes dos produtos selecionados
-            const tableHeader = comparisonTable.querySelector('thead tr');
-            tableHeader.innerHTML = ''; // Limpa o cabeçalho
-
-            // Coluna inicial fixa ("Especificações")
-            const specHeader = document.createElement('th');
-            specHeader.textContent = 'Especificações';
-            tableHeader.appendChild(specHeader);
-
-            // Header dinâmica para cada produto selecionado
-            for (let i = 0; i < 3; i++) {
-                const headerCell = document.createElement('th');
-                headerCell.textContent = products[i] ? products[i].PRODUCT_NAME : 'Vazio'; // Nome do produto ou "Vazio"
-                tableHeader.appendChild(headerCell);
-            }
-
-            // Linhas de especificações (atributos a comparar)
-            const attributes = [
-                { label: 'Ranking do Produto', key: 'PRODUCT_RANK' },
-                { label: 'Visualizações', key: 'PRODUCT_VIEW_QTY' }
-            ];
-
-            attributes.forEach(attribute => {
-                const row = document.createElement('tr');
-
-                // Primeira coluna: "Especificação"
-                const specCell = document.createElement('td');
-                specCell.textContent = attribute.label;
-                specCell.classList.add('spec-column');
-                row.appendChild(specCell);
-
-                // Colunas com valores dos produtos
-                products.forEach(product => {
-                    const valueCell = document.createElement('td');
-                    valueCell.textContent = product ? product[attribute.key] || '—' : '—'; // Valor ou "—"
-                    row.appendChild(valueCell);
-                });
-
-                // Preenche colunas vazias para garantir 3 colunas no total
-                for (let i = 0; i < 3 - products.length; i++) {
-                    const emptyCell = document.createElement('td');
-                    emptyCell.textContent = '—';
-                    row.appendChild(emptyCell);
-                }
-
-                // Adiciona a linha ao corpo da tabela
-                comparisonBody.appendChild(row);
-            });
-        }
-
-        // Listener do dropdown de categorias
-        categoryFilter.addEventListener('change', function () {
-            const categoryId = this.value; // Obtém ID da categoria selecionada
-            populateProductContainers(categoryId);
-        });
-
-        // Inicializa com todos os produtos
-        populateProductContainers('all');
-    }
 })();

@@ -556,6 +556,8 @@ footer {
     margin-bottom: 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     height: 110px;
+    cursor: pointer;
+    transition: transform 0.2s;
 }
 
 .top-rated-card .card-image {
@@ -563,6 +565,7 @@ footer {
     height: 50px;
     object-fit: contain;
     border-radius: 10px;
+
 }
 
 .stars {
@@ -583,6 +586,7 @@ footer {
 .top-rated-title {
     text-align: center;
     margin-bottom: 20px;
+    pointer-events: none;
 }
 .success {
     color: #28a745;
@@ -612,44 +616,6 @@ footer {
     pointer-events: auto;
 }
 
-.toggle-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 15px 0;
-    cursor: pointer;
-  }
-  
-  .toggle-wrapper input[type="checkbox"] {
-    display: none;
-  }
-  
-  .toggle-wrapper .slider {
-    position: relative;
-    width: 50px;
-    height: 26px;
-    background-color: #ccc;
-    border-radius: 15px;
-    transition: 0.4s;
-  }
-  
-  .toggle-wrapper .slider::before {
-    content: "";
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    left: 2px;
-    top: 2px;
-    background-color: white;
-    border-radius: 50%;
-    transition: 0.4s;
-  }
-  
-  .toggle-wrapper input[type="checkbox"]:checked + .slider {
-    background-color: #be3144;
-  }
-  
-  .toggle-wrapper input[type="checkbox"]:checked + .slider::before {
-    transform: translateX(24px);
-  }
-  
+.top-rated-card:hover {
+    transform: scale(1.02);
+}

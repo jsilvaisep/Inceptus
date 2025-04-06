@@ -7,14 +7,16 @@ $userImg = 'assets/img/default-user.png';
 $isAdmin = false;
 
 if (isset($_SESSION['user'])) {
-    $userId = hex2bin($_SESSION['user']['user_id']);
+    $userId = $_SESSION['user']['user_id'];
     $userName = $_SESSION['user']['user_name'];
     $imgFromSession = $_SESSION['user']['img_url'];
 
+    // Verifica se o caminho da imagem existe no sistema de ficheiros
     if (!empty($imgFromSession) && file_exists(__DIR__ . '/../' . $imgFromSession)) {
         $userImg = $imgFromSession;
     }
 
+    // Verifica se o utilizador é ADMIN
     $stmt = $pdo->prepare("
         SELECT u.USER_TYPE_ID, ut.USER_TYPE
         FROM USER u
@@ -23,10 +25,10 @@ if (isset($_SESSION['user'])) {
     ");
     $stmt->execute([$userId]);
     $typeData = $stmt->fetch(PDO::FETCH_ASSOC);
-    
     if ($typeData) {
-        $_SESSION['user']['user_type'] = $typeData['USER_TYPE'];
-    }
+      $_SESSION['user']['user_type'] = $typeData['USER_TYPE'];
+  }
+      
 
     $isAdmin = $typeData && $typeData['USER_TYPE'] === 'ADMIN';
 }

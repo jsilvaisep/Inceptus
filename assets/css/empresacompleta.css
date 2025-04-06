@@ -1,14 +1,7 @@
-/* Página de Produto Completo */
+/* Página de empresa Completo */
 
 /* ---------- Layout Geral ---------- */
-body {
-    font-family: 'Arial', sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f5f5f5;
-}
-
-.produto-completo-container {
+.empresa-completa-container {
     max-width: 1100px;
     margin: 40px auto;
     padding: 40px;
@@ -40,17 +33,17 @@ body {
     background-color: #9a2533; /* Tom mais escuro no hover */
 }
 
-/* ---------- Cabeçalho do Produto ---------- */
-.produto-completo-container h1 {
+/* ---------- Cabeçalho do empresa ---------- */
+.empresa-completa-container h1 {
     color: #bd283d;
-    font-size: 28px; /* Diminuiu de 36px para 28px */
+    font-size: 28px;
     text-align: center;
     margin-bottom: 10px;
     letter-spacing: 1px;
 }
 
 /* ---------- Rating/Estrelas ---------- */
-.product-rating {
+.empresa-rating {
     font-size: 20px; /* Aumentado ligeiramente */
     font-weight: bold;
     text-align: center;
@@ -58,57 +51,45 @@ body {
     margin-bottom: 20px;
 }
 
-.product-rating span {
+.empresa-rating span {
     font-size: 28px; /* Estrelas visivelmente maiores */
     color: #bd283d;
 }
 
-/* ---------- Imagens do Produto ---------- */
-.produto-imagens-container {
-    display: grid;
-    grid-template-columns: 2fr 1fr; /* Grande à esquerda, menores à direita */
+/* ---------- Imagens da empresa ---------- */
+.empresa-imagens-container {
+    display: flex; /* Flexbox para alinhar a imagem ao centro */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
     gap: 20px;
     margin-bottom: 30px;
-    align-items: center;
 }
 
 .imagem-principal {
     width: 100%;
-    overflow: hidden;
+    max-width: 500px;
     border-radius: 12px;
     background-color: #f8f8f8;
     border: 2px solid #eaeaea;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    padding: 10px;
+
 }
 
+
 .imagem-principal-img {
-    width: 100%;
+    max-width: 100%;
+    max-height: 300px;
     height: auto;
     object-fit: contain;
     border-radius: 12px;
 }
 
-.imagens-secundarias {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.imagem-secundaria {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    border-radius: 12px;
-    border: 2px solid #eaeaea;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.imagem-secundaria:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-/* ---------- Detalhes do Produto ---------- */
-.produto-detalhes {
+/* ---------- Detalhes do empresa ---------- */
+.empresa-detalhes {
     margin-top: 30px;
     padding: 20px;
     background: #fefefe;
@@ -116,7 +97,7 @@ body {
     border: 1px solid #e0e0e0;
 }
 
-.produto-detalhes h2 {
+.empresa-detalhes h2 {
     color: #be3144;
     font-size: 24px;
     margin-bottom: 15px;
@@ -124,7 +105,7 @@ body {
     padding-left: 10px;
 }
 
-.produto-detalhes p {
+.empresa-detalhes p {
     font-size: 16px;
     line-height: 1.6;
     color: #444;
@@ -174,4 +155,142 @@ body {
     color: #444;
 }
 
+/* ---------- Seção de Produtos ---------- */
+.produtos {
+    margin-top: 50px;
+    padding: 30px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
 
+.produtos h2 {
+    color: #be3144;
+    font-size: 22px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    border-bottom: 2px solid #be3144;
+    padding-bottom: 5px;
+}
+
+.produtos-carrossel {
+    display: flex;
+    gap: 20px; /* Espaço entre os cartões */
+    overflow-x: auto; /* Ativa a rolagem horizontal */
+    scroll-behavior: smooth; /* Rolagem suave */
+    padding: 10px 0;
+}
+
+.produtos-carrossel::-webkit-scrollbar {
+    height: 8px; /* Altura da barra de rolagem */
+}
+
+.produtos-carrossel::-webkit-scrollbar-thumb {
+    background: #be3144; /* Cor da barra de rolagem */
+    border-radius: 4px;
+}
+
+.produtos-carrossel::-webkit-scrollbar-thumb:hover {
+    background: #9a2533; /* Cor mais escura no hover */
+}
+
+.produto-item {
+    min-width: 300px; /* Largura fixa do cartão */
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    flex: 0 0 auto; /* Garantir que os itens não encolhem */
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.produto-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.produto-img {
+    width: 100%;
+    max-width: 150px;
+    height: auto;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+.produto-item h3 {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.produto-item p {
+    font-size: 14px;
+    color: #666;
+    margin: 5px 0;
+}
+
+
+
+
+
+/* ---------- Seção de Notícias ---------- */
+.noticias {
+    margin-top: 50px;
+    padding: 30px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.noticias h2 {
+    color: #be3144;
+    font-size: 22px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    border-bottom: 2px solid #be3144;
+    padding-bottom: 5px;
+}
+
+.noticias-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.noticia-item {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    line-height: 1.6;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Metadados da notícia (ex.: data) */
+.noticia-item p:first-child {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 10px;
+}
+
+/* Conteúdo principal da notícia */
+.noticia-item p:last-child {
+    font-size: 16px;
+    color: #444;
+    margin: 0;
+    text-align: justify;
+}
+
+/* Linha entre notícias */
+.noticia-item + .noticia-item {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
