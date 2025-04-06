@@ -3,18 +3,6 @@ require_once __DIR__ . '/../includes/db.php';
 
 session_start();
 
-//temporario
-function generateUUID(): string {
-    return sprintf(
-        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-        mt_rand(0, 0xffff), mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0x0fff) | 0x4000,
-        mt_rand(0, 0x3fff) | 0x8000,
-        mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-    );
-}
-
 if (!isset($_SESSION['user'])) {
     http_response_code(403);
     echo "⚠️ Acesso negado. Por favor inicie sessão.";
@@ -46,7 +34,6 @@ $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP
 if ($isAjax && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resposta'])) {
     $resposta = trim($_POST['resposta']);
     $userId = $_SESSION['user']['user_id'];
-    $commentId = generateUUID(); // generate a UUID for POST_EXT_ID
 
     if (!empty($resposta)) {
         $stmt = $pdo->prepare("INSERT INTO POST_EXT (POST_EXT_ID, POST_ID, USER_ID, POST_EXT_CONTENT, CREATED_AT, UPDATED_AT)
