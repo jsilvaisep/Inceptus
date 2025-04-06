@@ -56,7 +56,7 @@ $totalPages = ceil($totalPosts / $limit);
                             <p class="news-text"><?= htmlspecialchars($truncatedContent) ?></p>
                         </div>
                         <div class="news-card-footer">
-                            <span class="news-author">Por: <?= htmlspecialchars($row['USER_NAME']) ?></span>
+                            <span class="news-author">👤 <?= htmlspecialchars($row['USER_NAME']) ?></span>
                             <span class="news-date">🕒 <?= $formattedDate ?></span>
                         </div>
                         <button class="open-modal-btn" onclick="window.location.href='?page=noticiacompleta&id=<?= htmlspecialchars($row['POST_ID']) ?>'">Ler mais</button>

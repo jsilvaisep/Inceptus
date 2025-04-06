@@ -5,7 +5,7 @@ include '../includes/db.php';
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $userId = isset($_SESSION['user']['user_id']) ? hex2bin($_SESSION['user']['user_id']) : null;
+    $userId = isset($_SESSION['user']['user_id']) ? $_SESSION['user']['user_id'] : null;
     $userName = $_POST['user_name'] ?? '';
     $userEmail = $_POST['user_email'] ?? '';
     $isCompany = ($_SESSION['user']['user_type'] ?? '') === 'COMPANY';
@@ -99,7 +99,7 @@ $isCompany = ($user['user_type'] ?? '') === 'COMPANY';
 $companyData = null;
 if ($isCompany) {
     $stmt = $pdo->prepare("SELECT COMPANY_NAME, COMPANY_EMAIL, COMPANY_SITE FROM COMPANY WHERE USER_ID = ?");
-    $stmt->execute([hex2bin($user['user_id'] ?? '')]);
+    $stmt->execute([$user['user_id'] ?? '']);
     $companyData = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 ?>

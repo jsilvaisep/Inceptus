@@ -1,6 +1,25 @@
-<?php 
+<?php
 require_once __DIR__ . '/../includes/db.php';
-require_once __DIR__ . '/../includes/session.php';
+
+session_start();
+
+//temporario
+function generateUUID(): string {
+    return sprintf(
+        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0x0fff) | 0x4000,
+        mt_rand(0, 0x3fff) | 0x8000,
+        mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
+    );
+}
+
+if (!isset($_SESSION['user'])) {
+    http_response_code(403);
+    echo "⚠️ Acesso negado. Por favor inicie sessão.";
+    exit;
+}
 
 if (!isset($_GET['id'])) {
     echo "<h3>Notícia não encontrada.</h3>";
@@ -22,14 +41,19 @@ if (!$noticia) {
 }
 
 // Handle AJAX POST comment
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resposta'])) {
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+
+if ($isAjax && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resposta'])) {
     $resposta = trim($_POST['resposta']);
     $userId = $_SESSION['user']['user_id'];
+    $commentId = generateUUID(); // generate a UUID for POST_EXT_ID
+
     if (!empty($resposta)) {
-        $stmt = $pdo->prepare("INSERT INTO POST_EXT (POST_ID, USER_ID, POST_EXT_CONTENT, CREATED_AT, UPDATED_AT)
-            VALUES (?, ?, ?, NOW(), NOW())");
-        $stmt->execute([$postId, $userId, $resposta]);
+        $stmt = $pdo->prepare("INSERT INTO POST_EXT (POST_EXT_ID, POST_ID, USER_ID, POST_EXT_CONTENT, CREATED_AT, UPDATED_AT)
+            VALUES (?, ?, ?, ?, NOW(), NOW())");
+        $stmt->execute([$commentId, $postId, $userId, $resposta]);
     }
+
     // Return updated comment section only
     $stmt = $pdo->prepare("SELECT pe.POST_EXT_CONTENT, pe.CREATED_AT, u.USER_NAME
         FROM POST_EXT pe
@@ -38,6 +62,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resposta'])) {
         ORDER BY pe.CREATED_AT DESC");
     $stmt->execute([$postId]);
     $comentarios = $stmt->fetchAll();
+    foreach ($comentarios as $comentario): ?>
+        <div class="news-card comment">
+            <div class="news-card-content">
+                <p class="news-text"><?= nl2br(htmlspecialchars($comentario['POST_EXT_CONTENT'])) ?></p>
+            </div>
+            <div class="news-card-footer">
+                <span class="news-author">👤 <?= htmlspecialchars($row['USER_NAME']) ?></span>
+                <span class="news-date">🕒 <?= $formattedDate ?></span>
+            </div>
+        </div>
+    <?php endforeach;
     return;
 }
 
@@ -56,6 +91,7 @@ $comentarios = $stmt->fetchAll();
             <div class="news-article">
                 <h1 class="news-title"><?= htmlspecialchars($noticia['TITLE']) ?></h1>
                 <h2 class="news-subtitle"><?= htmlspecialchars($noticia['SUBTITLE']) ?></h2>
+
                 <div class="news-meta">
                     <img src="<?= htmlspecialchars($noticia['IMG_URL']) ?>" alt="<?= htmlspecialchars($noticia['COMPANY_NAME']) ?>" class="company-logo">
                     <div class="meta-info">
@@ -72,21 +108,23 @@ $comentarios = $stmt->fetchAll();
             <div class="news-comments">
                 <h4>Comentários:</h4>
                 <div id="comment-section">
-                <?php foreach ($comentarios as $comentario): ?>
-                    <div class="news-card comment">
-                        <div class="news-card-content">
-                            <p class="news-text"><?= nl2br(htmlspecialchars($comentario['POST_EXT_CONTENT'])) ?></p>
+                    <?php foreach ($comentarios as $comentario):
+                        $date = new DateTime($comentario['CREATED_AT']);
+                        $formattedDate = $date->format('d/m/Y H:i');?>
+                        <div class="news-card comment">
+                            <div class="news-card-content">
+                                <p class="news-text"><?= nl2br(htmlspecialchars($comentario['POST_EXT_CONTENT'])) ?></p>
+                            </div>
+                            <div class="news-card-footer">
+                                <span class="news-author">👤 <?= htmlspecialchars($comentario['USER_NAME']) ?></span>
+                                <span class="news-date">🕒 <?= $formattedDate ?></span>
+                            </div>
                         </div>
-                        <div class="news-card-footer">
-                            <span class="news-author">👤 <?= htmlspecialchars($comentario['USER_NAME']) ?></span>
-                            <span class="news-date">🕒 <?= htmlspecialchars($comentario['CREATED_AT']) ?></span>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
                 </div>
-                <form onsubmit="enviarRespostaNoticia('<?= $noticia['POST_ID'] ?>');">
+                <form>
                     <textarea id="post_response<?= $noticia['POST_ID'] ?>" placeholder="Escreva o seu comentário..." rows="4" style="width:100%;"></textarea>
-                    <button type="submit" class="open-modal-btn">Comentar</button>
+                    <button type="button" onclick="submitComentarioNoticia('<?= $noticia['POST_ID'] ?>')">Comentar</button>
                 </form>
             </div>
         </div>

@@ -19,17 +19,27 @@
         if (search) url += '?' + search;
 
         fetch(url)
-            .then(response => {
-                if (!response.ok) throw new Error('Erro ao carregar');
-                return response.text();
+            .then(async response => {
+                const text = await response.text();
+                if (!response.ok) {
+                    if (response.status === 403) {
+                        throw new Error('forbidden');
+                    }
+                    throw new Error('notfound');
+                }
+                return text;
             })
             .then(html => {
                 document.getElementById('content').innerHTML = html;
                 history.replaceState(null, '', '?page=' + page + (search ? '&' + search : ''));
                 setupPageScripts(page);
             })
-            .catch(() => {
-                document.getElementById('content').innerHTML = '<h3>Página não encontrada.</h3>';
+            .catch(err => {
+                if (err.message === 'forbidden') {
+                    document.getElementById('content').innerHTML = '<h3>⚠️ Acesso negado. Por favor inicie sessão.</h3>';
+                } else {
+                    document.getElementById('content').innerHTML = '<h3>❌ Página não encontrada.</h3>';
+                }
             });
     }
 
@@ -518,7 +528,7 @@
                     const formData = new FormData(loginForm);
                     const msg = document.getElementById('login-msg');
 
-                    fetch('pages/login.php', { method: 'POST', body: formData })
+                    fetch('pages/login.php', { method: 'POST', body: formData, credentials: 'include' })
                         .then(res => res.json())
                         .then(data => {
                             msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
@@ -770,36 +780,6 @@
         showSlide(currentNews);
     }
 
-
-    // noticias
-    function enviarRespostaNoticia(postId) {
-        const textarea = document.getElementById("post_response" + postId);
-        const resposta = textarea.value.trim();
-        if (!resposta) {
-            alert("Por favor, escreva um comentário.");
-            return false;
-        }
-    
-        fetch(`pages/noticiacompleta.php?id=${postId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: `resposta=${encodeURIComponent(resposta)}`
-        })
-        .then(res => res.text())
-        .then(html => {
-            document.getElementById("comment-section").innerHTML = html;
-            textarea.value = "";
-        })
-        .catch(() => {
-            alert("Erro ao submeter o comentário.");
-        });
-    
-        return false;
-    }
-    
-
     function redirectToProduct(productId) {
         // Carrega a página do produto específico com o ID fornecido
         const searchParams = `id=${productId}`;
@@ -819,4 +799,29 @@
     }
     window.redirectToLogin = redirectToLogin;
 
+    function submitComentarioNoticia(postId) {
+        const textarea = document.getElementById('post_response' + postId);
+        const resposta = textarea.value.trim();
+
+        if (!resposta) return;
+
+        fetch(`pages/noticiacompleta.php?id=${postId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'include', // ← ISTO É ESSENCIAL
+            body: new URLSearchParams({
+                resposta: resposta
+            })
+        })
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('comment-section').innerHTML = html;
+                textarea.value = '';
+            })
+            .catch(error => console.error('Erro ao enviar comentário:', error));
+    }
+    window.submitComentarioNoticia = submitComentarioNoticia;
 })();

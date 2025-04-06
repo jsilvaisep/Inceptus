@@ -1,34 +1,28 @@
 <?php
-session_save_path(__DIR__ . '/sessions');
-
+session_save_path(__DIR__ . '/../sessions');
 if (!file_exists(session_save_path())) {
     mkdir(session_save_path(), 0777, true);
 }
 
 session_start();
 
-/**
- * Verifica se o utilizador está autenticado
- */
 function isLoggedIn() {
-    return isset($_SESSION['user']) && !empty($_SESSION['user']['user_id']);
+    return isset($_SESSION['user']);
 }
 
-/**
- * Verifica se o utilizador está desautenticado
- */
-function isLoggedOut() {
-    return !isLoggedIn();
-}
-
-/**
- * Se necessário forçar autenticação, utiliza esta função.
- * Ideal para páginas não carregadas por SPA.
- */
 function requireLogin() {
-    if (isLoggedOut()) {
-        // Redirecionar para login tradicional (ex: caso aceda direto a profile.php sem SPA)
-        header("Location: /?page=login");
-        exit();
+    if (!isLoggedIn()) {
+        // Verifica se é chamada AJAX (SPA) → mostra erro 403
+        if (
+            isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest'
+        ) {
+            http_response_code(403);
+            echo "⚠️ Acesso negado. Por favor inicie sessão.";
+        } else {
+            // Se for acesso direto, redireciona para login
+            header("Location: /pages/login.php");
+        }
+        exit;
     }
 }
