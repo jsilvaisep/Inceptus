@@ -825,33 +825,38 @@
     }
     window.submitComentarioNoticia = submitComentarioNoticia;
 
-    function submitComentarioProdutos(postId) {
+    function submitComentarioProduto(product_Id) {
         const textarea = document.getElementById('comment');
-        const stars = document.getElementById('rank');
         const resposta = textarea.value.trim();
-        const rank = stars.value;
+        const rank = document.getElementById('review');
+        
 
-        if (!resposta) return;
+        if (!resposta || !rank) {
+            alert("Preencha o comentário e o rank.");
+            return;
+        }
 
-        fetch(`pages/produtocompleto.php?id=${postId}`, {
+        fetch(`pages/produtocompleto.php?id=${product_Id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-Requested-With': 'XMLHttpRequest'
             },
-            credentials: 'include', // ← ISTO É ESSENCIAL
+            credentials: 'include',
             body: new URLSearchParams({
-                resposta: [resposta, rank]
+                resposta: resposta,
+                rank: rank
             })
         })
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('').innerHTML = html;
-                textarea.value = '';
-                //rank.value = '';
-            })
-            .catch(error => console.error('Erro ao enviar comentário:', error));
+        .then(response => response.text())
+        .then(html => {
+            console.log(product_Id, textarea.value, rank.value);
+            console.log("Comentário enviado com sucesso");
+            textarea.value = '';
+            document.getElementById('review').value = '';
+        })
+        .catch(error => console.error('Erro ao enviar comentário:', error));
     }
-    window.submitComentarioProdutos = submitComentarioProdutos;
+    window.submitComentarioProduto = submitComentarioProduto;
 
 })();

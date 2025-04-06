@@ -63,4 +63,4 @@ INNER JOIN PRODUCT p ON p.COMPANY_ID = c.COMPANY_ID
 WHERE p.PRODUCT_ID = '075c3cf3-0bf5-11f0-b0d3-020017000d59';
 
 
-call insert_comment ('a60585b7-11a3-11f0-ab2e-020017000d59','4d67f2f7-0be9-11f0-b0d3-020017000d59','fead11f6-0bf4-11f0-b0d3-020017000d59','5','teste')
+call insert_comment ('a60585b7-11a3-11f0-ab2e-020017000d59','4d67f2f7-0be9-11f0-b0d3-020017000d59','fead11f6-0bf4-11f0-b0d3-020017000d59',5 ,'teste');

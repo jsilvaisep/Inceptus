@@ -1,5 +1,8 @@
-<?php include '../includes/db.php';
+<?php
+include '../includes/db.php';
 session_start();
+
+// Verificar se o usuário está logado
 if (isset($_SESSION['user'])) {
     $userID = $_SESSION['user']['user_id'];
     $userName = $_SESSION['user']['user_name'] ?? '';
@@ -8,38 +11,50 @@ if (isset($_SESSION['user'])) {
     exit;
 }
 
+// Verificar se a requisição é AJAX e se é um POST
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
-if ($isAjax && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resposta'])) {
+if ($isAjax && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['comment']) && isset($_POST['comment_rank'])) {
+    // Recuperar dados do POST
     $resposta = trim($_POST['comment']);
-    $rank = $_POST['commentrank'];
-    $userId = $_SESSION['user']['user_id'];
+    $rank = $_POST['review'];
+    $productId = $_GET['id'] ?? '';
+    $compamny_Id = $product['COMPANY_ID'] ?? '';
 
-    if (!empty($resposta)) {
-        $stmt = $pdo->prepare("CALL INSERT_COMMENT (?, ?, ?, ?, ?)");
-        $stmt->execute([$userId, $product['COMPANY_ID'], $product['PRODUCT_ID'], $rank, $resposta]);
+    if (empty($productId)) {
+        echo 'ID do produto não fornecido.';
+        exit;
     }
+
+    // Recuperar o produto do banco de dados
+    $stmt = $pdo->prepare("SELECT * FROM PRODUCT WHERE PRODUCT_ID = ?");
+    $stmt->execute([$productId]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$product) {
+        echo 'Produto não encontrado.';
+        exit;
+    }
+
+    // Inserir comentário no banco
+    if (!empty($resposta) && !empty($rank)) {
+        $stmt = $pdo->prepare("CALL INSERT_COMMENT (?, ?, ?, ?, ?)");
+        $stmt->execute([$userID, $compamny_Id, $productId, $rank, $resposta]);
+        echo 'Comentário inserido com sucesso!';
+    } else {
+        echo 'Por favor, preencha o comentário e a classificação.';
+    }
+    exit;
 }
-function renderStars($rating)
-{
-    $fullStars = floor($rating);
-    $halfStar = ($rating - $fullStars) >= 0.5 ? 1 : 0;
-    $emptyStars = 5 - ($fullStars + $halfStar);
 
-    $starsHTML = str_repeat('★', $fullStars);
-    if ($halfStar)
-        $starsHTML .= '☆';
-    $starsHTML .= str_repeat('☆', $emptyStars);
-
-    return $starsHTML;
-}
-
+// Recuperar o ID do produto da URL
 $productId = $_GET['id'] ?? '';
-if (!$productId) {
+if (empty($productId)) {
     echo '<p>Produto inválido.</p>';
     exit;
 }
 
+// Recuperar informações do produto
 $stmt = $pdo->prepare("SELECT p.*, c.COMPANY_NAME 
                        FROM PRODUCT p 
                        INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID
@@ -60,6 +75,21 @@ $commentStmt = $pdo->prepare("SELECT c.COMMENT_TEXT, c.COMMENT_RANK, c.CREATED_A
                               ORDER BY c.CREATED_AT DESC"); // Ordena pelos mais recentes
 $commentStmt->execute([$productId]);
 $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Função para renderizar as estrelas
+function renderStars($rating)
+{
+    $fullStars = floor($rating);
+    $halfStar = ($rating - $fullStars) >= 0.5 ? 1 : 0;
+    $emptyStars = 5 - ($fullStars + $halfStar);
+
+    $starsHTML = str_repeat('★', $fullStars);
+    if ($halfStar)
+        $starsHTML .= '☆';
+    $starsHTML .= str_repeat('☆', $emptyStars);
+
+    return $starsHTML;
+}
 ?>
 
 <div class="produto-completo-container">
@@ -101,16 +131,17 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <!-- Seção de Comentários -->
-
     <div class="comentarios">
         <form>
             <label for="comment">Comentário</label>
             <textarea id="comment" placeholder="Escreva o seu comentário..." rows="4" style="width:100%;"></textarea>
-            <label for="comment_rank">rank</label>
-            <input type="number" name="comment_rank" min="0" max="5">
+            <label for="rank">Rank</label>
+            <input type="number" id="review" min="0" max="5">
             <button type="button" onclick="submitComentarioProduto('<?= $product['PRODUCT_ID'] ?>')">Comentar</button>
         </form>
+
         <h2>Reviews de <?= htmlspecialchars($product['PRODUCT_NAME']) ?></h2>
+
         <?php if (count($comments) > 0): ?>
             <div class="comentarios-carrossel">
                 <?php foreach ($comments as $comment): ?>
