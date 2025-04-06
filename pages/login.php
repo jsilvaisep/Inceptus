@@ -26,10 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $typeInfo = $stmtType->fetch(PDO::FETCH_ASSOC);
 
             $_SESSION['user'] = [
-                'user_id'    => $user['USER_ID'],
-                'user_name'  => $user['USER_LOGIN'],
+                'user_id'    => bin2hex($user['USER_ID']),
+                'user_name'  => $user['USER_NAME'],
                 'user_email' => $user['USER_EMAIL'],
-                'type_id'    => $user['USER_TYPE_ID'],
+                'type_id'    => bin2hex($user['USER_TYPE_ID']),
                 'user_type'  => $typeInfo['USER_TYPE'] ?? null,
                 'img_url'    => $user['IMG_URL']
             ];

@@ -5,7 +5,7 @@ include '../includes/db.php';
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $userId = isset($_SESSION['user']['user_id']) ? $_SESSION['user']['user_id'] : null;
+    $userId = isset($_SESSION['user']['user_id']) ? hex2bin($_SESSION['user']['user_id']) : null;
     $userName = $_POST['user_name'] ?? '';
     $userEmail = $_POST['user_email'] ?? '';
     $isCompany = ($_SESSION['user']['user_type'] ?? '') === 'COMPANY';
@@ -17,50 +17,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
-        // Verifica se é uma imagem diferente da atual
-        $isNewImage = true;
-
-        if ($imgPath) {
-            // Extrair apenas o nome do arquivo da imagem atual
-            $currentImagePath = $_SERVER['DOCUMENT_ROOT'] . '/' . $imgPath;
-
-            // Calcular hash da imagem atual (se existir)
-            if (file_exists($currentImagePath)) {
-                $currentHash = md5_file($currentImagePath);
-                $newHash = md5_file($_FILES['profile_img']['tmp_name']);
-
-                // Se os hashes forem iguais, é a mesma imagem
-                if ($currentHash === $newHash) {
-                    $isNewImage = false;
-                }
-            }
+        $uploadDir = __DIR__ . '/../uploads/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
         }
 
-        // Só processa o upload se for uma imagem diferente
-        if ($isNewImage) {
-            $uploadDir = __DIR__ . '/../uploads/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
-            }
+        $ext = pathinfo($_FILES['profile_img']['name'], PATHINFO_EXTENSION);
+        $filename = uniqid('img_', true) . '.' . $ext;
+        $targetPath = $uploadDir . $filename;
 
-            $ext = pathinfo($_FILES['profile_img']['name'], PATHINFO_EXTENSION);
-            $filename = uniqid('img_', true) . '.' . $ext;
-            $targetPath = $uploadDir . $filename;
+        $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        $mimeType = mime_content_type($_FILES['profile_img']['tmp_name']);
 
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-            $mimeType = mime_content_type($_FILES['profile_img']['tmp_name']);
+        if (!in_array($mimeType, $allowedTypes)) {
+            echo json_encode(['success' => false, 'message' => 'Tipo de imagem inválido.']);
+            exit;
+        }
 
-            if (!in_array($mimeType, $allowedTypes)) {
-                echo json_encode(['success' => false, 'message' => 'Tipo de imagem inválido.']);
-                exit;
-            }
-
-            if (move_uploaded_file($_FILES['profile_img']['tmp_name'], $targetPath)) {
-                $imgPath = 'uploads/' . $filename;
-            } else {
-                echo json_encode(['success' => false, 'message' => 'Erro ao guardar a imagem.']);
-                exit;
-            }
+        if (move_uploaded_file($_FILES['profile_img']['tmp_name'], $targetPath)) {
+            $imgPath = 'uploads/' . $filename;
+        } else {
+            echo json_encode(['success' => false, 'message' => 'Erro ao guardar a imagem.']);
+            exit;
         }
     }
 
@@ -94,7 +72,7 @@ $isCompany = ($user['user_type'] ?? '') === 'COMPANY';
 $companyData = null;
 if ($isCompany) {
     $stmt = $pdo->prepare("SELECT COMPANY_NAME, COMPANY_EMAIL, COMPANY_SITE FROM COMPANY WHERE USER_ID = ?");
-    $stmt->execute([$user['user_id'] ?? '']);
+    $stmt->execute([hex2bin($user['user_id'] ?? '')]);
     $companyData = $stmt->fetch(PDO::FETCH_ASSOC);
 }
 ?>
