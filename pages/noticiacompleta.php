@@ -48,13 +48,15 @@ if ($isAjax && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resposta']
         ORDER BY pe.CREATED_AT DESC");
     $stmt->execute([$postId]);
     $comentarios = $stmt->fetchAll();
-    foreach ($comentarios as $comentario): ?>
+    foreach ($comentarios as $comentario):
+        $date = new DateTime($comentario['CREATED_AT']);
+        $formattedDate = $date->format('d/m/Y H:i');?>
         <div class="news-card comment">
             <div class="news-card-content">
                 <p class="news-text"><?= nl2br(htmlspecialchars($comentario['POST_EXT_CONTENT'])) ?></p>
             </div>
             <div class="news-card-footer">
-                <span class="news-author">👤 <?= htmlspecialchars($row['USER_NAME']) ?></span>
+                <span class="news-author">👤 <?= htmlspecialchars($comentario['USER_NAME']) ?></span>
                 <span class="news-date">🕒 <?= $formattedDate ?></span>
             </div>
         </div>

@@ -50,16 +50,17 @@ $totalPages = ceil($totalPosts / $limit);
                     <div class="news-card" data-id="<?= htmlspecialchars($row['POST_ID']) ?>">
                         <div class="news-card-header">
                             <img src="<?= htmlspecialchars($row['IMG_URL']) ?>" alt="<?= htmlspecialchars($row['COMPANY_NAME']) ?>" class="company-logo">
-                            <h3><?= htmlspecialchars($row['COMPANY_NAME']) ?></h3>
+                            <div class="meta-info">
+                                <h3><?= htmlspecialchars($row['COMPANY_NAME']) ?></h3>
+                                <span class="news-date">🕒 <?= $formattedDate ?></span>
+                            </div>
                         </div>
                         <div class="news-card-content">
                             <p class="news-text"><?= htmlspecialchars($truncatedContent) ?></p>
                         </div>
                         <div class="news-card-footer">
-                            <span class="news-author">👤 <?= htmlspecialchars($row['USER_NAME']) ?></span>
-                            <span class="news-date">🕒 <?= $formattedDate ?></span>
+                            <button class="open-modal-btn" onclick="window.location.href='?page=noticiacompleta&id=<?= htmlspecialchars($row['POST_ID']) ?>'">Ler mais</button>
                         </div>
-                        <button class="open-modal-btn" onclick="window.location.href='?page=noticiacompleta&id=<?= htmlspecialchars($row['POST_ID']) ?>'">Ler mais</button>
                     </div>
                 <?php endforeach; ?>
             </div>

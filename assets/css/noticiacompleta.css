@@ -16,6 +16,8 @@
   }
   
   .news-page h1 {
+
+    text-align: center;
     margin:0;
   }
 
@@ -45,7 +47,12 @@
     display: flex;
     flex-direction: column;
   }
-  
+
+  .meta-info h3 {
+    margin-bottom: 0;
+    margin-top: 5px;
+  }
+
   .company-name {
     font-weight: 600;
     font-size: 1rem;

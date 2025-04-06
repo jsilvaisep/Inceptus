@@ -7,7 +7,6 @@
 
 .news-page {
     width: 80%;
-    text-align: center;
 }
 
 .news-title {
@@ -92,7 +91,7 @@
     cursor: pointer;
     font-weight: bold;
     transition: background 0.3s;
-    margin-top: auto;
+    margin: 0 auto;
 }
 
 .open-modal-btn:hover {
