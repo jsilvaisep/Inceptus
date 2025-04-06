@@ -43,6 +43,7 @@
             });
     }
 
+    window.loadPage = loadPage;
 
     function abrirNoticia(postId) {
         fetch(`pages/noticias.php?id=${postId}&modal=true`)
@@ -986,5 +987,5 @@
         // Inicializa com todos os produtos
         populateProductContainers('all');
     }
-    
+
 })();
