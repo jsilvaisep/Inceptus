@@ -23,11 +23,10 @@ if (!$noticia) {
 
 // Handle AJAX POST comment
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resposta'])) {
-    $resposta = trim($_POST['resposta']);
+    $resposta = trim($_POST['resposta'], PDO::PARAM_INT);
     $userId = $_SESSION['user']['user_id'];
     if (!empty($resposta)) {
-        $stmt = $pdo->prepare("INSERT INTO POST_EXT (POST_ID, USER_ID, POST_EXT_CONTENT, CREATED_AT, UPDATED_AT)
-            VALUES (?, ?, ?, NOW(), NOW())");
+        $stmt = $pdo->prepare("CALL INSERT_POST_EXT (?, ?, ?)");
         $stmt->execute([$postId, $userId, $resposta]);
     }
     // Return updated comment section only
