@@ -833,7 +833,7 @@
 
         if (!resposta) return;
 
-        fetch(`pages/noticiacompleta.php?id=${postId}`, {
+        fetch(`pages/produtocompleto.php?id=${postId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

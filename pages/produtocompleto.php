@@ -107,7 +107,7 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
             <label for="comment">Comentário</label>
             <textarea id="comment" placeholder="Escreva o seu comentário..." rows="4" style="width:100%;"></textarea>
             <label for="comment_rank">rank</label>
-            <input type="comment_rank" name="rank" min="0" max="5">
+            <input type="number" name="comment_rank" min="0" max="5">
             <button type="button" onclick="submitComentarioProduto('<?= $product['PRODUCT_ID'] ?>')">Comentar</button>
         </form>
         <h2>Reviews de <?= htmlspecialchars($product['PRODUCT_NAME']) ?></h2>
