@@ -36,9 +36,8 @@ if ($isAjax && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resposta']
     $userId = $_SESSION['user']['user_id'];
 
     if (!empty($resposta)) {
-        $stmt = $pdo->prepare("INSERT INTO POST_EXT (POST_EXT_ID, POST_ID, USER_ID, POST_EXT_CONTENT, CREATED_AT, UPDATED_AT)
-            VALUES (?, ?, ?, ?, NOW(), NOW())");
-        $stmt->execute([$commentId, $postId, $userId, $resposta]);
+        $stmt = $pdo->prepare("CALL INSERT_POST_EXT (?, ?, ?)");
+        $stmt->execute([$postId, $userId, $resposta]);
     }
 
     // Return updated comment section only
