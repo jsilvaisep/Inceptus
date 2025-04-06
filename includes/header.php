@@ -4,14 +4,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Inceptus</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="stylesheet" href="assets/css/filter.css">
-    <link rel="stylesheet" href="assets/css/produtos.css">
-    <link rel="stylesheet" href="assets/css/empresas.css">
-    <link rel="stylesheet" href="assets/css/criarProdutos.css">
-    <link rel="stylesheet" href="assets/css/noticias.css">
-    <link rel="stylesheet" href="assets/css/produtocompleto.css">
-    <link rel="stylesheet" href="assets/css/empresacompleta.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css" >
+    <link rel="stylesheet" type="text/css" href="assets/css/filter.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/produtos.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/empresas.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/criarProdutos.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/noticias.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/produtocompleto.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/empresacompleta.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/noticiacompleta.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/warroom.css">
     <script src="assets/js/app.js" defer></script>
 
     <!-- Tagify -->

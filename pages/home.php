@@ -14,18 +14,21 @@
                 
                 $fullStars = str_repeat('&#9733;', $rounded);
                 $emptyStars = str_repeat('&#9734;', 5 - $rounded);
-                
                 echo "
                 <div class='top-rated-card'>
                     <div class='card-content'>
                         <img src='{$row['IMG_URL']}' class='card-image'>
                         <div>
-                            <strong>{$row['PRODUCT_NAME']}</strong><br>
+                            <strong>
+                             <a href='?page=produtocompleto&id=" . urlencode($row['PRODUCT_ID']) . "' style='text-decoration: none; color: inherit;'>
+                                  {$row['PRODUCT_NAME']}
+                            </strong><br>
                             <small>{$row['PRODUCT_DESCRIPTION']}</small>
                         </div>
                     </div>
                     <div>
                         <span class='stars'>{$fullStars}{$emptyStars}</span>
+                        </a>
                     </div>
                 </div>";
             }
@@ -47,19 +50,22 @@
                 $rounded = (int) round($rating);
 
                 $fullStars = str_repeat('&#9733;', $rounded); 
-                $emptyStars = str_repeat('&#9734;', 5 - $rounded); 
+                $emptyStars = str_repeat('&#9734;', 5 - $rounded);
 
                 echo "
                 <div class='top-rated-card'>
                     <div class='card-content'>
                         <img src='{$row['IMG_URL']}' class='card-image'>
                         <div>
-                            <strong>{$row['PRODUCT_NAME']}</strong><br>
+                         <a href='?page=produtocompleto&id=" . urlencode($row['PRODUCT_ID']) . "' style='text-decoration: none; color: inherit;'>
+                            {$row['PRODUCT_NAME']}
+                            </strong><br>
                             <small>{$row['PRODUCT_DESCRIPTION']}</small>
                         </div>
                     </div>
                     <div>
                         <span class='stars'>{$fullStars}{$emptyStars}</span>
+                        </a>
                     </div>
                 </div>";
             }
@@ -89,13 +95,16 @@
                     <div class='card-content'>
                         <img src='{$row['IMG_URL']}' class='card-image'>
                         <div>
-                            <strong>{$row['COMPANY_NAME']}</strong><br>
+                        <a href='?page=empresacompleta&id=" . urlencode($row['COMPANY_ID']) . "' style='text-decoration: none; color: inherit;'>
+                            {$row['COMPANY_NAME']}
+                            </strong><br>
                             <small>{$row['COMPANY_DESCRIPTION']}</small>
                         </div>
                     </div>
                     <div>
                         <span class='stars'>{$fullStars}{$emptyStars}</span>
-                    </div>
+                        </a>
+                    </div> 
                 </div>";
 
             }
