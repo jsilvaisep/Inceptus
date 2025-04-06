@@ -1,5 +1,13 @@
 <?php
 include '../includes/db.php';
+session_start();
+if (isset($_SESSION['user'])) {
+    $userID = $_SESSION['user']['user_id'];
+    $userName = $_SESSION['user']['user_name'] ?? '';
+} else {
+    header("Location: /pages/redirect.php");
+    exit;
+}
 
 // Buscar categorias e produtos
 $stmtCategories = $pdo->query("SELECT CATEGORY_ID, CATEGORY_NAME FROM CATEGORY WHERE CATEGORY_TYPE = 'PRODUTO'");
