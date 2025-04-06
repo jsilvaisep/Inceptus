@@ -7,7 +7,7 @@ $userImg = 'assets/img/default-user.png';
 $isAdmin = false;
 
 if (isset($_SESSION['user'])) {
-    $userId = $_SESSION['user']['user_id'];
+    $userId = hex2bin($_SESSION['user']['user_id']);
     $userName = $_SESSION['user']['user_name'];
     $imgFromSession = $_SESSION['user']['img_url'];
 
