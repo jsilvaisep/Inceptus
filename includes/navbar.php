@@ -62,8 +62,11 @@ if (isset($_SESSION['user'])) {
             </button>
             <div class="dropdown-menu">
               <a href="?page=profile">👤 Perfil</a>
-              <?php if ($isAdmin || $isCompany): ?>
+              <?php if ($isAdmin): ?>
                 <a href="?page=admin/dashboard">⚙️ Dashboard</a>
+              <?php endif; ?>
+              <?php if ($isCompany): ?>
+                <a href="?page=admin/empresadash">⚙️ Dashboard</a>
               <?php endif; ?>
               <a href="#" id="logout-link">🚪 Logout</a>
             </div>

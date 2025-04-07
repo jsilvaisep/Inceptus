@@ -1,0 +1,68 @@
+.product_list{
+    display: flex;
+    min-width: 80%;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.list_title {
+    text-align: center;
+    color: #be3144;
+}
+
+.product_table_header{  
+    font-weight: bold;
+    color: #be3144;
+}
+
+.product_table_data {
+    padding: 5px;
+    text-align: center;
+}
+
+.delete_button{
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+    background-color: #be3144; 
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.edit_button{
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+    background-color: yellow; 
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.product_table {
+    border-collapse: collapse;  /* Para unir as bordas */
+}
+
+th, td {
+    border: 1px solid #ddd; /* Borda padrão nas células */
+    padding: 5px;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #be3144;
+    color: white;
+}
+
+/* Remover bordas das células ao passar o rato (hover) */
+.product_table tr:hover td {
+    border: none;
+}

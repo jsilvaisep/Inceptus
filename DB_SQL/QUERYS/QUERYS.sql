@@ -48,3 +48,12 @@ ORDER BY pe.CREATED_AT DESC;
 
 
 SELECT * FROM COMMENT c WHERE c.PRODUCT_ID = 'fefecd40-0bf4-11f0-b0d3-020017000d59';
+
+
+
+SELECT u.USER_ID, c.COMPANY_ID
+                       FROM USER u 
+                       INNER JOIN COMPANY c ON c.USER_ID = u.USER_ID
+                       WHERE u.USER_ID ='a60585b7-11a3-11f0-ab2e-020017000d59'
+                       
+SELECT * FROM PRODUCT p WHERE COMPANY_ID = 'a6059147-11a3-11f0-ab2e-020017000d59';

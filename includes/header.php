@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Inceptus</title>
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css" >
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="assets/css/filter.css">
     <link rel="stylesheet" type="text/css" href="assets/css/produtos.css">
     <link rel="stylesheet" type="text/css" href="assets/css/empresas.css">
@@ -14,6 +14,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/empresacompleta.css">
     <link rel="stylesheet" type="text/css" href="assets/css/noticiacompleta.css">
     <link rel="stylesheet" type="text/css" href="assets/css/warroom.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/produtodash.css">
     <script src="assets/js/app.js" defer></script>
 
     <!-- Tagify -->
