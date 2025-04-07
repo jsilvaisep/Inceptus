@@ -1012,4 +1012,10 @@
         populateProductContainers('all');
     }
 
+    function submitEditarEmpresaAdmin(){
+        alert('Editar empresa dashboard admin');
+    }
+
+    window.submitEditarEmpresaAdmin = submitEditarEmpresaAdmin;
+
 })();

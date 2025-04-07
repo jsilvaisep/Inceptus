@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="assets/css/empresacompleta.css">
     <link rel="stylesheet" type="text/css" href="assets/css/noticiacompleta.css">
     <link rel="stylesheet" type="text/css" href="assets/css/warroom.css">
-    <link rel="stylesheet" type="text/css" href="assets/css/produtodash.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/dash.css">
     <script src="assets/js/app.js" defer></script>
 
     <!-- Tagify -->

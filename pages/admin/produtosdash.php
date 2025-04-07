@@ -40,19 +40,19 @@ try {
 }
 ?>
 
-<div class="product_list">
-    <div class="product_head">
-        <h2 class="list_title">Gestão de Produtos</h2>
+<div class="dash_list">
+    <div class="dash_head">
+        <h2 class="dash_title">Gestão de Produtos</h2>
         <button id="openModal" class="open-modal-btn" onclick="criarProduto()">Novo Produto</button>
     </div>
-    <table class="product_table">
-        <tr class="product_table_header">
+    <table class="dash_table">
+        <tr class="dash_table_header">
             <th>Nome Produto</th>
             <th>Descrição Produto</th>
             <th>Rank</th>
         </tr>
         <?php foreach ($products as $product): ?>
-            <tr class="product_table_data">
+            <tr class="dash_table_data">
                 <td><?= htmlspecialchars($product['PRODUCT_NAME']) ?></td>
                 <td><?= htmlspecialchars($product['PRODUCT_DESCRIPTION']) ?></td>
                 <td><?= htmlspecialchars($product['PRODUCT_RANK']) ?></td>

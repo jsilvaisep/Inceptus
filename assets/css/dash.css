@@ -1,27 +1,27 @@
-.product_list{
+.dash_list{
     display: flex;
     min-width: 80%;
     flex-direction: column;
     margin-left: auto;
     margin-right: auto;
 }
-.product_head{
+.dash_head{
     display: flex;
     flex-direction: row;
     align-content: space-between;
     margin-bottom: 20px;
 }
-.list_title {
+.dash_title {
     text-align: center;
     color: #be3144;
 }
 
-.product_table_header{  
+.dash_table_header{
     font-weight: bold;
     color: #be3144;
 }
 
-.product_table_data {
+.dash_table_data {
     padding: 5px;
     text-align: center;
 }
@@ -48,7 +48,7 @@
     transition: background-color 0.3s ease;
 }
 
-.product_table {
+.dash_table {
     border-collapse: collapse;  /* Para unir as bordas */
 }
 
@@ -67,7 +67,6 @@ tr:hover {
     color: white;
 }
 
-/* Remover bordas das células ao passar o rato (hover) */
-.product_table tr:hover td {
+.dash_table tr:hover td {
     border: none;
 }
