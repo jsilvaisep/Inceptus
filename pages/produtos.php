@@ -87,13 +87,6 @@ try {
                 <div id="search-results" class="search-results-box"></div>
             </form>
         </div>
-        <?php
-        if (isset($_SESSION['user'])) {
-            if ($_SESSION['user']['user_type'] === 'COMPANY') {
-                echo '<button id="openModal" class="open-modal-btn" onclick="criarProduto()">Novo Produto</button>';
-            }
-        }
-        ?>
 
         <?php if (count($products) > 0): ?>
             <div class="product-grid">

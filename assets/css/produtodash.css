@@ -5,7 +5,12 @@
     margin-left: auto;
     margin-right: auto;
 }
-
+.product_head{
+    display: flex;
+    flex-direction: row;
+    align-content: space-between;
+    margin-bottom: 20px;
+}
 .list_title {
     text-align: center;
     color: #be3144;

@@ -67,6 +67,7 @@
         });
 
     }
+    window.criarProduto = criarProduto;
 
     //Recebe o form e verifica os campos ao criar Produto
     document.addEventListener("submit", function (event) {

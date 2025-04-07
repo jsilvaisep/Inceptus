@@ -8,13 +8,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Handle image uploads (minimum 1, maximum 5)
     if (!empty($_FILES["product_images"]["name"][0])) {
         foreach ($_FILES["product_images"]["tmp_name"] as $key => $tmp_name) {
-            if ($key >= 5) break; // Limit to 5 images
-            
+            if ($key >= 5)
+                break; // Limit to 5 images
+
             $originalName = $_FILES["product_images"]["name"][$key];
             $extension = pathinfo($originalName, PATHINFO_EXTENSION);
             $safeName = preg_replace("/[^a-zA-Z0-9]/", "_", pathinfo($originalName, PATHINFO_FILENAME)); // Remove spaces
             $newFileName = $safeName . "_" . time() . "." . $extension;
-            
+
             $destination = $uploadDir . $newFileName;
             if (move_uploaded_file($tmp_name, $destination)) {
                 $uploadedFiles[] = "/../produtos/" . $newFileName; // Save relative path
@@ -26,6 +27,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         throw new Exception("At least one image is required.");
     }
 
+    $user_id = $_SESSION['user']['user_id'];
+
+    try {
+        $stmt = $pdo->prepare("SELECT u.USER_ID, c.COMPANY_ID
+                       FROM USER u 
+                       INNER JOIN COMPANY c ON c.USER_ID = u.USER_ID
+                       WHERE u.USER_ID = ? ");
+        $stmt->execute([$user_id]);
+        $company_id_result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    } catch (PDOException $e) {
+        echo "" . $e->getMessage();
+    }
+
+    if (empty($company_id_result)) {
+        echo '<p>Empresa inválida.</p>';
+        exit;
+    }
+
+    $company_id = $company_id_result['COMPANY_ID'];
 
     // Convert array to string, separate paths with ';'
     $imagePaths = implode(";", $uploadedFiles);
@@ -35,10 +56,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindParam(':product_name', $_POST['product_name']);
         $stmt->bindParam(':product_description', $_POST['product_description']);
         $stmt->bindParam(':category_id', $_POST['category_id']);
-        $company_id = $_SESSION['user']['user_id'] ?? null;
+        //$company_id = $_SESSION['user']['user_id'] ?? null;
         $stmt->bindParam(':company_id', $company_id); // , PDO::PARAM_INT
         $stmt->bindParam(':img_url', $imagePaths);
-        
+
 
         $stmt->execute();
         echo "<p class='success'Produto inserido com sucesso!</p>";
@@ -53,7 +74,7 @@ try {
 } catch (PDOException $e) {
     $categories = [];
 }
-$pdo = null;   
+$pdo = null;
 $stmt = null;
 ?>
 
@@ -79,7 +100,7 @@ $stmt = null;
                 <?php endforeach; ?>
             </select>
 
-            
+
             <label for="product_images">Imagens do Produto (mínimo 1, máximo 5):</label>
             <input type="file" id="product_images" name="product_images[]" accept="image/*" multiple required>
             <p class="image-note">Máximo de 5 imagens. Apenas formatos JPG, PNG e GIF.</p>

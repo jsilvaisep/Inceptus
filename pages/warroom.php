@@ -1,9 +1,7 @@
-<?php
-include '../includes/db.php';
+<?php include_once '../includes/db.php';
 session_start();
 if (isset($_SESSION['user'])) {
     $userID = $_SESSION['user']['user_id'];
-    $userName = $_SESSION['user']['user_name'] ?? '';
 } else {
     header("Location: /pages/redirect.php");
     exit;
