@@ -200,6 +200,20 @@
         const minViewsInput = document.getElementById('min-views');
         const maxViewsInput = document.getElementById('max-views');
 
+        //Paginação das noticias
+        if (page === 'noticias') {
+            document.querySelectorAll('.page-link').forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const urlParams = new URL(link.href).searchParams;
+                    const pageParam = urlParams.get('page') || 'noticias';
+                    const searchParam = urlParams.toString();
+        
+                    loadPage(pageParam, searchParam);
+                });
+            });
+        }
+
         // Pesquisa AJAX dinâmica para produtos e empresas
         if (page === 'produtos') {
             let minViews = new URLSearchParams(window.location.search).get('min_views');
