@@ -7,8 +7,26 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
 }
 ?>
 
+<link rel="stylesheet" href="assets/css/admin.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<br><br>
+
 <div class="container py-5">
-    <h1 class="mb-5 text-center fw-bold">Painel de Administração</h1>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3 id="total-users">0</h3>
+            <p>Utilizadores</p>
+        </div>
+        <div class="stat-card">
+            <h3 id="total-companies">0</h3>
+            <p>Empresas</p>
+        </div>
+        <div class="stat-card">
+            <h3 id="total-products">0</h3>
+            <p>Produtos</p>
+        </div>
+    </div>
+
 
     <div class="admin-grid">
         <div class="custom-card">
@@ -19,7 +37,6 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
                 <button class="btn custom-btn mt-2" onclick="loadPage('admin/users')">Gerir Utilizadores</button>
             </div>
         </div>
-
         <div class="custom-card">
             <div class="card-body text-center">
                 <i class="fas fa-building fa-2x text-danger mb-2"></i>
@@ -28,7 +45,6 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
                 <button class="btn custom-btn mt-2" onclick="loadPage('admin/empresas')">Gerir Empresas</button>
             </div>
         </div>
-
         <div class="custom-card">
             <div class="card-body text-center">
                 <i class="fas fa-box-open fa-2x text-success mb-2"></i>
@@ -37,7 +53,6 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
                 <button class="btn custom-btn mt-2" onclick="loadPage('admin/produtos')">Gerir Produtos</button>
             </div>
         </div>
-
         <div class="custom-card">
             <div class="card-body text-center">
                 <i class="fas fa-database fa-2x text-warning mb-2"></i>
@@ -46,7 +61,6 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
                 <button class="btn custom-btn mt-2" onclick="loadPage('admin/backups')">Gestão de Backups</button>
             </div>
         </div>
-
         <div class="custom-card">
             <div class="card-body text-center">
                 <i class="fas fa-cogs fa-2x text-dark mb-2"></i>
@@ -55,7 +69,6 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
                 <button class="btn custom-btn mt-2" onclick="loadPage('admin/settings')">Abrir Definições</button>
             </div>
         </div>
-
         <div class="custom-card">
             <div class="card-body text-center">
                 <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
@@ -67,42 +80,4 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
     </div>
 </div>
 
-<style>
-.admin-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    justify-items: center;
-}
-
-.custom-card {
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out;
-    padding: 1.5rem;
-    width: 100%;
-    max-width: 300px;
-}
-
-.custom-card:hover {
-    transform: translateY(-5px);
-}
-
-.custom-btn {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 8px 18px;
-    font-weight: bold;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: background 0.3s ease-in-out;
-    font-size: 0.9rem;
-}
-
-.custom-btn:hover {
-    background: linear-gradient(135deg, #2c5364, #203a43, #0f2027);
-    color: white;
-}
-</style>
+<script src="/assets/js/admin/dashboard.js"></script>
