@@ -45,8 +45,10 @@ if (empty($products)) {
                 <td><?= htmlspecialchars($product['PRODUCT_NAME']) ?></td>
                 <td><?= htmlspecialchars($product['PRODUCT_DESCRIPTION']) ?></td>
                 <td><?= htmlspecialchars($product['PRODUCT_RANK']) ?></td>
-                <td><button class="edit_button" value="<?= htmlspecialchars($product['PRODUCT_ID']) ?>">Editar</button></td>
-                <td><button class="delete_button" value="<?= htmlspecialchars($product['PRODUCT_ID']) ?>">Eliminar</button>
+                <td><button class="edit_button"
+                            onclick="submitEditarProdutosAdmin('<?= htmlspecialchars($product['PRODUCT_ID']) ?>')">Editar</button></td>
+                <td><button class="delete_button"
+                            onclick="submitEliminarProdutosAdmin('<?= htmlspecialchars($product['PRODUCT_ID']) ?>')">Eliminar</button>
                 </td>
             </tr>
         <?php endforeach; ?>

@@ -43,8 +43,12 @@ if (empty($companies)) {
                 <td><?= htmlspecialchars($company['COMPANY_EMAIL']) ?></td>
                 <td><?= htmlspecialchars($company['COMPANY_SITE']) ?></td>
                 <td><?= htmlspecialchars($company['COMPANY_RANK']) ?></td>
-                <td><button class="edit_button" onclick="submitEditarEmpresaAdmin()" value="<?= htmlspecialchars($company['COMPANY_ID']) ?>">Editar</button></td>
-                <td><button class="delete_button" value="<?= htmlspecialchars($company['COMPANY_ID']) ?>">Eliminar</button>
+                <td>
+                    <button class="edit_button"
+                            onclick="submitEditarEmpresaAdmin('<?= htmlspecialchars($company['COMPANY_ID']) ?>')">Editar</button>
+                </td>
+                <td><button class="delete_button"
+                            onclick="submitEliminarEmpresaAdmin('<?= htmlspecialchars($company['COMPANY_ID']) ?>')">Eliminar</button>
                 </td>
             </tr>
         <?php endforeach; ?>

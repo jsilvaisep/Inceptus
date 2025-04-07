@@ -41,8 +41,10 @@ if (empty($users)) {
                 <td><?= htmlspecialchars($user['USER_LOGIN']) ?></td>
                 <td><?= htmlspecialchars($user['USER_NAME']) ?></td>
                 <td><?= htmlspecialchars($user['USER_EMAIL']) ?></td>
-                <td><button class="edit_button" value="<?= htmlspecialchars($user['USER_ID']) ?>">Editar</button></td>
-                <td><button class="delete_button" value="<?= htmlspecialchars($user['USER_ID']) ?>">Eliminar</button>
+                <td><button class="edit_button"
+                            onclick="submitEditarUsersAdmin('<?= htmlspecialchars($user['USER_ID']) ?>')">Editar</button>
+                <td><button class="delete_button"
+                            onclick="submitEliminarUsersAdmin('<?= htmlspecialchars($user['USER_ID']) ?>')">Eliminar</button>
                 </td>
             </tr>
         <?php endforeach; ?>

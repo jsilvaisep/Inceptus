@@ -1012,10 +1012,38 @@
         populateProductContainers('all');
     }
 
-    function submitEditarEmpresaAdmin(){
-        alert('Editar empresa dashboard admin');
+    function submitEditarEmpresaAdmin(company_id){
+        alert('Editar empresas dashboard admin ' + company_id);
     }
 
     window.submitEditarEmpresaAdmin = submitEditarEmpresaAdmin;
 
+    function submitEliminarEmpresaAdmin(company_id){
+        alert('Eliminar empresas dashboard admin ' + company_id);
+    }
+
+    window.submitEliminarEmpresaAdmin = submitEliminarEmpresaAdmin;
+
+    function submitEditarUsersAdmin(user_id){
+        alert('Editar users dashboard admin ' + user_id);
+    }
+
+    window.submitEditarUsersAdmin = submitEditarUsersAdmin;
+
+    function submitEliminarUsersAdmin(user_id){
+        alert('Eliminar users dashboard admin '+ user_id);
+    }
+
+    window.submitEliminarUsersAdmin = submitEliminarUsersAdmin;
+    function submitEditarProdutosAdmin(product_id){
+        alert('Editar produtos dashboard admin '+product_id);
+    }
+
+    window.submitEditarProdutosAdmin = submitEditarProdutosAdmin;
+
+    function submitEliminarProdutosAdmin(product_id){
+        alert('Eliminar produtos dashboard admin '+product_id);
+    }
+
+    window.submitEliminarProdutosAdmin = submitEliminarProdutosAdmin;
 })();
