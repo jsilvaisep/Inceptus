@@ -1,4 +1,5 @@
-<?php include '../includes/db.php';
+<?php
+include '../includes/db.php';
 session_start();
 
 // Funções auxiliares
@@ -25,11 +26,7 @@ $perPage = 12;
 $offset = ($page - 1) * $perPage;
 $tags = isset($_GET['tags']) ? array_filter(array_map('trim', explode(',', $_GET['tags']))) : []; // array de strings
 
-
-if (isset($_COOKIE['stars'])) {
-    echo $_COOKIE["stars"];
-}
-
+// Base da query
 $baseQuery = "FROM COMPANY 
                 LEFT JOIN TAG_COMPANY ON COMPANY.COMPANY_ID = TAG_COMPANY.COMPANY_ID
                 LEFT JOIN TAG ON TAG_COMPANY.TAG_ID = TAG.TAG_ID
@@ -37,19 +34,22 @@ $baseQuery = "FROM COMPANY
 
 $params = [$searchTerm];
 
+// Filtros de visualizações
 if (!is_null($minViews) && !is_null($maxViews) && $minViews > 0 && $maxViews > $minViews) {
     $baseQuery .= " AND COMPANY.COMPANY_VIEW_QTY BETWEEN ? AND ?";
     $params[] = $minViews;
     $params[] = $maxViews;
 }
 
+// Filtro de rank
 if ($rank > 0) {
     $baseQuery .= " AND COMPANY.COMPANY_RANK >= ? AND COMPANY.COMPANY_RANK < ?";
     $params[] = $rank;
     $params[] = $rank + 1;
 }
 
-if($tags && count($tags) > 0) {
+// Filtro de tags
+if ($tags && count($tags) > 0) {
     $baseQuery .= " AND EXISTS (
                     SELECT 1 
                     FROM TAG_COMPANY tc2 
@@ -60,11 +60,13 @@ if($tags && count($tags) > 0) {
     $params = array_merge($params, $tags);
 }
 
+// Total de empresas
 $totalStmt = $pdo->prepare("SELECT COUNT(*) " . $baseQuery);
 $totalStmt->execute($params);
 $totalCompanies = $totalStmt->fetchColumn();
 $totalPages = ceil($totalCompanies / $perPage);
 
+// Empresas paginadas
 $companiesQuery = "SELECT COMPANY.* " . $baseQuery . " ORDER BY COMPANY.COMPANY_RANK DESC LIMIT ? OFFSET ?";
 $stmt = $pdo->prepare($companiesQuery);
 
@@ -81,11 +83,14 @@ $companies = $stmt->fetchAll();
 <link rel="stylesheet" href="../css/empresas.css">
 
 <div class="company-layout">
+    <!-- Filtros -->
     <div class="filtros">
         <?php include '../includes/filter.php'; ?>
     </div>
 
+    <!-- Conteúdo principal -->
     <div class="company-container">
+        <!-- Barra de pesquisa -->
         <div class="search-section">
             <form class="search-box" data-page="empresas" onsubmit="return false;">
                 <span class="search-icon">🔍</span>
@@ -94,10 +99,11 @@ $companies = $stmt->fetchAll();
             </form>
         </div>
 
+        <!-- Lista de empresas -->
         <?php if (count($companies) > 0): ?>
             <div class="company-grid">
                 <?php foreach ($companies as $company):
-                    $companyId = urlencode($company['COMPANY_ID']);?>
+                    $companyId = urlencode($company['COMPANY_ID']); ?>
                     <div class="company-card clickable-card" data-id="<?= $companyId ?>" onclick="redirectToCompany('<?= $companyId ?>')">
                         <img src="<?= htmlspecialchars($company['IMG_URL']) ?>" alt="<?= htmlspecialchars($company['COMPANY_NAME']) ?>" class="company-img">
                         <div class="company-info">
@@ -108,9 +114,11 @@ $companies = $stmt->fetchAll();
                 <?php endforeach; ?>
             </div>
 
+            <!-- Paginação -->
             <div class="pagination">
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <button class="page-btn<?= $i == $page ? ' active' : '' ?>" onclick="loadPage('empresas', '<?= http_build_query(['search' => $search, 'pg' => $i]) ?>')">
+                    <button class="page-btn<?= $i == $page ? ' active' : '' ?>" 
+                        onclick="loadPage('empresas', '<?= http_build_query(['search' => $search, 'pg' => $i]) ?>')">
                         <?= $i ?>
                     </button>
                 <?php endfor; ?>

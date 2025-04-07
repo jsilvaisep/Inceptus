@@ -12,12 +12,6 @@ $page = isset($_GET['pg']) ? max(1, (int) $_GET['pg']) : 1;
 $perPage = 12;
 $offset = ($page - 1) * $perPage;
 
-
-
-if (isset($_COOKIE['stars'])) {
-    echo $_COOKIE["stars"];
-}
-
 // BASE DA QUERY
 $baseQuery = "
     FROM PRODUCT 
@@ -68,29 +62,13 @@ $stmt->bindValue(count($params) + 1, $perPage, PDO::PARAM_INT);
 $stmt->bindValue(count($params) + 2, $offset, PDO::PARAM_INT);
 $stmt->execute();
 $products = $stmt->fetchAll();
+
+// Obter categorias
 try {
     $query = $pdo->query("SELECT CATEGORY_ID, CATEGORY_NAME FROM CATEGORY");
     $categories = $query->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $categories = [];
-}
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    try {
-        $stmt = $pdo->prepare("CALL INSERT_PRODUCT(:product_name, :product_description, :category_id, :company_id)");
-        $stmt->bindParam(':product_name', $_POST['product_name']);
-        $stmt->bindParam(':product_description', $_POST['product_description']);
-        $stmt->bindParam(':category_id', $_POST['category_id']);
-        $company_id = $company_id = $_SESSION['user']['user_id'] ?? null;
-        $stmt->bindParam(':company_id', $company_id); // , PDO::PARAM_INT
-
-
-        $stmt->execute();
-        echo "<p class='success'Produto inserido com sucesso!</p>";
-    } catch (PDOException $e) {
-        echo "<p class='error'>Error: " . $e->getMessage() . "</p>";
-    }
-    $pdo = null;
-    $stmt = null;
 }
 ?>
 
