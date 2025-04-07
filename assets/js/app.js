@@ -869,8 +869,6 @@
         })
         .then(response => response.text())
         .then(html => {
-            console.log(product_Id, textarea.value, rank.value);
-            console.log("Comentário enviado com sucesso");
             textarea.value = '';
             document.getElementById('review').value = '';
         })

@@ -1,4 +1,3 @@
-
 <?php
 include '../includes/db.php';
 session_start();
@@ -67,8 +66,9 @@ if (!$product) {
 $commentStmt = $pdo->prepare("SELECT c.COMMENT_TEXT, c.COMMENT_RANK, c.CREATED_AT, u.USER_NAME 
                               FROM COMMENT c 
                               INNER JOIN USER u ON u.USER_ID = c.USER_ID 
-                              WHERE c.PRODUCT_ID = ? AND c.COMMENT_STATUS = 'A' 
-                              ORDER BY c.CREATED_AT DESC");
+                              WHERE c.PRODUCT_ID = ? AND c.COMMENT_STATUS = 'A'
+                              ORDER BY c.CREATED_AT DESC 
+                              LIMIT 10");
 $commentStmt->execute([$productId]);
 $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -130,11 +130,17 @@ function renderStars($rating)
     <!-- Seção de Comentários -->
     <div class="comentarios">
         <form>
-            <label for="comment">Comentário</label>
-            <textarea id="comment" placeholder="Escreva o seu comentário..." rows="4" style="width:100%;"></textarea>
-            <label for="rank">Rank</label>
-            <input type="number" id="review" min="0" max="5">
-            <button type="button" onclick="submitComentarioProduto('<?= $product['PRODUCT_ID'] ?>')">Comentar</button>
+            <div class="comment_form">
+                <h2>Comentário</h2>
+                <textarea id="comment" placeholder="Escreva o seu comentário..." rows="4"
+                    style="width:100%;"></textarea>
+                <h4>Rank</h4>
+                <div class="comment_rank">
+                    <input type="number" id="review" min="0" max="5">
+                    <button class="botao-voltar" type="button"
+                        onclick="submitComentarioProduto('<?= $product['PRODUCT_ID'] ?>')">Comentar</button>
+                </div>
+            </div>
         </form>
 
         <h2>Reviews de <?= htmlspecialchars($product['PRODUCT_NAME']) ?></h2>

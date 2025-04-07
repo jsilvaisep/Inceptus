@@ -7,30 +7,31 @@ $userImg = 'assets/img/default-user.png';
 $isAdmin = false;
 
 if (isset($_SESSION['user'])) {
-    $userId = $_SESSION['user']['user_id'];
-    $userName = $_SESSION['user']['user_name'];
-    $imgFromSession = $_SESSION['user']['img_url'];
+  $userId = $_SESSION['user']['user_id'];
+  $userName = $_SESSION['user']['user_name'];
+  $imgFromSession = $_SESSION['user']['img_url'];
 
-    // Verifica se o caminho da imagem existe no sistema de ficheiros
-    if (!empty($imgFromSession) && file_exists(__DIR__ . '/../' . $imgFromSession)) {
-        $userImg = $imgFromSession;
-    }
+  // Verifica se o caminho da imagem existe no sistema de ficheiros
+  if (!empty($imgFromSession) && file_exists(__DIR__ . '/../' . $imgFromSession)) {
+    $userImg = $imgFromSession;
+  }
 
-    // Verifica se o utilizador é ADMIN
-    $stmt = $pdo->prepare("
+  // Verifica se o utilizador é ADMIN
+  $stmt = $pdo->prepare("
         SELECT u.USER_TYPE_ID, ut.USER_TYPE
         FROM USER u
         JOIN USER_TYPE ut ON u.USER_TYPE_ID = ut.TYPE_ID
         WHERE u.USER_ID = ?
     ");
-    $stmt->execute([$userId]);
-    $typeData = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($typeData) {
-      $_SESSION['user']['user_type'] = $typeData['USER_TYPE'];
+  $stmt->execute([$userId]);
+  $typeData = $stmt->fetch(PDO::FETCH_ASSOC);
+  if ($typeData) {
+    $_SESSION['user']['user_type'] = $typeData['USER_TYPE'];
   }
-      
 
-    $isAdmin = $typeData && $typeData['USER_TYPE'] === 'ADMIN';
+
+  $isAdmin = $typeData && $typeData['USER_TYPE'] === 'ADMIN';
+  $isCompany = $typeData && $typeData['USER_TYPE'] === 'COMPANY';
 }
 ?>
 
@@ -50,25 +51,25 @@ if (isset($_SESSION['user'])) {
         <li><a href="?page=warroom" class="nav-link">Warroom</a></li>
 
         <?php if (!empty($userName)): ?>
-        <li class="user-dropdown">
-          <button class="dropdown-toggle">
-            <img src="<?= htmlspecialchars($userImg) ?>" alt="Avatar" class="avatar">
-            <span><?= htmlspecialchars($userName) ?></span>
-            <svg class="chevron" width="12" height="12" viewBox="0 0 320 512">
-              <path fill="currentColor"
-                d="M31.3 192l128 128 128-128c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-144 144c-9.4 9.4-24.6 9.4-33.9 0l-144-144c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0z" />
-            </svg>
-          </button>
-          <div class="dropdown-menu">
-            <a href="?page=profile">👤 Perfil</a>
-            <?php if ($isAdmin): ?>
-              <a href="?page=admin/dashboard">⚙️ Dashboard</a>
-            <?php endif; ?>
-            <a href="#" id="logout-link">🚪 Logout</a>
-          </div>
-        </li>
+          <li class="user-dropdown">
+            <button class="dropdown-toggle">
+              <img src="<?= htmlspecialchars($userImg) ?>" alt="Avatar" class="avatar">
+              <span><?= htmlspecialchars($userName) ?></span>
+              <svg class="chevron" width="12" height="12" viewBox="0 0 320 512">
+                <path fill="currentColor"
+                  d="M31.3 192l128 128 128-128c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-144 144c-9.4 9.4-24.6 9.4-33.9 0l-144-144c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0z" />
+              </svg>
+            </button>
+            <div class="dropdown-menu">
+              <a href="?page=profile">👤 Perfil</a>
+              <?php if ($isAdmin || $isCompany): ?>
+                <a href="?page=admin/dashboard">⚙️ Dashboard</a>
+              <?php endif; ?>
+              <a href="#" id="logout-link">🚪 Logout</a>
+            </div>
+          </li>
         <?php else: ?>
-        <li><a href="?page=login" class="login-btn">Login</a></li>
+          <li><a href="?page=login" class="login-btn">Login</a></li>
         <?php endif; ?>
       </ul>
     </nav>

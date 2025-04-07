@@ -140,6 +140,13 @@
     text-transform: uppercase;
 }
 
+.comentarios h4 {
+    color: #be3144;
+    font-size: 18px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
 .comentarios-carrossel {
     display: flex;
     gap: 20px;
@@ -167,4 +174,24 @@
     color: #444;
 }
 
+
+.comentarios textarea {
+    resize: none;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: x-large;
+}
+
+.comment_rank {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.comment_rank input {
+    border-radius: 10px;
+    padding: 10px;
+    font-size: x-large;
+}
 
