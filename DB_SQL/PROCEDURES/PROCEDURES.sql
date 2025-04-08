@@ -64,7 +64,7 @@ DROP PROCEDURE UPD_PRODUCT_RANK;
 
 CREATE PROCEDURE CREATE_RESET_CODE (IN V_USER_ID INT)
 BEGIN
-	INSERT INTO DB_INCEPTUS_PP.SEC_RST_CODE
+	INSERT INTO SEC_RST_CODE
 	(USER_ID, GENERATED_CODE)
 	VALUES(V_USER_ID,FLOOR(100000 + RAND() * 900000));
 END
@@ -164,6 +164,32 @@ BEGIN
 END
 -- -----------------------------------------------------------------------------------------
 DROP PROCEDURE INSERT_COMPANY;
+
+/* 
+####################################
+####### APAGAR EMPRESA #######################################################################################################################################################################
+####################################
+*/
+
+CREATE TRIGGER COMPANY_DELETE AFTER UPDATE ON COMPANY
+FOR EACH ROW
+BEGIN
+	IF NEW.COMPANY_STATUS = 'I' THEN
+	    UPDATE PRODUCT c
+	    SET c.PRODUCT_STATUS = 'I'
+	    WHERE COMPANY_ID = NEW.COMPANY_ID;
+	END IF;
+END
+
+CREATE PROCEDURE DELETE_COMPANY (IN V_COMPANY_ID BINARY(36))
+BEGIN
+	UPDATE COMPANY SET PRODUCT_STATUS='I' WHERE COMPANY_ID = V_COMPANY_ID;
+END
+
+-- -------------------------------------------------------------------------
+DROP PROCEDURE DELETE_COMPANY;
+DROP TRIGGER COMPANY_DELETE;
+
 /* 
 ####################################
 ####### CRIAR PRODUTO #######################################################################################################################################################################
