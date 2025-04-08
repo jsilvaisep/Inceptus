@@ -1,7 +1,7 @@
 <?php
-include '../includes/db.php';
+include __DIR__ . '/db.php';
 session_start();
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['deleteForm'])) {
     $uploadDir = __DIR__ . "/../produtos/"; // Path to "produtos/" inside project
     $uploadedFiles = [];
 
@@ -83,7 +83,7 @@ $stmt = null;
     <div class="modal-content">
         <button id="closeModal" class="close-btn">&times;</button>
         <h2>Novo Produto</h2>
-        <form id="productForm" method="POST" enctype="multipart/form-data">
+        <form id="productForm" method="POST" enctype="multipart/form-data" class="criarProdutoForm">
             <label for="product_name">Nome do Produto:</label>
             <input type="text" id="product_name" name="product_name" required>
 

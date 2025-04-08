@@ -37,6 +37,10 @@
     transition: background-color 0.3s ease;
 }
 
+.delete_button:hover{
+    cursor: pointer;
+}
+
 .edit_button{
     padding: 10px 15px;
     font-size: 14px;
@@ -46,6 +50,10 @@
     background-color: yellow; 
     border-radius: 6px;
     transition: background-color 0.3s ease;
+}
+
+.edit_button:hover{
+    cursor: pointer;
 }
 
 .dash_table {

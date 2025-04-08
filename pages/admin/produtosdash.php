@@ -1,6 +1,22 @@
 <?php
-include '../../includes/db.php';
-session_start();
+include __DIR__ . '/../../includes/criarProdutos.php';
+include __DIR__ . '/../../includes/db.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['prodID'])) {
+    $productId = $_POST['prodID'];
+
+    try {
+        $stmt = $pdo->prepare("CALL DELETE_PRODUCT(:prodID)");
+        $stmt->bindParam(':prodID', $productId, PDO::PARAM_STR); 
+        $stmt->execute();
+        
+        echo "✅ Produto eliminado com sucesso.";
+    } catch (PDOException $e) {
+        // Catch any errors and display them
+        echo "❌ Erro: " . $e->getMessage();
+    }
+}
+
 
 if (!isset($_SESSION['user']) || ($_SESSION['user']['user_type'] !== 'ADMIN' && $_SESSION['user']['user_type'] !== 'COMPANY')) {
     echo "<div class='alert alert-danger'>Acesso restrito.</div>";
@@ -57,7 +73,11 @@ try {
                 <td><?= htmlspecialchars($product['PRODUCT_DESCRIPTION']) ?></td>
                 <td><?= htmlspecialchars($product['PRODUCT_RANK']) ?></td>
                 <td><button class="edit_button" value="<?= htmlspecialchars($product['PRODUCT_ID']) ?>">Editar</button></td>
-                <td><button class="delete_button" value="<?= htmlspecialchars($product['PRODUCT_ID']) ?>">Eliminar</button>
+                <td>
+                <form method="POST" id="delete_Form" action="./pages/admin/produtosdash.php" class="deleteForm">
+                <input type="hidden" name="prodID" value="<?= $product['PRODUCT_ID'] ?>">
+                <button class="delete_button" type="submit">Eliminar</button>
+                </form>
                 </td>
             </tr>
         <?php endforeach; ?>

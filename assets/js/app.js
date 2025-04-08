@@ -57,6 +57,10 @@
             });
     }
 
+    function eliminarProduto(id){
+        alert(id);
+    }
+    window.eliminarProduto = eliminarProduto;
 
     //Abre o form após clicar no botão de Criar Produto
     function criarProduto(){
@@ -71,59 +75,69 @@
 
     //Recebe o form e verifica os campos ao criar Produto
     document.addEventListener("submit", function (event) {
-        form = document.getElementById("productForm");
-        let formData = new FormData(form);
+        if (event.target.classList.contains('deleteForm')) {
+            form = document.getElementById("delete_Form");
+            let formData = new FormData(form);
 
-        fetch('/includes/criarProdutos.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.text()) // Handle response
-        .then(data => {
-            console.log("Success:", data);
-        })
-        .catch(error => {
-            console.error("Error:", error);
-        });
-        document.getElementById("product_images").addEventListener("change", function (event) {
-            const previewContainer = document.getElementById("preview-container");
-            previewContainer.innerHTML = "";
-            const files = event.target.files;
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text()) // Handle response
+            .then(data => {
+                console.log("Success:");
+            })
+            .catch(error => {
+                console.error("Error:");
+            });
+        }
+        else if (event.target.classList.contains('criarProdutoForm')) {
+            form = document.getElementById("productForm");
+            let formData = new FormData(form);
 
-            if (files.length < 1 || files.length > 5) {
-                alert("Você deve selecionar no mínimo 1 e no máximo 5 imagens.");
-                event.target.value = "";
-                return;
-            }
+            fetch('/includes/criarProdutos.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text()) // Handle response
+            .then(data => {
+                console.log("Success:", data);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+            document.getElementById("product_images").addEventListener("change", function (event) {
+                const previewContainer = document.getElementById("preview-container");
+                previewContainer.innerHTML = "";
+                const files = event.target.files;
 
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-
-                if (!file.type.match("image.*")) {
-                    alert("Apenas arquivos de imagem são permitidos.");
+                if (files.length < 1 || files.length > 5) {
+                    alert("Você deve selecionar no mínimo 1 e no máximo 5 imagens.");
                     event.target.value = "";
                     return;
                 }
 
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const imgElement = document.createElement("img");
-                    imgElement.src = e.target.result;
-                    imgElement.classList.add("preview-image");
-                    previewContainer.appendChild(imgElement);
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-            let name = document.getElementById("product_name").value.trim();
-            let description = document.getElementById("product_description").value.trim();
-            let category = document.getElementById("category_id").value;
-            let company = "4ce516e6-0be9-11f0-b0d3-020017000d59";
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
 
-            if (!name || !description || !category || !company) {
-                alert("Todos os campos são obrigatórios.");
-            }
-        });
+                    if (!file.type.match("image.*")) {
+                        alert("Apenas arquivos de imagem são permitidos.");
+                        event.target.value = "";
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const imgElement = document.createElement("img");
+                        imgElement.src = e.target.result;
+                        imgElement.classList.add("preview-image");
+                        previewContainer.appendChild(imgElement);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
 
         // ==========================
     // Dropdown do utilizador
