@@ -36,6 +36,8 @@ if (empty($companies)) {
             <th>Company Rank</th>
             <th></th>
             <th></th>
+            <th></th>
+            <th></th>
         </tr>
         <?php foreach ($companies as $company): ?>
             <tr class="dash_table_data">
@@ -44,12 +46,21 @@ if (empty($companies)) {
                 <td><?= htmlspecialchars($company['COMPANY_SITE']) ?></td>
                 <td><?= htmlspecialchars($company['COMPANY_RANK']) ?></td>
                 <td>
+                    <button class="tags_button"
+                            onclick="submitTagsEmpresaAdmin('<?= htmlspecialchars($company['COMPANY_ID']) ?>')">Tag</button>
+                </td>
+                <td>
+                    <button class="category_button"
+                            onclick="submitCategoriaEmpresaAdmin('<?= htmlspecialchars($company['COMPANY_ID']) ?>')">Categoria</button>
+                </td>
+                <td>
                     <button class="edit_button"
                             onclick="submitEditarEmpresaAdmin('<?= htmlspecialchars($company['COMPANY_ID']) ?>')">Editar</button>
                 </td>
                 <td><button class="delete_button"
                             onclick="submitEliminarEmpresaAdmin('<?= htmlspecialchars($company['COMPANY_ID']) ?>')">Eliminar</button>
                 </td>
+                
             </tr>
         <?php endforeach; ?>
     </table>

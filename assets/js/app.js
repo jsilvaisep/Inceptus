@@ -1024,6 +1024,18 @@
         populateProductContainers('all');
     }
 
+    function submitTagsEmpresaAdmin(company_id){
+        alert('Colocar tags empresas dashboard admin ' + company_id);
+    }
+
+    window.submitTagsEmpresaAdmin = submitTagsEmpresaAdmin;
+
+    function submitCategoriaEmpresaAdmin(company_id){
+        alert('Colocar categorias empresas dashboard admin ' + company_id);
+    }
+
+    window.submitCategoriaEmpresaAdmin = submitCategoriaEmpresaAdmin;
+
     function submitEditarEmpresaAdmin(company_id){
         alert('Editar empresas dashboard admin ' + company_id);
     }

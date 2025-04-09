@@ -56,6 +56,36 @@
     cursor: pointer;
 }
 
+.tags_button{
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+    background-color: rgb(211, 211, 186); 
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.tags_button:hover{
+    cursor: pointer;
+}
+
+.category_button{
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+    background-color: rgb(231, 98, 10); 
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.category_button:hover{
+    cursor: pointer;
+}
+
 .dash_table {
     border-collapse: collapse;  /* Para unir as bordas */
 }
