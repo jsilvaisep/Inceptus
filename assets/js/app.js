@@ -79,7 +79,7 @@
             form = document.getElementById("delete_Form");
             let formData = new FormData(form);
 
-            fetch(form.action, {
+            fetch('/pages/admin/produtosdash.php', {
                 method: 'POST',
                 body: formData
             })
