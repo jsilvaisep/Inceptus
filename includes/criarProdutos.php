@@ -1,7 +1,12 @@
 <?php
+
+// TO DO: Ao selecionar mais de 1 imagem dá erro, provavelmente por causa do campo na db
+
 include __DIR__ . '/db.php';
+ob_clean();
+header('Content-Type: application/json');
 session_start();
-if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_POST['deleteForm'])) {
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['product_name'])) {
     $uploadDir = __DIR__ . "/../produtos/"; // Path to "produtos/" inside project
     $uploadedFiles = [];
 

@@ -83,23 +83,22 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.text()) // Handle response
+            .then(response => response.json()) // Handle response
             .then(data => {
-                console.log("Success:");
+                console.log("Success:",data);
             })
             .catch(error => {
-                console.error("Error:");
+                console.error("Error:",error);
             });
         }
         else if (event.target.classList.contains('criarProdutoForm')) {
             form = document.getElementById("productForm");
             let formData = new FormData(form);
-
             fetch('/includes/criarProdutos.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.text()) // Handle response
+            .then(response => response.json()) // Handle response
             .then(data => {
                 console.log("Success:", data);
             })
@@ -568,7 +567,6 @@
                     e.preventDefault();
                     const formData = new FormData(loginForm);
                     const msg = document.getElementById('login-msg');
-
                     fetch('pages/login.php', { method: 'POST', body: formData, credentials: 'include' })
                         .then(res => res.json())
                         .then(data => {
