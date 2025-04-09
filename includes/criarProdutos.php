@@ -89,6 +89,8 @@ $stmt = null;
         <button id="closeModal" class="close-btn">&times;</button>
         <h2>Novo Produto</h2>
         <form id="productForm" method="POST" enctype="multipart/form-data" class="criarProdutoForm">
+            <input type="hidden" name="action" id="formAction" value="">
+
             <label for="product_name">Nome do Produto:</label>
             <input type="text" id="product_name" name="product_name" required>
 

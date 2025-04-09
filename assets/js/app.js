@@ -64,6 +64,7 @@
 
     //Abre o form após clicar no botão de Criar Produto
     function criarProduto(){
+        document.getElementById('formAction').value='criar';
             document.getElementById("modalOverlay").style.display = "flex";
 
         document.getElementById("closeModal").addEventListener("click", function() {
@@ -71,24 +72,37 @@
         });
 
     }
+
+    function editarProduto(){
+        document.getElementById('formAction').value='editar';
+            document.getElementById("modalOverlay").style.display = "flex";
+
+        document.getElementById("closeModal").addEventListener("click", function() {
+            document.getElementById("modalOverlay").style.display = "none";
+        });
+
+    }
+
     window.criarProduto = criarProduto;
+    window.editarProduto = editarProduto;
 
     //Recebe o form e verifica os campos ao criar Produto
     document.addEventListener("submit", function (event) {
         if (event.target.classList.contains('deleteForm')) {
-            form = document.getElementById("delete_Form");
-            let formData = new FormData(form);
-
+    
+            const form = event.target; // The form that was submitted
+            const formData = new FormData(form);
+    
             fetch('/pages/admin/produtosdash.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json()) // Handle response
+            .then(response => response.json())
             .then(data => {
-                console.log("Success:",data);
+                console.log("Success:", data);
             })
             .catch(error => {
-                console.error("Error:",error);
+                console.error("Error:", error);
             });
         }
         else if (event.target.classList.contains('criarProdutoForm')) {
