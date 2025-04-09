@@ -1,46 +1,77 @@
-<div class="footer-carousel">
-    <div class="carousel-track">
-        <?php
-        $logos = ['logo1.png', 'logo2.png', 'logo3.png', 'logo4.png', 'logo5.png' ,'logo1.png', 'logo2.png', 'logo3.png', 'logo4.png', 'logo5.png', 'logo1.png', 'logo2.png', 'logo3.png', 'logo4.png', 'logo5.png' ,'logo1.png', 'logo2.png', 'logo3.png', 'logo4.png', 'logo5.png'];
-        // Repetir 2x para fazer loop visual contínuo
-        for ($i = 0; $i < 2; $i++) {
-            foreach ($logos as $index => $logo) {
-                echo '<img src="rodape/' . htmlspecialchars($logo) . '" alt="Logo ' . ($index + 1) . '">';
-            }
-        }
-        ?>
+<?php
+include 'includes/db.php';
+
+$topProducts = $pdo->query("SELECT * FROM PRODUCT ORDER BY PRODUCT_RANK DESC LIMIT 3")->fetchAll(PDO::FETCH_ASSOC);
+
+$topCompanies = $pdo->query("SELECT * FROM COMPANY ORDER BY COMPANY_RANK DESC LIMIT 3")->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<link rel="stylesheet" href="assets/css/footer-carousel.css">
+
+<div class="footer-carousel-wrapper">
+
+  <div class="footer-carousel" id="footer-carousel">
+    <div class="footer-carousel-slide">
+        <br>
+      <div class="footer-carousel-cards">
+        <?php foreach ($topProducts as $product): ?>
+          <a href="?page=produtocompleto&id=<?= $product['PRODUCT_ID'] ?>" class="footer-carousel-card">
+            <img src="<?= htmlspecialchars($product['IMG_URL']) ?>" alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>">
+            <div class="footer-card-content">
+              <h3><?= htmlspecialchars($product['PRODUCT_NAME']) ?></h3>
+              <p><?= mb_strimwidth(htmlspecialchars($product['PRODUCT_DESCRIPTION']), 0, 60, '...') ?></p>
+            </div>
+          </a>
+        <?php endforeach; ?>
+      </div>
     </div>
+
+    <div class="footer-carousel-slide">
+        <br>
+      <div class="footer-carousel-cards">
+        <?php foreach ($topCompanies as $company): ?>
+          <a href="?page=empresacompleta&id=<?= $company['COMPANY_ID'] ?>" class="footer-carousel-card">
+            <img src="<?= htmlspecialchars($company['IMG_URL']) ?>" alt="<?= htmlspecialchars($company['COMPANY_NAME']) ?>">
+            <div class="footer-card-content">
+              <h3><?= htmlspecialchars($company['COMPANY_NAME']) ?></h3>
+              <p><?= mb_strimwidth(htmlspecialchars($company['COMPANY_DESCRIPTION']), 0, 60, '...') ?></p>
+            </div>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="carousel-dots">
+    <span class="dot active" data-slide="0"></span>
+    <span class="dot" data-slide="1"></span>
+  </div>
 </div>
 
-<style>
-.footer-carousel {
-    width: 100%;
-    overflow: hidden;
-    border-top: 2px solid #be3144;
-    border-bottom: 2px solid #be3144;
-    background-color: #fff;
-    padding: 10px 0;
-}
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const carousel = document.getElementById("footer-carousel");
+    const slides = document.querySelectorAll(".footer-carousel-slide");
+    const dots = document.querySelectorAll(".dot");
+    let current = 0;
 
-.carousel-track {
-    display: flex;
-    width: max-content;
-    animation: scroll-carousel 40s linear infinite;
-}
-
-.carousel-track img {
-    height: 60px;
-    margin: 0 40px;
-    flex-shrink: 0;
-    object-fit: contain;
-}
-
-@keyframes scroll-carousel {
-    from {
-        transform: translateX(50);
+    function showSlide(index) {
+      carousel.style.transform = `translateX(-${index * 100}%)`;
+      dots.forEach(dot => dot.classList.remove('active'));
+      dots[index].classList.add('active');
     }
-    to {
-        transform: translateX(-50%);
-    }
-}
-</style>
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        current = parseInt(dot.getAttribute('data-slide'));
+        showSlide(current);
+      });
+    });
+
+    setInterval(() => {
+      current = (current + 1) % slides.length;
+      showSlide(current);
+    }, 7000);
+  });
+</script>
