@@ -74,7 +74,7 @@ try {
                 <td><?= htmlspecialchars($product['PRODUCT_RANK']) ?></td>
                 <td><button class="edit_button" value="<?= htmlspecialchars($product['PRODUCT_ID']) ?>">Editar</button></td>
                 <td>
-                <form method="POST" id="delete_Form" action="./pages/admin/produtosdash.php" class="deleteForm">
+                <form method="POST" id="delete_Form" class="deleteForm">
                 <input type="hidden" name="prodID" value="<?= $product['PRODUCT_ID'] ?>">
                 <button class="delete_button" type="submit">Eliminar</button>
                 </form>

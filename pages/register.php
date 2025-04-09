@@ -1,5 +1,5 @@
 <?php
-require 'vendor/autoload.php';
+include __DIR__ . '../../vendor/autoload.php';
 session_start();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
