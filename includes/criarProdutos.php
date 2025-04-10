@@ -32,45 +32,72 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['product_name'])) {
         throw new Exception("At least one image is required.");
     }
 
-    $user_id = $_SESSION['user']['user_id'];
-
-    try {
-        $stmt = $pdo->prepare("SELECT u.USER_ID, c.COMPANY_ID
-                       FROM USER u 
-                       INNER JOIN COMPANY c ON c.USER_ID = u.USER_ID
-                       WHERE u.USER_ID = ? ");
-        $stmt->execute([$user_id]);
-        $company_id_result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    } catch (PDOException $e) {
-        echo "" . $e->getMessage();
+    if(isset($_POST['product-id-editar'])){
+        $product = $_POST['product-id-editar'];
+        $imagePaths = implode(";", $uploadedFiles);
+        try {
+            $stmt = $pdo->prepare("
+                UPDATE PRODUCT 
+                SET product_name = :product_name, 
+                    product_description = :product_description, 
+                    category_id = :category_id, 
+                    img_url = :img_url 
+                WHERE product_id = :product_id
+            ");
+            $stmt->bindParam(':product_name', $_POST['product_name']);
+            $stmt->bindParam(':product_description', $_POST['product_description']);
+            $stmt->bindParam(':category_id', $_POST['category_id']);
+            $stmt->bindParam(':img_url', $imagePaths);
+            $stmt->bindParam(':product_id', $product);
+    
+    
+            $stmt->execute();
+            echo "<p class='success'Produto editado com sucesso!</p>";
+        } catch (PDOException $e) {
+            echo "<p class='error'>Error: " . $e->getMessage() . "</p>";
+        }
     }
-
-    if (empty($company_id_result)) {
-        echo '<p>Empresa inválida.</p>';
-        exit;
+    else{
+        $user_id = $_SESSION['user']['user_id'];
+        try {
+            $stmt = $pdo->prepare("SELECT u.USER_ID, c.COMPANY_ID
+                           FROM USER u 
+                           INNER JOIN COMPANY c ON c.USER_ID = u.USER_ID
+                           WHERE u.USER_ID = ? ");
+            $stmt->execute([$user_id]);
+            $company_id_result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        } catch (PDOException $e) {
+            echo "" . $e->getMessage();
+        }
+    
+        if (empty($company_id_result)) {
+            echo '<p>Empresa inválida.</p>';
+            exit;
+        }
+    
+        $company_id = $company_id_result['COMPANY_ID'];
+    
+        // Convert array to string, separate paths with ';'
+        $imagePaths = implode(";", $uploadedFiles);
+    
+        try {
+            $stmt = $pdo->prepare("CALL INSERT_PRODUCT(:product_name, :product_description, :category_id, :company_id, :img_url)");
+            $stmt->bindParam(':product_name', $_POST['product_name']);
+            $stmt->bindParam(':product_description', $_POST['product_description']);
+            $stmt->bindParam(':category_id', $_POST['category_id']);
+            //$company_id = $_SESSION['user']['user_id'] ?? null;
+            $stmt->bindParam(':company_id', $company_id); // , PDO::PARAM_INT
+            $stmt->bindParam(':img_url', $imagePaths);
+    
+    
+            $stmt->execute();
+            echo "<p class='success'Produto inserido com sucesso!</p>";
+        } catch (PDOException $e) {
+            echo "<p class='error'>Error: " . $e->getMessage() . "</p>";
+        }
     }
-
-    $company_id = $company_id_result['COMPANY_ID'];
-
-    // Convert array to string, separate paths with ';'
-    $imagePaths = implode(";", $uploadedFiles);
-
-    try {
-        $stmt = $pdo->prepare("CALL INSERT_PRODUCT(:product_name, :product_description, :category_id, :company_id, :img_url)");
-        $stmt->bindParam(':product_name', $_POST['product_name']);
-        $stmt->bindParam(':product_description', $_POST['product_description']);
-        $stmt->bindParam(':category_id', $_POST['category_id']);
-        //$company_id = $_SESSION['user']['user_id'] ?? null;
-        $stmt->bindParam(':company_id', $company_id); // , PDO::PARAM_INT
-        $stmt->bindParam(':img_url', $imagePaths);
-
-
-        $stmt->execute();
-        echo "<p class='success'Produto inserido com sucesso!</p>";
-    } catch (PDOException $e) {
-        echo "<p class='error'>Error: " . $e->getMessage() . "</p>";
-    }
+    
 }
 // Fetch categories from the database
 try {

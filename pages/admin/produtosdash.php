@@ -17,7 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['prodID'])) {
     }
 }
 
-
 if (!isset($_SESSION['user']) || ($_SESSION['user']['user_type'] !== 'ADMIN' && $_SESSION['user']['user_type'] !== 'COMPANY')) {
     echo "<div class='alert alert-danger'>Acesso restrito.</div>";
     exit;
@@ -72,7 +71,12 @@ try {
                 <td><?= htmlspecialchars($product['PRODUCT_NAME']) ?></td>
                 <td><?= htmlspecialchars($product['PRODUCT_DESCRIPTION']) ?></td>
                 <td><?= htmlspecialchars($product['PRODUCT_RANK']) ?></td>
-                <td><button class="edit_button" value="<?= htmlspecialchars($product['PRODUCT_ID']) ?>">Editar</button></td>
+                <td>
+                    <!-- Hidden input placed right before the Edit button -->
+                    <input type="hidden" name="editarId" class="product-id" value="<?= htmlspecialchars($product['PRODUCT_ID']) ?>">
+                    <button class="edit_button" onclick="editarProduto(this)" type="button">Editar</button>
+
+                </td>
                 <td>
                 <form method="POST" class="deleteForm">
                     <input type="hidden" name="prodID" class="product-id" value="<?= htmlspecialchars($product['PRODUCT_ID']) ?>">
