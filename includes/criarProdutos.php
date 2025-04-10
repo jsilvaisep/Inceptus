@@ -32,6 +32,23 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['product_name'])) {
         throw new Exception("At least one image is required.");
     }
 
+    // Processar o campo de atributos para JSON
+    $json_attributes = null;
+    if (isset($_POST['product_attributes']) && !empty($_POST['product_attributes'])) {
+        $string = $_POST['product_attributes'];
+        $partes = explode(",", $string);
+        $resultado = [];
+
+        foreach ($partes as $parte) {
+            list($chave, $valor) = explode(":", trim($parte), 2);
+            $chave = trim($chave);
+            $valor = trim($valor);
+            $resultado[$chave] = $valor;
+        }
+
+        $json_attributes = json_encode($resultado);
+    }
+
     if(isset($_POST['product-id-editar'])){
         $product = $_POST['product-id-editar'];
         $imagePaths = implode(";", $uploadedFiles);
@@ -41,18 +58,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['product_name'])) {
                 SET product_name = :product_name, 
                     product_description = :product_description, 
                     category_id = :category_id, 
-                    img_url = :img_url 
+                    img_url = :img_url,
+                    attributes_json = :attributes_json
                 WHERE product_id = :product_id
             ");
             $stmt->bindParam(':product_name', $_POST['product_name']);
             $stmt->bindParam(':product_description', $_POST['product_description']);
             $stmt->bindParam(':category_id', $_POST['category_id']);
             $stmt->bindParam(':img_url', $imagePaths);
+            $stmt->bindParam(':attributes_json', $json_attributes);
             $stmt->bindParam(':product_id', $product);
-    
-    
+
+
             $stmt->execute();
-            echo "<p class='success'Produto editado com sucesso!</p>";
+            echo "<p class='success'>Produto editado com sucesso!</p>";
         } catch (PDOException $e) {
             echo "<p class='error'>Error: " . $e->getMessage() . "</p>";
         }
@@ -66,38 +85,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['product_name'])) {
                            WHERE u.USER_ID = ? ");
             $stmt->execute([$user_id]);
             $company_id_result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
         } catch (PDOException $e) {
             echo "" . $e->getMessage();
         }
-    
+
         if (empty($company_id_result)) {
             echo '<p>Empresa inválida.</p>';
             exit;
         }
-    
+
         $company_id = $company_id_result['COMPANY_ID'];
-    
-        // Convert array to string, separate paths with ';'
         $imagePaths = implode(";", $uploadedFiles);
-    
+
         try {
-            $stmt = $pdo->prepare("CALL INSERT_PRODUCT(:product_name, :product_description, :category_id, :company_id, :img_url)");
+            $stmt = $pdo->prepare("CALL INSERT_PRODUCT(:product_name, :product_description, :category_id, :company_id, :img_url, :attributes_json)");
             $stmt->bindParam(':product_name', $_POST['product_name']);
             $stmt->bindParam(':product_description', $_POST['product_description']);
             $stmt->bindParam(':category_id', $_POST['category_id']);
-            //$company_id = $_SESSION['user']['user_id'] ?? null;
-            $stmt->bindParam(':company_id', $company_id); // , PDO::PARAM_INT
+            $stmt->bindParam(':company_id', $company_id);
             $stmt->bindParam(':img_url', $imagePaths);
-    
-    
+            $stmt->bindParam(':attributes_json', $json_attributes);
+
             $stmt->execute();
-            echo "<p class='success'Produto inserido com sucesso!</p>";
+            echo "<p class='success'>Produto inserido com sucesso!</p>";
         } catch (PDOException $e) {
             echo "<p class='error'>Error: " . $e->getMessage() . "</p>";
         }
     }
-    
+
 }
 // Fetch categories from the database
 try {
@@ -134,12 +150,14 @@ $stmt = null;
                 <?php endforeach; ?>
             </select>
 
+            <label for="product_attributes">Atributos do Produto (formato "chave: valor, chave: valor"):</label>
+            <textarea id="product_attributes" name="product_attributes" placeholder="Ex: motor: 500w, peso: 500gr, bateria: 500mah"></textarea>
+            <p class="attribute-note">Informe os atributos no formato "nome: valor, nome: valor"</p>
 
             <label for="product_images">Imagens do Produto (mínimo 1, máximo 5):</label>
             <input type="file" id="product_images" name="product_images[]" accept="image/*" multiple required>
             <p class="image-note">Máximo de 5 imagens. Apenas formatos JPG, PNG e GIF.</p>
             <div id="preview-container"></div>
-
 
             <button type="submit">Submit</button>
         </form>
