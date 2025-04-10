@@ -32,7 +32,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         <div class="custom-card">
             <div class="card-body text-center">
                 <i class="fas fa-users-cog fa-2x text-primary mb-2"></i>
-                <h6 class="fw-bold">Gestão de Utilizadores</h6>
+                <h3 class="fw-bold">Gestão de Utilizadores</h3>
                 <p class="text-muted small">Ver, editar ou eliminar contas.</p>
                 <button class="btn custom-btn mt-2" onclick="loadPage('admin/users')">Gerir Utilizadores</button>
             </div>
@@ -40,7 +40,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         <div class="custom-card">
             <div class="card-body text-center">
                 <i class="fas fa-building fa-2x text-danger mb-2"></i>
-                <h6 class="fw-bold">Empresas</h6>
+                <h3 class="fw-bold">Empresas</h3>
                 <p class="text-muted small">Aprovar ou rejeitar empresas.</p>
                 <button class="btn custom-btn mt-2" onclick="loadPage('admin/empresas')">Gerir Empresas</button>
             </div>
@@ -48,7 +48,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         <div class="custom-card">
             <div class="card-body text-center">
                 <i class="fas fa-box-open fa-2x text-success mb-2"></i>
-                <h6 class="fw-bold">Produtos</h6>
+                <h3 class="fw-bold">Produtos</h3>
                 <p class="text-muted small">Aprovar ou remover produtos.</p>
                 <button class="btn custom-btn mt-2" onclick="loadPage('admin/produtos')">Gerir Produtos</button>
             </div>
@@ -56,7 +56,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         <div class="custom-card">
             <div class="card-body text-center">
                 <i class="fas fa-database fa-2x text-warning mb-2"></i>
-                <h6 class="fw-bold">Backups</h6>
+                <h3 class="fw-bold">Backups</h3>
                 <p class="text-muted small">Exportar ou restaurar dados.</p>
                 <button class="btn custom-btn mt-2" onclick="loadPage('admin/backups')">Gestão de Backups</button>
             </div>
@@ -64,7 +64,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         <div class="custom-card">
             <div class="card-body text-center">
                 <i class="fas fa-cogs fa-2x text-dark mb-2"></i>
-                <h6 class="fw-bold">Definições</h6>
+                <h3 class="fw-bold">Definições</h>
                 <p class="text-muted small">Ajustar configurações da plataforma.</p>
                 <button class="btn custom-btn mt-2" onclick="loadPage('admin/settings')">Abrir Definições</button>
             </div>
@@ -72,7 +72,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         <div class="custom-card">
             <div class="card-body text-center">
                 <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
-                <h6 class="fw-bold">Estatísticas</h6>
+                <h3 class="fw-bold">Estatísticas</h3>
                 <p class="text-muted small">Visualizar dados analíticos.</p>
                 <button class="btn custom-btn mt-2" onclick="loadPage('admin/stats')">Ver Estatísticas</button>
             </div>
