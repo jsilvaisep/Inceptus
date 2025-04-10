@@ -253,7 +253,7 @@
         const minViewsInput = document.getElementById('min-views');
         const maxViewsInput = document.getElementById('max-views');
 
-        //js admin
+        //js dashboard admin
         if (page === 'admin/dashboard') {
             const script = document.createElement('script');
             script.src = 'assets/js/admin/dashboard.js';
@@ -262,6 +262,17 @@
             };
             document.body.appendChild(script);
         }
+        
+        //js admin
+        if (page === 'admin/users') {
+            const script = document.createElement('script');
+            script.src = 'assets/js/admin/users.js';
+            script.onload = () => {
+                if (typeof loadUsers === 'function') loadUsers();
+            };
+            document.body.appendChild(script);
+        }
+        
         
 
         //Paginação das noticias
