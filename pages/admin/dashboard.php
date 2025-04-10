@@ -56,9 +56,9 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         <div class="custom-card">
             <div class="card-body text-center">
                 <i class="fas fa-database fa-2x text-warning mb-2"></i>
-                <h3 class="fw-bold">Backups</h3>
-                <p class="text-muted small">Exportar ou restaurar dados.</p>
-                <button class="btn custom-btn mt-2" onclick="loadPage('admin/backups')">Gestão de Backups</button>
+                <h3 class="fw-bold">Notícias</h3>
+                <p class="text-muted small">Aprovar ou remover noticias.</p>
+                <button class="btn custom-btn mt-2" onclick="loadPage('admin/noticias')">Gestão de Noticias</button>
             </div>
         </div>
         <div class="custom-card">

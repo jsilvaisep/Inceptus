@@ -4,10 +4,10 @@
 // o fetch faz o carregamento da página.
 // O setupPageScripts vai buscar o que é suposto apresentar.
 
-(function() {
+(function () {
     let currentPage = null;
 
-    window.navigateTo = function(page, search = '') {
+    window.navigateTo = function (page, search = '') {
         if (page === currentPage) return;
         currentPage = page;
         loadPage(page, search);
@@ -57,33 +57,34 @@
             });
     }
 
-    function eliminarProduto(id){
+    function eliminarProduto(id) {
         alert(id);
     }
+
     window.eliminarProduto = eliminarProduto;
 
     //Abre o form após clicar no botão de Criar Produto
-    function criarProduto(){
-        document.getElementById('formAction').value='criar';
-            document.getElementById("modalOverlay").style.display = "flex";
+    function criarProduto() {
+        document.getElementById('formAction').value = 'criar';
+        document.getElementById("modalOverlay").style.display = "flex";
 
-        document.getElementById("closeModal").addEventListener("click", function() {
+        document.getElementById("closeModal").addEventListener("click", function () {
             document.getElementById("modalOverlay").style.display = "none";
         });
 
     }
 
-    function editarProduto(button){
-        document.getElementById('formAction').value='editar';
-            document.getElementById("modalOverlay").style.display = "flex";
-            let row = button.closest('tr');
-            // Find the hidden input inside that row
-            let productIdInput = row.querySelector('input[name="editarId"]');
-            // Get the value
-            let productId = productIdInput ? productIdInput.value : null;
-            // Store the ID globally, or pass it into the edit logic
-            window.editingProductId = productId;
-        document.getElementById("closeModal").addEventListener("click", function() {
+    function editarProduto(button) {
+        document.getElementById('formAction').value = 'editar';
+        document.getElementById("modalOverlay").style.display = "flex";
+        let row = button.closest('tr');
+        // Find the hidden input inside that row
+        let productIdInput = row.querySelector('input[name="editarId"]');
+        // Get the value
+        let productId = productIdInput ? productIdInput.value : null;
+        // Store the ID globally, or pass it into the edit logic
+        window.editingProductId = productId;
+        document.getElementById("closeModal").addEventListener("click", function () {
             document.getElementById("modalOverlay").style.display = "none";
         });
     }
@@ -96,21 +97,20 @@
         if (event.target.classList.contains('deleteForm')) {
             const form = event.target; // The form that was submitted
             const formData = new FormData(form);
-    
+
             fetch('/pages/admin/produtosdash.php', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Success:", data);
-            })
-            .catch(error => {
-                console.error("Error:", error);
-            });
-        }
-        else if (event.target.classList.contains('criarProdutoForm')) {
-            if(document.getElementById('formAction').value=="editar"){
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Success:", data);
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                });
+        } else if (event.target.classList.contains('criarProdutoForm')) {
+            if (document.getElementById('formAction').value == "editar") {
                 let productId = window.editingProductId;
                 form = document.getElementById("productForm");
                 let formData = new FormData(form);
@@ -119,29 +119,28 @@
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Edit Success:", data);
-                })
-                .catch(error => {
-                    console.error("Edit Error:", error);
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Edit Success:", data);
+                    })
+                    .catch(error => {
+                        console.error("Edit Error:", error);
+                    });
 
-            }
-            else{
+            } else {
                 form = document.getElementById("productForm");
                 let formData = new FormData(form);
                 fetch('/includes/criarProdutos.php', {
                     method: 'POST',
                     body: formData
                 })
-                .then(response => response.json()) // Handle response
-                .then(data => {
-                    console.log("Success:", data);
-                })
-                .catch(error => {
-                    console.error("Error:", error);
-                });
+                    .then(response => response.json()) // Handle response
+                    .then(data => {
+                        console.log("Success:", data);
+                    })
+                    .catch(error => {
+                        console.error("Error:", error);
+                    });
             }
             document.getElementById("product_images").addEventListener("change", function (event) {
                 const previewContainer = document.getElementById("preview-container");
@@ -173,11 +172,11 @@
                     reader.readAsDataURL(file);
                 }
             });
-            
+
         }
     });
 
-        // ==========================
+    // ==========================
     // Dropdown do utilizador
     // ==========================
     function setupUserDropdownHoverFix() {
@@ -263,17 +262,6 @@
             document.body.appendChild(script);
         }
         
-        //js admin
-        if (page === 'admin/users') {
-            const script = document.createElement('script');
-            script.src = 'assets/js/admin/users.js';
-            script.onload = () => {
-                if (typeof loadUsers === 'function') loadUsers();
-            };
-            document.body.appendChild(script);
-        }
-        
-        
 
         //Paginação das noticias
         if (page === 'noticias') {
@@ -283,7 +271,7 @@
                     const urlParams = new URL(link.href).searchParams;
                     const pageParam = urlParams.get('page') || 'noticias';
                     const searchParam = urlParams.toString();
-        
+
                     loadPage(pageParam, searchParam);
                 });
             });
@@ -314,7 +302,7 @@
                 }
             }
 
-            if(tagSection) {
+            if (tagSection) {
                 tagSection.remove();
             }
 
@@ -431,20 +419,20 @@
             if (tagInput) {
                 if (window.Tagify) {
                     const originalNumberFormat = Intl.NumberFormat;
-                    
-                    Intl.NumberFormat = function(locale, options) {
+
+                    Intl.NumberFormat = function (locale, options) {
                         if (options && options.style === 'currency' && !options.currency) {
-                            options.currency = 'EUR'; 
+                            options.currency = 'EUR';
                         }
                         return new originalNumberFormat(locale, options);
                     };
                 }
-                
+
                 var tagify = new Tagify(tagInput);
 
                 let initialTags = new URLSearchParams(window.location.search).get('tags');
                 if (initialTags) {
-                    let tagArray = initialTags.split(',').map(t => ({ value: t.trim() }));
+                    let tagArray = initialTags.split(',').map(t => ({value: t.trim()}));
                     tagify.addTags(tagArray);
                 }
 
@@ -495,7 +483,7 @@
 
             const toggleContent = document.querySelector('.filter-section.custom-toggle-wrapper');
 
-            if (toggleContent)    toggleContent.remove();
+            if (toggleContent) toggleContent.remove();
 
             let selectedRank = parseInt(new URLSearchParams(window.location.search).get('rank')) || null;
 
@@ -587,25 +575,25 @@
                     url.set('min_views', minViews);
                     url.set('max_views', maxViews);
                 }
-                if(tags) url.set('tags', tags);
+                if (tags) url.set('tags', tags);
                 url.set('pg', '1');
                 loadPage('empresas', url.toString());
             }
         }
 
         // Clique em cartão → Modal
-/*        document.querySelectorAll('.clickable-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const id = card.dataset.id;
-                fetch(`pages/${page}.php?id=${id}&modal=true`)
-                    .then(res => res.text())
-                    .then(html => {
-                        // document.getElementById("modal-container").innerHTML = html;
-                        // document.body.classList.add("no-scroll");
-                        setupGlobalModalListeners();
+        /*        document.querySelectorAll('.clickable-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const id = card.dataset.id;
+                        fetch(`pages/${page}.php?id=${id}&modal=true`)
+                            .then(res => res.text())
+                            .then(html => {
+                                // document.getElementById("modal-container").innerHTML = html;
+                                // document.body.classList.add("no-scroll");
+                                setupGlobalModalListeners();
+                            });
                     });
-            });
-        });*/
+                });*/
 
         if (page === 'home') initNewsCarousel();
 
@@ -617,7 +605,7 @@
                     e.preventDefault();
                     const formData = new FormData(loginForm);
                     const msg = document.getElementById('login-msg');
-                    fetch('pages/login.php', { method: 'POST', body: formData, credentials: 'include' })
+                    fetch('pages/login.php', {method: 'POST', body: formData, credentials: 'include'})
                         .then(res => res.json())
                         .then(data => {
                             msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
@@ -646,7 +634,7 @@
                     msg.innerHTML = 'A processar...';
 
                     try {
-                        const res = await fetch('pages/register.php', { method: 'POST', body: formData });
+                        const res = await fetch('pages/register.php', {method: 'POST', body: formData});
                         const data = await res.json();
                         msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
 
@@ -878,11 +866,13 @@
         const searchParams = `id=${productId}`;
         loadPage('produtocompleto', searchParams);
     }
+
     window.redirectToProduct = redirectToProduct;
 
     function redirectToProductsPage() {
         loadPage('produtos');
     }
+
     window.redirectToProductsPage = redirectToProductsPage;
 
 
@@ -891,16 +881,19 @@
         const searchParams = `id=${productId}`;
         loadPage('empresacompleta', searchParams);
     }
+
     window.redirectToCompany = redirectToCompany;
 
     function redirectToCompanyPage() {
         loadPage('empresas');
     }
+
     window.redirectToCompanyPage = redirectToCompanyPage;
 
     function redirectToLogin() {
         loadPage('login');
     }
+
     window.redirectToLogin = redirectToLogin;
 
     function submitComentarioNoticia(postId) {
@@ -927,13 +920,14 @@
             })
             .catch(error => console.error('Erro ao enviar comentário:', error));
     }
+
     window.submitComentarioNoticia = submitComentarioNoticia;
 
     function submitComentarioProduto(product_Id) {
         const textarea = document.getElementById('comment');
         const resposta = textarea.value.trim();
         const rank = document.getElementById('review')?.value;
-        
+
 
         if (!resposta || !rank) {
             alert("Preencha o comentário e o rank.");
@@ -952,13 +946,14 @@
                 rank: rank
             })
         })
-        .then(response => response.text())
-        .then(html => {
-            textarea.value = '';
-            document.getElementById('review').value = '';
-        })
-        .catch(error => console.error('Erro ao enviar comentário:', error));
+            .then(response => response.text())
+            .then(html => {
+                textarea.value = '';
+                document.getElementById('review').value = '';
+            })
+            .catch(error => console.error('Erro ao enviar comentário:', error));
     }
+
     window.submitComentarioProduto = submitComentarioProduto;
 
     function setupWarroomPage() {
@@ -1041,8 +1036,8 @@
 
             // Atributos principais fixos
             const attributes = [
-                { label: 'Ranking do Produto', key: 'PRODUCT_RANK' },
-                { label: 'Visualizações', key: 'PRODUCT_VIEW_QTY' }
+                {label: 'Ranking do Produto', key: 'PRODUCT_RANK'},
+                {label: 'Visualizações', key: 'PRODUCT_VIEW_QTY'}
             ];
 
             attributes.forEach(attribute => {
@@ -1128,38 +1123,80 @@
         populateProductContainers('all');
     }
 
-    function submitEditarEmpresaAdmin(company_id){
+    function submitEditarEmpresaAdmin(company_id) {
         alert('Editar empresas dashboard admin ' + company_id);
     }
 
     window.submitEditarEmpresaAdmin = submitEditarEmpresaAdmin;
 
-    function submitEliminarEmpresaAdmin(company_id){
+    function submitEliminarEmpresaAdmin(company_id) {
         alert('Eliminar empresas dashboard admin ' + company_id);
     }
 
     window.submitEliminarEmpresaAdmin = submitEliminarEmpresaAdmin;
 
-    function submitEditarUsersAdmin(user_id){
+    function submitEditarUsersAdmin(user_id) {
         alert('Editar users dashboard admin ' + user_id);
     }
 
     window.submitEditarUsersAdmin = submitEditarUsersAdmin;
 
-    function submitEliminarUsersAdmin(user_id){
-        alert('Eliminar users dashboard admin '+ user_id);
+    function submitEliminarUsersAdmin(user_id) {
+        alert('Eliminar users dashboard admin ' + user_id);
     }
 
     window.submitEliminarUsersAdmin = submitEliminarUsersAdmin;
-    function submitEditarProdutosAdmin(product_id){
-        alert('Editar produtos dashboard admin '+product_id);
+
+    function submitEditarProdutosAdmin(product_id) {
+        alert('Editar produtos dashboard admin ' + product_id);
     }
 
     window.submitEditarProdutosAdmin = submitEditarProdutosAdmin;
 
-    function submitEliminarProdutosAdmin(product_id){
-        alert('Eliminar produtos dashboard admin '+product_id);
+    function submitEliminarProdutosAdmin(product_id) {
+        alert('Eliminar produtos dashboard admin ' + product_id);
     }
 
     window.submitEliminarProdutosAdmin = submitEliminarProdutosAdmin;
+
+    /*    function submitEditarNoticiasAdmin(post_id){
+            alert('Editar notícia dashboard admin '+post_id);
+        }
+
+        window.submitEditarNoticiasAdmin = submitEditarNoticiasAdmin;*/
+    function submitEliminarNoticiasAdmin(post_id) {
+        const formData = new FormData();
+        formData.append('post_id', post_id);
+        formData.append('action', 'delete');
+
+        fetch('pages/admin/noticias.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.text())  // Use response.text() para depurar o conteúdo bruto
+            .then(text => {
+                console.log('Resposta do servidor:', text);  // Veja o que está sendo retornado
+                try {
+                    const data = JSON.parse(text);  // Tente converter para JSON
+                    if (data.success) {
+                        alert(data.message);
+                        loadPage('admin/noticias');
+                    } else {
+                        alert(data.message || 'Erro ao eliminar a notícia.');
+                    }
+                } catch (e) {
+                    console.error('Erro ao processar a resposta JSON:', e);
+                    alert('Ocorreu um erro ao processar a resposta.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro:', error);
+                alert('Ocorreu um erro ao processar a solicitação.');
+            });
+
+    }
+
+    window.submitEliminarNoticiasAdmin = submitEliminarNoticiasAdmin;
+
+
 })();

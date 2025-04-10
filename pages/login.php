@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     try {
         // Buscar utilizador pelo login
-        $stmt = $pdo->prepare("SELECT * FROM USER WHERE USER_LOGIN = ?");
+        $stmt = $pdo->prepare("SELECT * FROM USER WHERE USER_STATUS = 'A' AND USER_LOGIN = ?");
         $stmt->execute([$login]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
