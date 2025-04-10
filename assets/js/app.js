@@ -261,6 +261,16 @@
             };
             document.body.appendChild(script);
         }
+
+        //js admin users
+        if (page === 'admin/users') {
+            const script = document.createElement('script');
+            script.src = 'assets/js/admin/users.js';
+            script.onload = () => {
+                if (typeof loadUsers === 'function') loadUsers();
+            };
+            document.body.appendChild(script);
+        }
         
 
         //Paginação das noticias
