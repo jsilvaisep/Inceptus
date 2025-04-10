@@ -141,7 +141,7 @@ $stmt = null;
             <div id="preview-container"></div>
 
 
-            <button type="submit">Submit</button>
+            <button class="submit-btn" type="submit">Submit</button>
         </form>
     </div>
 </div>

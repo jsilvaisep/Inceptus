@@ -27,33 +27,39 @@
 }
 
 .delete_button{
+    background: #be3144;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
     padding: 10px 15px;
     font-size: 14px;
-    font-weight: bold;
-    color: black;
-    text-decoration: none;
-    background-color: #be3144; 
     border-radius: 6px;
-    transition: background-color 0.3s ease;
 }
 
 .delete_button:hover{
+    background: #a52c3e;
     cursor: pointer;
+    border: 1px solid black;
 }
 
 .edit_button{
+    background: #be3144;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.3s;
     padding: 10px 15px;
     font-size: 14px;
-    font-weight: bold;
-    color: black;
-    text-decoration: none;
-    background-color: yellow; 
     border-radius: 6px;
-    transition: background-color 0.3s ease;
 }
 
 .edit_button:hover{
+    background: #a52c3e;
     cursor: pointer;
+    border: 1px solid black;
 }
 
 .dash_table {

@@ -96,8 +96,23 @@
         if (event.target.classList.contains('deleteForm')) {
             const form = event.target; // The form that was submitted
             const formData = new FormData(form);
-    
             fetch('/pages/admin/produtosdash.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Success:", data);
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
+        }
+        else if (event.target.classList.contains('deleteFormAdm')) {
+            const form = event.target; // The form that was submitted
+            const formData = new FormData(form);
+            event.preventDefault();
+            fetch('/pages/admin/produtos.php', {
                 method: 'POST',
                 body: formData
             })
@@ -1062,39 +1077,4 @@
         // Inicializa com todos os produtos
         populateProductContainers('all');
     }
-
-    function submitEditarEmpresaAdmin(company_id){
-        alert('Editar empresas dashboard admin ' + company_id);
-    }
-
-    window.submitEditarEmpresaAdmin = submitEditarEmpresaAdmin;
-
-    function submitEliminarEmpresaAdmin(company_id){
-        alert('Eliminar empresas dashboard admin ' + company_id);
-    }
-
-    window.submitEliminarEmpresaAdmin = submitEliminarEmpresaAdmin;
-
-    function submitEditarUsersAdmin(user_id){
-        alert('Editar users dashboard admin ' + user_id);
-    }
-
-    window.submitEditarUsersAdmin = submitEditarUsersAdmin;
-
-    function submitEliminarUsersAdmin(user_id){
-        alert('Eliminar users dashboard admin '+ user_id);
-    }
-
-    window.submitEliminarUsersAdmin = submitEliminarUsersAdmin;
-    function submitEditarProdutosAdmin(product_id){
-        alert('Editar produtos dashboard admin '+product_id);
-    }
-
-    window.submitEditarProdutosAdmin = submitEditarProdutosAdmin;
-
-    function submitEliminarProdutosAdmin(product_id){
-        alert('Eliminar produtos dashboard admin '+product_id);
-    }
-
-    window.submitEliminarProdutosAdmin = submitEliminarProdutosAdmin;
 })();
