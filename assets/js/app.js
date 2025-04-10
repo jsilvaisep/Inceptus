@@ -33,6 +33,7 @@
                 document.getElementById('content').innerHTML = html;
                 history.replaceState(null, '', '?page=' + page + (search ? '&' + search : ''));
                 setupPageScripts(page);
+                updateActiveNavLink(page);
             })
             .catch(err => {
                 if (err.message === 'forbidden') {
@@ -208,6 +209,9 @@
                 document.querySelector('.main-header').outerHTML = html;
                 setupUserDropdownHoverFix();
 
+                const params = new URLSearchParams(window.location.search);
+                const currentPage = params.get('page') || 'home';
+                updateActiveNavLink(currentPage);
             });
     }
 
@@ -1208,5 +1212,14 @@
 
     window.submitEliminarNoticiasAdmin = submitEliminarNoticiasAdmin;
 
+    function updateActiveNavLink(currentPage) {
+        document.querySelectorAll('.navbar ul li a').forEach(link => {
+            link.classList.remove('active');
+        });
 
+        const activeLink = document.querySelector(`.navbar ul li a[href*="?page=${currentPage}"]`);
+        if (activeLink) {
+            activeLink.classList.add('active');
+        }
+    }
 })();
