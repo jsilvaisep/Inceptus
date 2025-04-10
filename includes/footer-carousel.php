@@ -8,8 +8,7 @@ $topCompanies = $pdo->query("SELECT * FROM COMPANY ORDER BY COMPANY_RANK DESC LI
 
 <link rel="stylesheet" href="assets/css/footer-carousel.css">
 
-<div class="footer-carousel-wrapper">
-
+<div class="footer-carousel-wrapper" id="footer-carousel-container">
   <div class="footer-carousel" id="footer-carousel">
     <div class="footer-carousel-slide">
         <br>

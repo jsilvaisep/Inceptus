@@ -34,6 +34,16 @@
                 history.replaceState(null, '', '?page=' + page + (search ? '&' + search : ''));
                 setupPageScripts(page);
                 updateActiveNavLink(page);
+
+                // Controla visibilidade do carousel
+                const carouselContainer = document.getElementById('footer-carousel-container');
+                if (carouselContainer) {
+                    if (page === 'home') {
+                        carouselContainer.style.display = 'block';
+                    } else {
+                        carouselContainer.style.display = 'none';
+                    }
+                }
             })
             .catch(err => {
                 if (err.message === 'forbidden') {
@@ -819,6 +829,17 @@
                     });
             }
         });
+
+        // Controlar visibilidade inicial do carousel
+        const carouselContainer = document.getElementById('footer-carousel-container');
+
+        if (carouselContainer) {
+            if (page === 'home') {
+                carouselContainer.style.display = 'block';
+            } else {
+                carouselContainer.style.display = 'none';
+            }
+        }
     });
 
     // ==========================
