@@ -1238,7 +1238,24 @@
             link.classList.remove('active');
         });
 
-        const activeLink = document.querySelector(`.navbar ul li a[href*="?page=${currentPage}"]`);
+        let rootSection = currentPage;
+
+        const pageMapping = {
+            'produtocompleto': 'produtos',
+            'empresacompleta': 'empresas',
+            'noticiacompleta': 'noticias'
+        };
+
+        if (pageMapping[currentPage]) {
+            rootSection = pageMapping[currentPage];
+        }
+
+        let activeLink = document.querySelector(`.navbar ul li a[href*="?page=${currentPage}"]`);
+
+        if (!activeLink && rootSection !== currentPage) {
+            activeLink = document.querySelector(`.navbar ul li a[href*="?page=${rootSection}"]`);
+        }
+
         if (activeLink) {
             activeLink.classList.add('active');
         }
