@@ -92,7 +92,7 @@ function renderStars($rating)
 <div class="produto-completo-container">
     <!-- Botão "Voltar" -->
     <div class="botao-voltar-modal">
-        <a href="?page=produtos" class="botao-voltar">← Voltar</a>
+        <button class="botao-voltar" onclick="redirectToProductsPage()">Voltar</button>
     </div>
 
     <!-- Cabeçalho do Produto -->

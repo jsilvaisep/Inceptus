@@ -27,14 +27,14 @@
 }
 
 .delete_button{
-    padding: 10px 15px;
-    font-size: 14px;
-    font-weight: bold;
+    padding: 12px 15px;
+    background-color: #be3144;
     color: black;
-    text-decoration: none;
-    background-color: #be3144; 
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 10px;
 }
 
 .delete_button:hover{
@@ -42,18 +42,14 @@
 }
 
 .edit_button{
-    padding: 10px 15px;
-    font-size: 14px;
-    font-weight: bold;
+    padding: 12px 15px;
+    background-color: yellow;
     color: black;
-    text-decoration: none;
-    background-color: yellow; 
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
-}
-
-.edit_button:hover{
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 .dash_table {
@@ -71,7 +67,7 @@ tr:nth-child(even) {
 }
 
 tr:hover {
-    background-color: #be3144;
+    background-color: rgba(190, 49, 68, 0.46);
     color: white;
 }
 

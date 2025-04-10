@@ -583,18 +583,18 @@
         }
 
         // Clique em cartão → Modal
-        document.querySelectorAll('.clickable-card').forEach(card => {
+/*        document.querySelectorAll('.clickable-card').forEach(card => {
             card.addEventListener('click', () => {
                 const id = card.dataset.id;
                 fetch(`pages/${page}.php?id=${id}&modal=true`)
                     .then(res => res.text())
                     .then(html => {
-                        document.getElementById("modal-container").innerHTML = html;
-                        document.body.classList.add("no-scroll");
+                        // document.getElementById("modal-container").innerHTML = html;
+                        // document.body.classList.add("no-scroll");
                         setupGlobalModalListeners();
                     });
             });
-        });
+        });*/
 
         if (page === 'home') initNewsCarousel();
 
@@ -869,12 +869,23 @@
     }
     window.redirectToProduct = redirectToProduct;
 
+    function redirectToProductsPage() {
+        loadPage('produtos');
+    }
+    window.redirectToProductsPage = redirectToProductsPage;
+
+
     function redirectToCompany(productId) {
         // Carrega a página do produto específico com o ID fornecido
         const searchParams = `id=${productId}`;
         loadPage('empresacompleta', searchParams);
     }
     window.redirectToCompany = redirectToCompany;
+
+    function redirectToCompanyPage() {
+        loadPage('empresas');
+    }
+    window.redirectToCompanyPage = redirectToCompanyPage;
 
     function redirectToLogin() {
         loadPage('login');
@@ -1005,21 +1016,19 @@
 
             // Atualiza o cabeçalho com os nomes dos produtos selecionados
             const tableHeader = comparisonTable.querySelector('thead tr');
-            tableHeader.innerHTML = ''; // Limpa o cabeçalho
+            tableHeader.innerHTML = '';
 
-            // Coluna inicial fixa ("Especificações")
             const specHeader = document.createElement('th');
             specHeader.textContent = 'Especificações';
             tableHeader.appendChild(specHeader);
 
-            // Header dinâmica para cada produto selecionado
             for (let i = 0; i < 3; i++) {
                 const headerCell = document.createElement('th');
-                headerCell.textContent = products[i] ? products[i].PRODUCT_NAME : 'Vazio'; // Nome do produto ou "Vazio"
+                headerCell.textContent = products[i] ? products[i].PRODUCT_NAME : 'Vazio';
                 tableHeader.appendChild(headerCell);
             }
 
-            // Linhas de especificações (atributos a comparar)
+            // Atributos principais fixos
             const attributes = [
                 { label: 'Ranking do Produto', key: 'PRODUCT_RANK' },
                 { label: 'Visualizações', key: 'PRODUCT_VIEW_QTY' }
@@ -1028,29 +1037,74 @@
             attributes.forEach(attribute => {
                 const row = document.createElement('tr');
 
-                // Primeira coluna: "Especificação"
                 const specCell = document.createElement('td');
                 specCell.textContent = attribute.label;
                 specCell.classList.add('spec-column');
                 row.appendChild(specCell);
 
-                // Colunas com valores dos produtos
                 products.forEach(product => {
                     const valueCell = document.createElement('td');
-                    valueCell.textContent = product ? product[attribute.key] || '—' : '—'; // Valor ou "—"
+                    valueCell.textContent = product ? product[attribute.key] ?? '—' : '—';
                     row.appendChild(valueCell);
                 });
 
-                // Preenche colunas vazias para garantir 3 colunas no total
                 for (let i = 0; i < 3 - products.length; i++) {
                     const emptyCell = document.createElement('td');
                     emptyCell.textContent = '—';
                     row.appendChild(emptyCell);
                 }
 
-                // Adiciona a linha ao corpo da tabela
                 comparisonBody.appendChild(row);
             });
+
+            // 🔽 Adiciona linhas para cada chave do campo SPECS (JSON interno)
+            const specsKeys = new Set();
+            const parsedSpecsList = [];
+
+            // Primeiro, parse dos SPECS e coleta das chaves
+            products.forEach(product => {
+                let specsObj = {};
+
+                if (product && product.SPECS) {
+                    if (typeof product.SPECS === 'string') {
+                        try {
+                            specsObj = JSON.parse(product.SPECS);
+                        } catch (e) {
+                            specsObj = {};
+                        }
+                    } else if (typeof product.SPECS === 'object') {
+                        specsObj = product.SPECS;
+                    }
+                }
+
+                parsedSpecsList.push(specsObj);
+                Object.keys(specsObj).forEach(key => specsKeys.add(key));
+            });
+
+            // Agora, renderiza as linhas das SPECS
+            specsKeys.forEach(specKey => {
+                const row = document.createElement('tr');
+
+                const specCell = document.createElement('td');
+                specCell.textContent = specKey;
+                specCell.classList.add('spec-column');
+                row.appendChild(specCell);
+
+                parsedSpecsList.forEach(specs => {
+                    const valueCell = document.createElement('td');
+                    valueCell.textContent = specs[specKey] ?? '—';
+                    row.appendChild(valueCell);
+                });
+
+                for (let i = 0; i < 3 - parsedSpecsList.length; i++) {
+                    const emptyCell = document.createElement('td');
+                    emptyCell.textContent = '—';
+                    row.appendChild(emptyCell);
+                }
+
+                comparisonBody.appendChild(row);
+            });
+
         }
 
         // Listener do dropdown de categorias

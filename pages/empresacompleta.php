@@ -71,7 +71,7 @@ $products = $productStmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="empresa-completa-container">
         <!-- Botão "Voltar" -->
         <div class="botao-voltar-modal">
-            <a href="?page=empresas" class="botao-voltar">← Voltar</a>
+            <button class="botao-voltar" onclick="redirectToCompanyPage()">Voltar</button>
         </div>
 
         <!-- Cabeçalho da Empresa -->

@@ -119,5 +119,3 @@ try {
         <?php endif; ?>
     </div>
 </div>
-
-<div id="modal-container"></div>
