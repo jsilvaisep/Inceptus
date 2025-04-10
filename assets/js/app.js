@@ -814,6 +814,8 @@
                 const urlParams = new URL(link.href).searchParams;
                 const pageParam = urlParams.get('page') || 'home';
 
+                currentPage = null;
+
                 urlParams.delete('page');
                 const searchParam = urlParams.toString();
                 navigateTo(pageParam, searchParam);
