@@ -13,7 +13,7 @@ if (isset($_GET['fetch'])) {
     $page = isset($_GET['page']) ? max((int) $_GET['page'], 1) : 1;
     $offset = ($page - 1) * $limit;
 
-    $stmt = $pdo->prepare("SELECT * FROM COMPANY ORDER BY COMPANY_STAUS ASC, UPDATED_AT DESC LIMIT :limit OFFSET :offset");
+    $stmt = $pdo->prepare("SELECT * FROM COMPANY ORDER BY COMPANY_STATUS ASC, UPDATED_AT DESC LIMIT :limit OFFSET :offset");
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
     $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
