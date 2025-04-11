@@ -2,7 +2,6 @@
 include __DIR__ . '/../../includes/db.php';
 session_start();
 
-// AJAX: Listar empresas
 if (isset($_GET['fetch'])) {
     if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         echo json_encode(['error' => 'Acesso restrito.']);
@@ -31,7 +30,6 @@ if (isset($_GET['fetch'])) {
     exit;
 }
 
-// AJAX: Atualizar empresa
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'update') {
     if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         echo json_encode(['success' => false, 'error' => 'Acesso restrito.']);
@@ -50,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'update') {
     exit;
 }
 
-// AJAX: Ativar/Inativar empresa
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'toggle') {
     if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         echo json_encode(['success' => false, 'error' => 'Acesso restrito.']);
@@ -70,14 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'toggle') {
     exit;
 }
 
-// HTML principal
 if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
     echo "<div class='alert alert-danger'>Acesso restrito.</div>";
     exit;
 }
 ?>
 
-<link rel="stylesheet" href="assets/css/admin-empresas.css">
+<link rel="stylesheet" href="assets/css/admin-cards.css">
 
 <div class="dash_list">
     <div class="dash_head">

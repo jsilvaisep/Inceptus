@@ -2,7 +2,6 @@
 include __DIR__ . '/../../includes/db.php';
 session_start();
 
-// AJAX: Listar utilizadores
 if (isset($_GET['fetch'])) {
     if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         echo json_encode(['error' => 'Acesso restrito.']);
@@ -31,7 +30,6 @@ if (isset($_GET['fetch'])) {
     exit;
 }
 
-// AJAX: Atualizar dados do utilizador
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'update') {
     if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         echo json_encode(['success' => false, 'error' => 'Acesso restrito.']);
@@ -44,14 +42,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'update') {
     exit;
 }
 
-// AJAX: Toggle estado do utilizador
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'toggle') {
     if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         echo json_encode(['success' => false, 'error' => 'Acesso restrito.']);
         exit;
     }
 
-    // Buscar o estado atual
     $stmt = $pdo->prepare("SELECT USER_STATUS FROM USER WHERE USER_ID = ?");
     $stmt->execute([$_POST['USER_ID']]);
     $current = $stmt->fetchColumn();
@@ -64,14 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'toggle') {
     exit;
 }
 
-// HTML da página SPA
 if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
     echo "<div class='alert alert-danger'>Acesso restrito.</div>";
     exit;
 }
 ?>
 
-<link rel="stylesheet" href="assets/css/admin-users.css">
+<link rel="stylesheet" href="assets/css/admin-cards.css">
 
 <div class="dash_list">
     <div class="dash_head">

@@ -359,8 +359,17 @@
             };
             document.body.appendChild(script);
         }
-        
 
+        // js admin produtos
+        if (page === 'admin/produtos') {
+            const script = document.createElement('script');
+            script.src = 'assets/js/admin/produtos.js';
+            script.onload = () => {
+                if (typeof loadProducts === 'function') loadProducts();
+            };
+            document.body.appendChild(script);
+        }
+        
         //Paginação das noticias
         if (page === 'noticias') {
             document.querySelectorAll('.page-link').forEach(link => {
