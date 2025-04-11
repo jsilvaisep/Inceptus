@@ -1,3 +1,4 @@
+/* Container principal */
 .dash_list {
     width: 100%;
     max-width: 1100px;
@@ -22,12 +23,24 @@
     font-weight: bold;
 }
 
-.user-row {
+/* Linhas comuns */
+.user-row,
+.company-row,
+.product-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #eee;
     padding: 1rem 0;
+}
+
+/* Estilo para conteúdo (informações) */
+.user-info,
+.company-info,
+.product-info {
+    flex-grow: 1;
+    font-size: 0.95rem;
+    line-height: 1.4;
 }
 
 .user-info {
@@ -43,16 +56,24 @@
     object-fit: cover;
 }
 
-.user-data {
-    font-size: 0.95rem;
-    line-height: 1.4;
+.company-info a,
+.product-info a {
+    color: #555;
+    text-decoration: underline;
+    word-break: break-word;
 }
 
-.user-actions button {
-    margin-left: 0.5rem;
+/* Ações (botões) */
+.user-actions,
+.company-actions,
+.product-actions {
+    display: flex;
+    gap: 0.5rem;
 }
 
-.edit_button, .delete_button {
+/* Botões padrão */
+.edit_button,
+.delete_button {
     padding: 0.4rem 1.2rem;
     border: none;
     border-radius: 50px;
@@ -62,11 +83,11 @@
     transition: 0.3s ease;
 }
 
+/* Estilo dos botões */
 .edit_button {
     background-color: #ffcc00;
     color: #000;
 }
-
 .edit_button:hover {
     background-color: #e6b800;
 }
@@ -75,16 +96,35 @@
     background-color: #be3144;
     color: #fff;
 }
-
 .delete_button:hover {
     background-color: #a82b39;
 }
 
+/* Botão "Ativar" com tom claro */
+.user-row.inactive .delete_button,
+.company-row.inactive .delete_button,
+.product-row.inactive .delete_button {
+    background-color: #f4a7b3;
+    color: #fff;
+}
+.user-row.inactive .delete_button:hover,
+.company-row.inactive .delete_button:hover,
+.product-row.inactive .delete_button:hover {
+    background-color: #df8a98;
+}
+
+/* Linhas inativas com opacidade */
+.user-row.inactive,
+.company-row.inactive,
+.product-row.inactive {
+    opacity: 0.5;
+}
+
+/* Paginação */
 .pagination {
     margin-top: 2rem;
     text-align: center;
 }
-
 .pagination button {
     background-color: #f4f4f4;
     border: none;
@@ -95,13 +135,13 @@
     font-weight: bold;
     transition: all 0.2s ease;
 }
-
 .pagination button.active,
 .pagination button:hover {
     background-color: #be3144;
     color: white;
 }
 
+/* Modal */
 .modal {
     position: fixed;
     top: 0;
@@ -146,4 +186,35 @@
     margin-top: 2rem;
     display: flex;
     justify-content: space-between;
+}
+
+.news-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding: 1rem 0;
+}
+
+.news-row.inactive {
+    opacity: 0.5;
+}
+
+.news-info {
+    flex-grow: 1;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.news-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.news-row.inactive .delete_button {
+    background-color: #f4a7b3;
+    color: #fff;
+}
+.news-row.inactive .delete_button:hover {
+    background-color: #df8a98;
 }

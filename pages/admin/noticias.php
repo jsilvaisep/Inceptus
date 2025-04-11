@@ -1,96 +1,76 @@
 <?php
-include '../../includes/db.php';
+include __DIR__ . '/../../includes/db.php';
 session_start();
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 
-
-if (!isset($_SESSION['user']) || ($_SESSION['user']['user_type'] !== 'ADMIN')) {
-    echo "<div class='alert alert-danger'>Acesso restrito.</div>";
-    exit;
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete') {
-    $post_id = $_POST['post_id'] ?? ''; // Pegando o post_id enviado via POST
-
-    if (empty($post_id)) {
-        echo json_encode(['success' => false, 'message' => 'ID da notícia não fornecido.']);
+if (isset($_GET['fetch'])) {
+    if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
+        echo json_encode(['error' => 'Acesso restrito.']);
         exit;
     }
 
-    try {
-        // Executando UPDATE no banco de dados para marcar o status da notícia como "inativa"
-        $stmt = $pdo->prepare("UPDATE POST SET POST_STATUS = 'I' WHERE POST_ID = :post_id");
-        $stmt->bindParam(':post_id', $post_id, PDO::PARAM_STR);  // Definindo o tipo do ID como string (não é INT)
-        $stmt->execute();
+    header('Content-Type: application/json');
+    $limit = 6;
+    $page = isset($_GET['page']) ? max((int)$_GET['page'], 1) : 1;
+    $offset = ($page - 1) * $limit;
 
-        // Resposta em JSON
-        echo json_encode([
-            'success' => true,
-            'message' => 'Notícia eliminada com sucesso!'
-        ]);
-    } catch (PDOException $e) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'Erro ao eliminar notícia: ' . $e->getMessage()
-        ]);
-    }
-    exit;
-}
-
-try {
-    $stmt = $pdo->prepare("SELECT p.POST_CONTENT, p.POST_ID, p.POST_STATUS, c.COMPANY_NAME FROM POST p 
-                                INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID
-                                ORDER BY p.POST_STATUS ASC, p.UPDATED_AT DESC ");
+    $stmt = $pdo->prepare("
+        SELECT p.POST_ID, p.POST_CONTENT, p.POST_STATUS, c.COMPANY_NAME
+        FROM POST p
+        JOIN COMPANY c ON p.COMPANY_ID = c.COMPANY_ID
+        ORDER BY p.UPDATED_AT DESC 
+        LIMIT :limit OFFSET :offset
+    ");
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
     $news = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-} catch (PDOException $e) {
-    echo "erro" . $e->getMessage();
-}
-// Debug para ver o que está sendo enviado de volta
-header('Content-Type: application/json'); // Garante que o conteúdo retornado seja JSON
+    $total = $pdo->query("SELECT COUNT(*) FROM POST")->fetchColumn();
 
-// Aqui deve vir o código que processa a requisição, e logo após ele retornar o JSON.
-if (empty($news)) {
-    echo json_encode(['success' => false, 'message' => 'Sem notícias registradas.']);
-    exit;
-}
-if (empty($news)) {
-    echo '<p>Sem noticias registados.</p>';
+    echo json_encode([
+        'news' => $news,
+        'total' => $total,
+        'page' => $page,
+        'pages' => ceil($total / $limit)
+    ]);
     exit;
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'toggle') {
+    if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
+        echo json_encode(['success' => false, 'error' => 'Acesso restrito.']);
+        exit;
+    }
+
+    $stmt = $pdo->prepare("SELECT POST_STATUS FROM POST WHERE POST_ID = ?");
+    $stmt->execute([$_POST['POST_ID']]);
+    $current = $stmt->fetchColumn();
+
+    $newStatus = ($current === 'A') ? 'I' : 'A';
+
+    $stmt = $pdo->prepare("UPDATE POST SET POST_STATUS = ? WHERE POST_ID = ?");
+    $stmt->execute([$newStatus, $_POST['POST_ID']]);
+
+    echo json_encode(['success' => true]);
+    exit;
+}
+
+if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
+    echo "<div class='alert alert-danger'>Acesso restrito.</div>";
+    exit;
+}
 ?>
+
+<link rel="stylesheet" href="assets/css/admin-cards.css">
 
 <div class="dash_list">
     <div class="dash_head">
-        <h2 class="dash_title">Gestão de Empresas</h2>
+        <h2 class="dash_title">Gestão de Notícias</h2>
         <button class="delete_button" onclick="loadPage('admin/dashboard')">Voltar</button>
     </div>
-    <table class="dash_table">
-        <tr class="dash_table_header">
-            <th>Company Name</th>
-            <th>Notícia</th>
-            <th>Status</th>
-            <th></th>
-            <th></th>
-        </tr>
-        <?php foreach ($news as $post): ?>
-            <tr class="dash_table_data">
-                <td><?= htmlspecialchars($post['COMPANY_NAME']) ?></td>
-                <td><?= htmlspecialchars($post['POST_CONTENT']) ?></td>
-                <td><?= htmlspecialchars($post['POST_STATUS']) ?></td>
-                <!--                <td>
-                    <button class="edit_button"
-                            onclick="submitEditarNoticiasAdmin('<?php /*= htmlspecialchars($post['POST_ID']) */ ?>')">Editar</button>
-                </td>-->
-                <td>
-                    <button class="delete_button"
-                            onclick="submitEliminarNoticiasAdmin('<?= htmlspecialchars($post['POST_ID']) ?>')">Eliminar
-                    </button>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
+
+    <div id="news-table-container">A carregar notícias...</div>
+    <div id="pagination-container" class="pagination"></div>
 </div>
+
+<script src="assets/js/admin/noticias.js"></script>

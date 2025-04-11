@@ -352,7 +352,37 @@
             document.body.appendChild(script);
         }
         
+        // js admin empresas
+        if (page === 'admin/empresas') {
+            const script = document.createElement('script');
+            script.src = 'assets/js/admin/empresas.js';
+            script.onload = () => {
+                if (typeof loadCompanies === 'function') loadCompanies();
+            };
+            document.body.appendChild(script);
+        }
 
+        // js admin produtos
+        if (page === 'admin/produtos') {
+            const script = document.createElement('script');
+            script.src = 'assets/js/admin/produtos.js';
+            script.onload = () => {
+                if (typeof loadProducts === 'function') loadProducts();
+            };
+            document.body.appendChild(script);
+        }
+
+        // js admin noticias
+        if (page === 'admin/noticias') {
+            const script = document.createElement('script');
+            script.src = 'assets/js/admin/noticias.js';
+            script.onload = () => {
+                if (typeof loadNews === 'function') loadNews();
+            };
+            document.body.appendChild(script);
+        }
+        
+        
         //Paginação das noticias
         if (page === 'noticias') {
             document.querySelectorAll('.page-link').forEach(link => {
