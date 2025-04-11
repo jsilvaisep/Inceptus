@@ -37,7 +37,7 @@ try {
                        FROM POST p 
                        WHERE p.COMPANY_ID = ? AND p.POST_STATUS = 'A'");
     $stmt2->execute([$company_id]);
-    $comments = $stmt2->fetchAll(PDO::FETCH_ASSOC);
+    $posts = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     echo "" . $e->getMessage();
 }
@@ -52,26 +52,31 @@ if (empty($company_id_result)) {
 <div class="dash_list">
     <div class="dash_head">
         <h2 class="dash_title">Gestão de Empresas</h2>
-        <button class="delete_button" onclick="loadPage('admin/dashboard')">Voltar</button>
+        <button class="botao-voltar" onclick="loadPage('admin/empresadash.php')">Voltar</button>
+        <button id="openModal" class="open-modal-btn" onclick="criarNoticia()">Nova Noticia</button>
     </div>
     <table class="dash_table">
         <tr class="dash_table_header">
             <th>Titulo</th>
             <th>Subtitulo</th>
             <th>Noticia</th>
-            <th></th>
-            <th></th>
+            <th>Editar Noticia</th>
+            <th>Eliminar Noticia</th>
         </tr>
-        <?php foreach ($comments as $comment): ?>
+        <?php foreach ($posts as $post): ?>
             <tr class="dash_table_data">
-                <td><?= htmlspecialchars($comment['TITLE']) ?></td>
-                <td><?= htmlspecialchars($comment['SUBTITLE']) ?></td>
-                <td><?= htmlspecialchars($comment['POST_CONTENT']) ?></td>
+                <td><?= htmlspecialchars($post['TITLE']) ?></td>
+                <td><?= htmlspecialchars($post['SUBTITLE']) ?></td>
+                <td><?= htmlspecialchars($post['POST_CONTENT']) ?></td>
                 <td>
-                    <button class="edit_button" type="button">Editar</button>
+                    <input type="hidden" name="editarId" class="post-id" value="<?= htmlspecialchars($post['POST_ID']) ?>">
+                    <button class="edit_button" onclick="editarNoticia(this)" type="button">Editar</button>
                 </td>
                 <td>
-                    <button class="delete_button" type="submit">Eliminar</button>
+                    <form method="POST" class="deleteForm">
+                        <input type="hidden" name="postID" class="post-id" value="<?= htmlspecialchars($post['POST_ID']) ?>">
+                        <button class="delete_button" type="submit">Eliminar</button>
+                    </form>
                 </td>
             </tr>
         <?php endforeach; ?>
