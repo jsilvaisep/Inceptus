@@ -99,7 +99,14 @@ $products = $productStmt->fetchAll(PDO::FETCH_ASSOC);
             <div class="empresa-detalhes">
                 <h2>Descrição</h2>
                 <p><?= nl2br(htmlspecialchars($company['COMPANY_DESCRIPTION'])) ?></p>
-                <p><strong>Visualizações:</strong> <?= $company['COMPANY_VIEW_QTY'] ?></p>
+                <p><strong>Visualizações:</strong>
+                <?php
+                if ($company['COMPANY_VIEW_QTY'] == 0) {
+                    echo 'A empresa ainda não tem visualizações.';
+                } else {
+                    echo htmlspecialchars($company['PRODUCT_VIEW_QTY']);
+                }
+                ?>
                 <p><strong>Produzido por:</strong> <?= htmlspecialchars($company['COMPANY_NAME']) ?></p>
             </div>
         </div>
