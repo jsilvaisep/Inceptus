@@ -39,6 +39,12 @@
     padding-left: 8px;
 }
 
+.filter-section .search-input {
+    width: 100%;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
 /* Ajustes adicionais */
 .views-range input,
 .tag-filter input {

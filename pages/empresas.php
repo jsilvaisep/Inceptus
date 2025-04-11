@@ -90,15 +90,6 @@ $companies = $stmt->fetchAll();
 
     <!-- Conteúdo principal -->
     <div class="company-container">
-        <!-- Barra de pesquisa -->
-        <div class="search-section">
-            <form class="search-box" data-page="empresas" onsubmit="return false;">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="search-input" class="search-input" placeholder="Pesquisar empresas...">
-                <div id="search-results" class="search-results-box"></div>
-            </form>
-        </div>
-
         <!-- Lista de empresas -->
         <?php if (count($companies) > 0): ?>
             <div class="company-grid">

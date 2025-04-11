@@ -4,10 +4,19 @@ $rank = isset($_GET['rank']) ? (int) $_GET['rank'] : 0;
 $minViews = isset($_GET['min_views']) ? (int) $_GET['min_views'] : '';
 $maxViews = isset($_GET['max_views']) ? (int) $_GET['max_views'] : '';
 $tags = isset($_GET['tags']) ? explode(',', $_GET['tags']) : []; // array de strings
+$search = $_GET['search'] ?? '';
 ?>
 
 <div class="filter-container">
     <h2>FILTROS</h2>
+
+    <!-- Campo de Pesquisa -->
+    <div class="filter-section">
+        <h3>Pesquisa</h3>
+        <div class="search-box">
+            <input type="text" id="search-filter" class="search-input" placeholder="Pesquisar..." value="<?= htmlspecialchars($search) ?>">
+        </div>
+    </div>
 
     <!-- Avaliação -->
     <div class="filter-section">
