@@ -74,7 +74,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
                 <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
                 <h3 class="fw-bold">Estatísticas</h3>
                 <p class="text-muted small">Visualizar dados analíticos.</p>
-                <button class="btn custom-btn mt-2" onclick="loadPage('admin/stats')">Ver Estatísticas</button>
+                <button class="btn custom-btn mt-2" onclick="loadPage('admin/estatisticas')">Ver Estatísticas</button>
             </div>
         </div>
     </div>

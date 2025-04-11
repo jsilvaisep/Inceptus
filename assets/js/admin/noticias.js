@@ -68,7 +68,6 @@ function toggleNewsStatus(postId) {
     });
 }
 
-// Carrega ao abrir a página
 document.addEventListener("DOMContentLoaded", () => {
     loadNews();
 });

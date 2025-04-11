@@ -380,6 +380,23 @@
             document.body.appendChild(script);
         }
         
+        // js admin estatisticas
+        if (page === 'admin/estatisticas') {
+            const chartScript = document.createElement('script');
+            chartScript.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+        
+            chartScript.onload = () => {
+                const script = document.createElement('script');
+                script.src = 'assets/js/admin/estatisticas.js';
+                script.onload = () => {
+                    if (typeof loadEstatisticas === 'function') loadEstatisticas();
+                };
+                document.body.appendChild(script);
+            };
+        
+            document.body.appendChild(chartScript);
+        }
+        
         
         //Paginação das noticias
         if (page === 'noticias') {
