@@ -27,12 +27,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $typeInfo = $stmtType->fetch(PDO::FETCH_ASSOC);
 
             $_SESSION['user'] = [
-                'user_id'    => $user['USER_ID'],
-                'user_name'  => $user['USER_LOGIN'],
+                'user_id' => $user['USER_ID'],
+                'user_name' => $user['USER_LOGIN'],
                 'user_email' => $user['USER_EMAIL'],
-                'type_id'    => $user['USER_TYPE_ID'],
-                'user_type'  => $typeInfo['USER_TYPE'] ?? null,
-                'img_url'    => $user['IMG_URL']
+                'type_id' => $user['USER_TYPE_ID'],
+                'user_type' => $typeInfo['USER_TYPE'] ?? null,
+                'img_url' => $user['IMG_URL']
             ];
 
             session_regenerate_id(true);
@@ -40,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             echo json_encode(['success' => false, 'message' => 'Credenciais inválidas.']);
         }
+        exit;
     } catch (PDOException $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);

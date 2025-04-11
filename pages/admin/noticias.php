@@ -10,14 +10,14 @@ if (isset($_GET['fetch'])) {
 
     header('Content-Type: application/json');
     $limit = 6;
-    $page = isset($_GET['page']) ? max((int)$_GET['page'], 1) : 1;
+    $page = isset($_GET['page']) ? max((int) $_GET['page'], 1) : 1;
     $offset = ($page - 1) * $limit;
 
     $stmt = $pdo->prepare("
-        SELECT p.POST_ID, p.POST_CONTENT, p.POST_STATUS, c.COMPANY_NAME
+        SELECT p.POST_ID, p.POST_CONTENT, p.POST_STATUS, c.COMPANY_NAME, p.POST_STATUS
         FROM POST p
         JOIN COMPANY c ON p.COMPANY_ID = c.COMPANY_ID
-        ORDER BY p.UPDATED_AT DESC 
+        ORDER BY p.POST_STATUS ASC, p.UPDATED_AT DESC 
         LIMIT :limit OFFSET :offset
     ");
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);

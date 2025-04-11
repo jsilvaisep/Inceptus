@@ -737,6 +737,7 @@
 
         // Registo
         if (page === 'register') {
+            
             const registerForm = document.getElementById('register-form');
             if (registerForm) {
                 registerForm.addEventListener('submit', async e => {
@@ -744,20 +745,19 @@
                     const formData = new FormData(registerForm);
                     const msg = document.getElementById('register-msg');
                     msg.innerHTML = 'A processar...';
-
                     try {
                         const res = await fetch('pages/register.php', {method: 'POST', body: formData});
                         const data = await res.json();
                         msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
-
+                        
                         if (data.success) {
                             setTimeout(() => {
                                 reloadNavbar();
                                 loadPage('home');
                             }, 2000);
                         }
-                    } catch {
-                        msg.innerHTML = `<p class="error">Erro no servidor.</p>`;
+                    } catch (error) {
+                        msg.innerHTML = `<p class="error">Erro no servidor: ${error.message}</p>`;
                     }
                 });
             }
