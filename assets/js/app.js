@@ -367,8 +367,15 @@
 
         // Pesquisa AJAX dinâmica para produtos e empresas
         if (page === 'produtos') {
+            const searchFilterInput = document.getElementById('search-filter');
             let minViews = new URLSearchParams(window.location.search).get('min_views');
             let maxViews = new URLSearchParams(window.location.search).get('max_views');
+            let searchTerm = new URLSearchParams(window.location.search).get('search') || '';
+
+            // Inicializar campo de pesquisa do filtro com valor da URL
+            if (searchFilterInput && searchTerm) {
+                searchFilterInput.value = searchTerm;
+            }
 
             if (minViewsInput && maxViewsInput) {
                 if (minViews) minViewsInput.value = minViews;
@@ -438,52 +445,20 @@
                 });
             });
 
-            // 🔍 PESQUISA
-            if (searchInput && resultsDiv) {
+            if (searchFilterInput) {
                 let debounce;
-                searchInput.addEventListener('input', () => {
-                    const query = searchInput.value.trim();
+                searchFilterInput.addEventListener('input', () => {
                     clearTimeout(debounce);
                     debounce = setTimeout(() => {
-                        if (!query) {
-                            resultsDiv.innerHTML = '';
-                            return;
-                        }
-
-                        fetch(`includes/search-products.php?q=${encodeURIComponent(query)}`)
-                            .then(res => res.text())
-                            .then(html => {
-                                resultsDiv.innerHTML = html;
-                                document.querySelectorAll('.clickable-product').forEach(item => {
-                                    item.addEventListener('click', () => {
-                                        const id = item.dataset.id;
-                                        fetch(`pages/produtos.php?id=${id}&modal=true`)
-                                            .then(res => res.text())
-                                            .then(modalHtml => {
-                                                document.getElementById("modal-container").innerHTML = modalHtml;
-                                                document.body.classList.add("no-scroll");
-                                                setupGlobalModalListeners();
-                                                resultsDiv.innerHTML = '';
-                                                searchInput.value = '';
-                                            });
-                                    });
-                                });
-                            });
-                    }, 300);
-                });
-
-                searchInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
                         loadWithFilters();
-                    }
+                    }, 500); // Atraso para evitar múltiplas requisições
                 });
             }
 
             // 🧠 Função geral para construir a query e recarregar
             function loadWithFilters() {
                 const type = document.querySelector('#projectToggle input[name="type"]:checked')?.value || 'both';
-                const search = document.getElementById('search-input')?.value.trim() || '';
+                const search = document.getElementById('search-filter')?.value.trim() || '';
                 const url = new URLSearchParams();
 
                 if (search) url.set('search', search);

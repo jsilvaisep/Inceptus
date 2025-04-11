@@ -80,13 +80,6 @@ try {
 
     <!-- Lado direito: Produtos -->
     <div class="product-container">
-        <div class="search-section">
-            <form class="search-box" data-page="produtos" onsubmit="return false;">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="search-input" class="search-input" placeholder="Pesquisar produtos...">
-                <div id="search-results" class="search-results-box"></div>
-            </form>
-        </div>
 
         <?php if (count($products) > 0): ?>
             <div class="product-grid">
