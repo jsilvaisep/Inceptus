@@ -20,17 +20,19 @@ function enviarEmailConfirmacao($nome, $email, $login)
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
+        $mail->CharSet = 'UTF-8';
+
         $mail->setFrom('maianetwork.cloud@gmail.com', 'Inceptus');
         $mail->addAddress($email, $nome);
 
         $mail->isHTML(true);
-        $mail->Subject = 'Conta criada com sucesso';
+        $mail->Subject = 'Criação de Conta efetuada com sucesso';
         $mail->Body = <<<HTML
             <h2>Olá, {$nome}!</h2>
             <p>Sua conta foi criada com sucesso.</p>
             <p>Username : <strong>{$login}</strong></p>
             <p>Bem-vindo à nossa plataforma!</p>
-HTML;
+        HTML;
 
         $mail->send();
         return true;
