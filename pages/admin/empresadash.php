@@ -27,9 +27,17 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'COMPANY') {
             <button class="btn custom-btn mt-2" onclick="loadPage('admin/empresa_coms')">Gerir Produtos</button>
         </div>
     </div>
+    <div class="custom-card">
+        <div class="card-body text-center">
+            <i class="fas fa-newspaper fa-2x text-primary mb-2"></i>
+            <h3 class="fw-bold">Notícias</h3>
+            <p class="text-muted small">Listar e gerir notícias do site.</p>
+            <button class="btn custom-btn mt-2" onclick="loadPage('admin/noticiasdash')">Gerir Notícias</button>
+        </div>
+    </div>
 
 
-<style>
+    <style>
     .admin-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);

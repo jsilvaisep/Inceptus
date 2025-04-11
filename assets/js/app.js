@@ -68,6 +68,70 @@
             });
     }
 
+    // ==========================
+// Exemplo de SPA + Funções de criar/editar notícia
+// ==========================
+
+// Função para abrir modal e criar nova notícia
+    function criarNoticia() {
+        document.getElementById('formAction').value = 'criar'; // hidden input no form
+        document.getElementById("modalOverlay").style.display = "flex";
+
+        document.getElementById("closeModal").addEventListener("click", function () {
+            document.getElementById("modalOverlay").style.display = "none";
+        });
+    }
+
+// Função para abrir modal para editar notícia
+    function editarNoticia(button) {
+        document.getElementById('formAction').value = 'editar';
+        document.getElementById("modalOverlay").style.display = "flex";
+
+        let row = button.closest('tr');
+        let postIdInput = row.querySelector('input[name="editarId"]');
+        let postId = postIdInput ? postIdInput.value : null;
+
+        // Poderá guardar esse ID em variável global ou num campo hidden do form
+        document.getElementById('post_id_editar').value = postId;
+
+        document.getElementById("closeModal").addEventListener("click", function () {
+            document.getElementById("modalOverlay").style.display = "none";
+        });
+    }
+
+// Submissão do formulário de criar/editar notícias
+    document.addEventListener("submit", function (event) {
+        if (event.target.id === 'newsForm') {
+            event.preventDefault();
+
+            const form = event.target;
+            const formData = new FormData(form);
+
+            fetch('criarNoticias.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(async response => {
+                    const data = await response.json();
+                    if (data.success) {
+                        alert(data.success);
+                        // Fechar modal e recarregar a página de notícias
+                        document.getElementById("modalOverlay").style.display = "none";
+                        navigateTo('noticiasdash');
+                    } else if (data.error) {
+                        alert(data.error);
+                    }
+                })
+                .catch(err => {
+                    console.error("Erro na submissão do formulário", err);
+                });
+        }
+    });
+
+// Expor as funções no objeto window, se necessário
+    window.criarNoticia = criarNoticia;
+    window.editarNoticia = editarNoticia;
+
     function eliminarProduto(id) {
         alert(id);
     }
