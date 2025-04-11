@@ -2,7 +2,7 @@
 include __DIR__ . '/../../includes/db.php';
 session_start();
 
-// AJAX: Listar empresas com paginação
+// AJAX: Listar empresas
 if (isset($_GET['fetch'])) {
     if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         echo json_encode(['error' => 'Acesso restrito.']);
@@ -31,7 +31,7 @@ if (isset($_GET['fetch'])) {
     exit;
 }
 
-// AJAX: Atualizar dados da empresa
+// AJAX: Atualizar empresa
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'update') {
     if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         echo json_encode(['success' => false, 'error' => 'Acesso restrito.']);
@@ -50,21 +50,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'update') {
     exit;
 }
 
-// AJAX: Eliminar empresa
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'delete') {
+// AJAX: Ativar/Inativar empresa
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'toggle') {
     if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
         echo json_encode(['success' => false, 'error' => 'Acesso restrito.']);
         exit;
     }
 
-    $stmt = $pdo->prepare("DELETE FROM COMPANY WHERE COMPANY_ID = ?");
+    $stmt = $pdo->prepare("SELECT COMPANY_STATUS FROM COMPANY WHERE COMPANY_ID = ?");
     $stmt->execute([$_POST['COMPANY_ID']]);
+    $current = $stmt->fetchColumn();
+
+    $newStatus = ($current === 'A') ? 'I' : 'A';
+
+    $stmt = $pdo->prepare("UPDATE COMPANY SET COMPANY_STATUS = ? WHERE COMPANY_ID = ?");
+    $stmt->execute([$newStatus, $_POST['COMPANY_ID']]);
 
     echo json_encode(['success' => true]);
     exit;
 }
 
-// HTML da página
+// HTML principal
 if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
     echo "<div class='alert alert-danger'>Acesso restrito.</div>";
     exit;

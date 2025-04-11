@@ -14,7 +14,7 @@ window.loadCompanies = function (page = 1) {
             }
 
             const html = data.companies.map(company => `
-                <div class="company-row">
+                <div class="company-row ${company.COMPANY_STATUS !== 'A' ? 'inactive' : ''}">
                     <div class="company-info">
                         <strong>${company.COMPANY_NAME}</strong><br>
                         <small>${company.COMPANY_EMAIL}</small><br>
@@ -22,7 +22,9 @@ window.loadCompanies = function (page = 1) {
                     </div>
                     <div class="company-actions">
                         <button class="edit_button" onclick='openEditModal(${JSON.stringify(company)})'>Editar</button>
-                        <button class="delete_button" onclick="deleteCompany('${company.COMPANY_ID}')">Eliminar</button>
+                        <button class="delete_button" onclick="toggleCompanyStatus('${company.COMPANY_ID}')">
+                            ${company.COMPANY_STATUS === 'A' ? 'Inativar' : 'Ativar'}
+                        </button>
                     </div>
                 </div>
             `).join("");
@@ -81,11 +83,9 @@ document.getElementById("editCompanyForm").addEventListener("submit", function (
     });
 });
 
-function deleteCompany(companyId) {
-    if (!confirm("Tens a certeza que queres eliminar esta empresa?")) return;
-
+function toggleCompanyStatus(companyId) {
     const formData = new FormData();
-    formData.append("action", "delete");
+    formData.append("action", "toggle");
     formData.append("COMPANY_ID", companyId);
 
     fetch("pages/admin/empresas.php", {
@@ -97,16 +97,15 @@ function deleteCompany(companyId) {
         if (data.success) {
             loadCompanies();
         } else {
-            alert("Erro ao eliminar empresa.");
+            alert("Erro ao alterar estado da empresa.");
         }
     })
     .catch(err => {
         console.error("Erro:", err);
-        alert("Erro ao eliminar.");
+        alert("Erro ao alterar estado.");
     });
 }
 
-// Carrega empresas ao iniciar
 document.addEventListener("DOMContentLoaded", () => {
     loadCompanies();
 });

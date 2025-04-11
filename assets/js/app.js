@@ -359,6 +359,7 @@
             };
             document.body.appendChild(script);
         }
+        
 
         //Paginação das noticias
         if (page === 'noticias') {
