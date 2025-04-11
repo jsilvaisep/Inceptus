@@ -92,7 +92,7 @@ INNER JOIN UDA u ON u.UDA_ID = pu.UDA_ID
 WHERE JSON_UNQUOTE(JSON_EXTRACT(u.UDA_VALUES, '$.CATEGORIA')) = c.CATEGORY_NAME 
   AND c.CATEGORY_NAME = :nome_categoria;
 
-CALL INSERT_POST ('56c0cdde-1557-11f0-89dc-020017000d59', 'TITULO', 'SUBTITULO','INSERT PELO PROCEDURE');
+CALL INSERT_POST (:company_id, :title, :subtitle, :post_content);
 
         SELECT p.*, c.COMPANY_NAME 
         FROM POST p 
@@ -111,3 +111,5 @@ CALL INSERT_POST ('56c0cdde-1557-11f0-89dc-020017000d59', 'TITULO', 'SUBTITULO',
         ORDER BY p.UPDATED_AT DESC;
                 
         SELECT * FROM PRODUCT p ;
+        
+          SELECT * FROM POST order by POST_STATUS asc, UPDATED_AT desc;
