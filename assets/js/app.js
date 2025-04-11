@@ -525,44 +525,18 @@
 
         // Empresas: Filtro no DOM (além do search)
         if (page === 'empresas') {
-            filterCompanies();
+            // Captura o campo de pesquisa
+            const searchFilterInput = document.getElementById('search-filter');
+            let searchTerm = new URLSearchParams(window.location.search).get('search') || '';
 
-            //TAGS
-            if (tagInput) {
-                if (window.Tagify) {
-                    const originalNumberFormat = Intl.NumberFormat;
-
-                    Intl.NumberFormat = function (locale, options) {
-                        if (options && options.style === 'currency' && !options.currency) {
-                            options.currency = 'EUR';
-                        }
-                        return new originalNumberFormat(locale, options);
-                    };
-                }
-
-                var tagify = new Tagify(tagInput);
-
-                let initialTags = new URLSearchParams(window.location.search).get('tags');
-                if (initialTags) {
-                    let tagArray = initialTags.split(',').map(t => ({value: t.trim()}));
-                    tagify.addTags(tagArray);
-                }
-
-                tagify.on('add', onTagChange);
-                tagify.on('remove', onTagChange);
+            // Inicializa o campo com o valor da URL
+            if (searchFilterInput && searchTerm) {
+                searchFilterInput.value = searchTerm;
             }
 
-            function onTagChange(e) {
-                let tagsData = tagify.value;
-                let tagStr = tagsData.map(tag => tag.value).join(',');
-
-                tags = tagStr;
-
-                loadWithFilters();
-            }
-
-            let tags = new URLSearchParams(window.location.search).get('tags');
-
+            // Configuração para filtro por visualizações
+            const minViewsInput = document.getElementById('min-views');
+            const maxViewsInput = document.getElementById('max-views');
             let minViews = new URLSearchParams(window.location.search).get('min_views');
             let maxViews = new URLSearchParams(window.location.search).get('max_views');
 
@@ -572,14 +546,6 @@
 
                 minViewsInput.addEventListener('input', triggerViewsFilter);
                 maxViewsInput.addEventListener('input', triggerViewsFilter);
-            }
-
-            if (tags) {
-                tagInput.value = tags;
-                tagInput.addEventListener('input', () => {
-                    tags = tagInput.value;
-                    loadWithFilters();
-                });
             }
 
             function triggerViewsFilter() {
@@ -593,17 +559,13 @@
                 }
             }
 
-            const toggleContent = document.querySelector('.filter-section.custom-toggle-wrapper');
-
-            if (toggleContent) toggleContent.remove();
-
+            // Configuração para estrelas de avaliação
+            const starContainer = document.getElementById('stars');
             let selectedRank = parseInt(new URLSearchParams(window.location.search).get('rank')) || null;
 
-            // 🌟 ESTRELAS
             if (starContainer) {
                 const stars = starContainer.querySelectorAll('.star');
 
-                // Aplicar visual ativo se URL já tiver rank
                 if (selectedRank) highlightStars(selectedRank);
 
                 stars.forEach(star => {
@@ -634,51 +596,73 @@
                 }
             }
 
-            // 🔍 PESQUISA
-            if (searchInput && resultsDiv) {
+            // Adiciona o listener para pesquisa em tempo real
+            if (searchFilterInput) {
                 let debounce;
-                searchInput.addEventListener('input', () => {
-                    const query = searchInput.value.trim();
+                searchFilterInput.addEventListener('input', () => {
                     clearTimeout(debounce);
                     debounce = setTimeout(() => {
-                        if (!query) {
-                            resultsDiv.innerHTML = '';
-                            return;
-                        }
-
-                        fetch(`includes/search-empresas.php?q=${encodeURIComponent(query)}`)
-                            .then(res => res.text())
-                            .then(html => {
-                                resultsDiv.innerHTML = html;
-                                document.querySelectorAll('.clickable-product').forEach(item => {
-                                    item.addEventListener('click', () => {
-                                        const id = item.dataset.id;
-                                        fetch(`pages/empresas.php?id=${id}&modal=true`)
-                                            .then(res => res.text())
-                                            .then(modalHtml => {
-                                                document.getElementById("modal-container").innerHTML = modalHtml;
-                                                document.body.classList.add("no-scroll");
-                                                setupGlobalModalListeners();
-                                                resultsDiv.innerHTML = '';
-                                                searchInput.value = '';
-                                            });
-                                    });
-                                });
-                            });
-                    }, 300);
-                });
-
-                searchInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
                         loadWithFilters();
-                    }
+                    }, 500); // Atraso para evitar múltiplas requisições
                 });
             }
 
-            // 🧠 Função geral para construir a query e recarregar
+            // Configuração para tags
+            const tagsInput = document.getElementById('tags');
+            let tags = new URLSearchParams(window.location.search).get('tags') || '';
+            let tagify = null;
+
+            if (tagsInput) {
+                // Verificar se Tagify está disponível
+                if (typeof Tagify !== 'undefined') {
+                    // Preservar NumberFormat original
+                    const originalNumberFormat = Intl.NumberFormat;
+
+                    // Sobrescrever temporariamente para lidar com configurações de moeda
+                    Intl.NumberFormat = function (locale, options) {
+                        if (options && options.style === 'currency' && !options.currency) {
+                            options.currency = 'EUR';
+                        }
+                        return new originalNumberFormat(locale, options);
+                    };
+
+                    // Inicializar Tagify
+                    tagify = new Tagify(tagsInput);
+
+                    // Restaurar comportamento original do NumberFormat
+                    Intl.NumberFormat = originalNumberFormat;
+
+                    // Se existirem tags na URL, adicioná-las ao Tagify
+                    if (tags) {
+                        const tagArray = tags.split(',').map(t => ({value: t.trim()}));
+                        tagify.addTags(tagArray);
+                    }
+
+                    // Adicionar listeners para eventos de tags
+                    tagify.on('add', () => {
+                        const tagsData = tagify.value;
+                        tags = tagsData.map(tag => tag.value).join(',');
+                        loadWithFilters();
+                    });
+
+                    tagify.on('remove', () => {
+                        const tagsData = tagify.value;
+                        tags = tagsData.map(tag => tag.value).join(',');
+                        loadWithFilters();
+                    });
+                } else {
+                    // Fallback para input normal se Tagify não estiver disponível
+                    tagsInput.value = tags;
+                    tagsInput.addEventListener('input', () => {
+                        tags = tagsInput.value;
+                        loadWithFilters();
+                    });
+                }
+            }
+
+            // Função para carregar com todos os filtros
             function loadWithFilters() {
-                const search = document.getElementById('search-input')?.value.trim() || '';
+                const search = document.getElementById('search-filter')?.value.trim() || '';
                 const url = new URLSearchParams();
 
                 if (search) url.set('search', search);
@@ -688,7 +672,9 @@
                     url.set('max_views', maxViews);
                 }
                 if (tags) url.set('tags', tags);
-                url.set('pg', '1');
+
+                url.set('pg', '1'); // Volta para primeira página ao filtrar
+
                 loadPage('empresas', url.toString());
             }
         }
