@@ -112,4 +112,6 @@ CALL INSERT_POST (:company_id, :title, :subtitle, :post_content);
                 
         SELECT * FROM PRODUCT p ;
         
-          SELECT * FROM POST order by POST_STATUS asc, UPDATED_AT desc;
+          SELECT * FROM POST order by POST_STATUS asc, UPDATED_AT desc
+          
+SELECT * FROM `USER` u ORDER BY CREATED_AT DESC;

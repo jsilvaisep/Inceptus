@@ -1,9 +1,45 @@
 <?php
-include __DIR__ . '../../vendor/autoload.php';
-session_start();
+// session_start();
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require_once __DIR__ . '../../vendor/autoload.php';
+include '../includes/db.php';
+
+function enviarEmailConfirmacao($nome, $email)
+{
+    $mail = new PHPMailer(true);
+
+    try {
+        $mail->isSMTP();
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = 'maianetwork.cloud@gmail.com';
+        $mail->Password = 'bnzp epzh nbgh wslb';
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = 587;
+
+        $mail->setFrom('maianetwork.cloud@gmail.com', 'Inceptus');
+        $mail->addAddress($email, $nome);
+
+        $mail->isHTML(true);
+        $mail->Subject = 'Conta criada com sucesso';
+        $mail->Body = <<<HTML
+            <h2>Olá, {$nome}!</h2>
+            <p>Sua conta foi criada com sucesso.</p>
+            <p>Bem-vindo à nossa plataforma!</p>
+HTML;
+
+        $mail->send();
+        return true;
+    } catch (Exception $e) {
+        error_log("Erro ao enviar e-mail: {$mail->ErrorInfo}");
+        return false;
+    }
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    include '../includes/db.php';
     header('Content-Type: application/json');
 
     $name = filter_var($_POST['name'] ?? '', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -30,10 +66,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $check = $pdo->prepare("SELECT USER_ID FROM USER WHERE USER_EMAIL = ?");
         $check->execute([$email]);
         if ($check->fetch()) {
-            echo json_encode(['success' => true, 'message' => 'Conta já existente. Redirecionando para login...']);
+            echo json_encode(['success' => false, 'message' => 'Conta já existente. Redirecionando para login...']);
             exit;
         }
 
+        // Upload da imagem de perfil
         $imgPath = null;
         if (isset($_FILES['profile_img']) && $_FILES['profile_img']['error'] === UPLOAD_ERR_OK) {
             $uploadDir = __DIR__ . '/../uploads/';
@@ -63,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
+        // Inserir no banco
         if ($is_company) {
             $stmt = $pdo->prepare("CALL INSERT_COMPANY (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute([$name, $company_name, $login, $email, $password_hash, $imgPath, $company_email, $site]);
@@ -71,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$name, $login, $email, $password_hash, $imgPath]);
         }
 
-        // Buscar o utilizador recém-criado para iniciar sessão
+        // Buscar o utilizador para sessão
         $stmt = $pdo->prepare("SELECT USER_ID, USER_NAME, USER_TYPE_ID, IMG_URL FROM USER WHERE USER_EMAIL = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -85,9 +123,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ];
         }
 
-        echo json_encode(['success' => true, 'message' => 'Conta criada com sucesso.']);
+        // Enviar o e-mail
+        if (enviarEmailConfirmacao($name, $email)) {
+            echo json_encode(['success' => true, 'message' => 'Conta criada com sucesso e e-mail enviado.']);
+        } else {
+            echo json_encode(['success' => true, 'message' => 'Conta criada, mas falha ao enviar e-mail.']);
+        }
         exit;
-
     } catch (PDOException $e) {
         http_response_code(500);
         echo json_encode(['success' => false, 'message' => 'Erro: ' . $e->getMessage()]);
@@ -95,8 +137,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
-<!-- HTML do formulário -->
 <div class="form-container">
     <form class="form-box" id="register-form" method="POST" enctype="multipart/form-data">
         <h2>Criação de Conta</h2>
