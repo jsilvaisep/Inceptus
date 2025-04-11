@@ -69,7 +69,6 @@ $totalPages = ceil($totalPosts / $limit);
             <?php include_once '../includes/filter.php'; ?>
         </div>
         <div class="news-page">
-            <h1>Notícias</h1>
             <div class="news-grid">
                 <?php foreach ($posts as $row): ?>
                     <?php
