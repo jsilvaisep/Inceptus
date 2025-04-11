@@ -81,6 +81,7 @@
             document.getElementById("modalOverlay").style.display = "none";
         });
     }
+    window.criarNoticia = criarNoticia;
 
 // Função para abrir modal para editar notícia
     function editarNoticia(button) {
@@ -98,6 +99,7 @@
             document.getElementById("modalOverlay").style.display = "none";
         });
     }
+    window.editarNoticia = editarNoticia;
 
 // Submissão do formulário de criar/editar notícias
     document.addEventListener("submit", function (event) {
