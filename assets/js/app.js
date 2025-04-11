@@ -350,6 +350,15 @@
             document.body.appendChild(script);
         }
         
+        // js admin empresas
+        if (page === 'admin/empresas') {
+            const script = document.createElement('script');
+            script.src = 'assets/js/admin/empresas.js';
+            script.onload = () => {
+                if (typeof loadCompanies === 'function') loadCompanies();
+            };
+            document.body.appendChild(script);
+        }
 
         //Paginação das noticias
         if (page === 'noticias') {
