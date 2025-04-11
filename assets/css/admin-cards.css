@@ -187,3 +187,34 @@
     display: flex;
     justify-content: space-between;
 }
+
+.news-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding: 1rem 0;
+}
+
+.news-row.inactive {
+    opacity: 0.5;
+}
+
+.news-info {
+    flex-grow: 1;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.news-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.news-row.inactive .delete_button {
+    background-color: #f4a7b3;
+    color: #fff;
+}
+.news-row.inactive .delete_button:hover {
+    background-color: #df8a98;
+}

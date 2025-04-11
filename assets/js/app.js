@@ -369,6 +369,17 @@
             };
             document.body.appendChild(script);
         }
+
+        // js admin noticias
+        if (page === 'admin/noticias') {
+            const script = document.createElement('script');
+            script.src = 'assets/js/admin/noticias.js';
+            script.onload = () => {
+                if (typeof loadNews === 'function') loadNews();
+            };
+            document.body.appendChild(script);
+        }
+        
         
         //Paginação das noticias
         if (page === 'noticias') {
