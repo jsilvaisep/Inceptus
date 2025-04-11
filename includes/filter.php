@@ -5,21 +5,32 @@ $minViews = isset($_GET['min_views']) ? (int) $_GET['min_views'] : '';
 $maxViews = isset($_GET['max_views']) ? (int) $_GET['max_views'] : '';
 $tags = isset($_GET['tags']) ? explode(',', $_GET['tags']) : []; // array de strings
 $search = $_GET['search'] ?? '';
+$currentPage = $_GET['page'] ?? '';
+
+// Verificar também no caminho da URL para SPAs
+if (empty($currentPage)) {
+    $requestUri = $_SERVER['REQUEST_URI'];
+    if (strpos($requestUri, 'noticias') !== false) {
+        $currentPage = 'noticias';
+    }
+}
 ?>
 
 <div class="filter-container">
     <h2>FILTROS</h2>
 
     <!-- Campo de Pesquisa -->
-    <div class="filter-section">
+    <div class="filter-section search-box-wrapper">
         <h3>Pesquisa</h3>
         <div class="search-box">
             <input type="text" id="search-filter" class="search-input" placeholder="Pesquisar..." value="<?= htmlspecialchars($search) ?>">
         </div>
     </div>
 
+    <?php if ($currentPage !== 'noticias'): ?>
+
     <!-- Avaliação -->
-    <div class="filter-section">
+    <div class="filter-section stars-wrapper">
         <h3>Avaliação</h3>
         <div id="stars" class="stars">
             <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -47,7 +58,7 @@ $search = $_GET['search'] ?? '';
 
     
     <!-- Views -->
-    <div class="filter-section views-filter">
+    <div class="filter-section views-filter-wrapper">
         <h3>Views:</h3>
         <div class="views-range">
             <label for="min-views">Min:</label>
@@ -60,10 +71,12 @@ $search = $_GET['search'] ?? '';
 
     
     <!-- Tags -->
-    <div class="filter-section tags">
+    <div class="filter-section tags-wrapper">
         <h3>Tags</h3>
         <div class="tag-filter">
             <input type="text" id="tags" name="tags" placeholder="Escreve para procurar tags..." />
         </div>
     </div>
+
+    <?php endif; ?>
 </div>

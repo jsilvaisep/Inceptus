@@ -325,10 +325,10 @@
         const searchInput = document.getElementById('search-input');
         const resultsDiv = document.getElementById('search-results');
         const starContainer = document.getElementById('stars');
-        const starInput = document.getElementById('.filter-section.stars');
+        const starInput = document.getElementById('.filter-section.stars-wrapper');
         const toggleInputs = document.querySelectorAll('#projectToggle input[name="type"]');
-        const tagSection = document.querySelector('.filter-section.tags');
-        const tagInput = document.getElementById('tags');
+        const tagSection = document.querySelector('.filter-section.tags-wrapper');
+        const tagInput = document.getElementById('tags-wrapper');
         const minViewsInput = document.getElementById('min-views');
         const maxViewsInput = document.getElementById('max-views');
 
@@ -806,8 +806,47 @@
 
 
         if (page === 'noticias') {
+            // Configuração para paginação existente
+            document.querySelectorAll('.page-link').forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const urlParams = new URL(link.href).searchParams;
+                    const pageParam = urlParams.get('page') || 'noticias';
+                    const searchParam = urlParams.toString();
+
+                    loadPage(pageParam, searchParam);
+                });
+            });
+
+            // Configuração da pesquisa em tempo real
+            const searchFilterInput = document.getElementById('search-filter');
+            const searchTerm = new URLSearchParams(window.location.search).get('search') || '';
+
+            // Inicializar campo de pesquisa com valor da URL
+            if (searchFilterInput && searchTerm) {
+                searchFilterInput.value = searchTerm;
+            }
+
+            // Adicionar listener para pesquisa em tempo real
+            if (searchFilterInput) {
+                let debounce;
+                searchFilterInput.addEventListener('input', () => {
+                    clearTimeout(debounce);
+                    debounce = setTimeout(() => {
+                        const search = searchFilterInput.value.trim();
+                        const url = new URLSearchParams();
+
+                        if (search) url.set('search', search);
+                        url.set('pg', '1'); // Retorna para a primeira página ao filtrar
+
+                        loadPage('noticias', url.toString());
+                    }, 500); // Atraso para evitar múltiplas requisições
+                });
+            }
+
+            // Configuração para abertura de modal (código existente)
             document.querySelectorAll('.open-modal-btn').forEach(btn => {
-                btn.addEventListener('click', function () {
+                btn.addEventListener('click', function() {
                     const postId = this.getAttribute('data-id');
                     if (postId) {
                         abrirNoticia(postId);

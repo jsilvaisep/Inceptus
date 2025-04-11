@@ -11,21 +11,54 @@ $page = isset($_GET['pg']) ? (int) $_GET['pg'] : 1;
 $limit = 10;
 $offset = ($page - 1) * $limit;
 
-$stmt = $pdo->prepare("SELECT p.POST_ID, p.POST_CONTENT, p.CREATED_AT,
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+// Construir a query base
+$sql = "SELECT p.POST_ID, p.POST_CONTENT, p.CREATED_AT,
     c.COMPANY_NAME, c.IMG_URL, u.USER_NAME
     FROM POST p
     INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID
     INNER JOIN USER u ON u.USER_ID = c.USER_ID
-    WHERE p.POST_STATUS = 'A'
-    ORDER BY p.CREATED_AT DESC
-    LIMIT :limit OFFSET :offset");
+    WHERE p.POST_STATUS = 'A'";
 
+// Adicionar condição de pesquisa se existir um termo
+if (!empty($search)) {
+    $sql .= " AND (p.POST_CONTENT LIKE :search 
+              OR c.COMPANY_NAME LIKE :search 
+              OR u.USER_NAME LIKE :search)";
+}
+
+// Adicionar ordenação e limites
+$sql .= " ORDER BY p.CREATED_AT DESC LIMIT :limit OFFSET :offset";
+
+$stmt = $pdo->prepare($sql);
+if (!empty($search)) {
+    $searchParam = "%{$search}%";
+    $stmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
+}
 $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $posts = $stmt->fetchAll();
 
-$countStmt = $pdo->query("SELECT COUNT(*) FROM POST WHERE POST_STATUS = 'A'");
+// Consulta de contagem também precisa incluir o filtro de pesquisa
+$countSql = "SELECT COUNT(*) FROM POST p 
+             INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID
+             INNER JOIN USER u ON u.USER_ID = c.USER_ID
+             WHERE p.POST_STATUS = 'A'";
+
+if (!empty($search)) {
+    $countSql .= " AND (p.POST_CONTENT LIKE :search 
+                  OR c.COMPANY_NAME LIKE :search 
+                  OR u.USER_NAME LIKE :search)";
+}
+
+$countStmt = $pdo->prepare($countSql);
+if (!empty($search)) {
+    $countStmt->bindParam(':search', $searchParam, PDO::PARAM_STR);
+}
+
+$countStmt->execute();
 $totalPosts = $countStmt->fetchColumn();
 $totalPages = ceil($totalPosts / $limit);
 ?>
