@@ -7,7 +7,7 @@ use PHPMailer\PHPMailer\Exception;
 require_once __DIR__ . '../../vendor/autoload.php';
 include '../includes/db.php';
 
-function enviarEmailConfirmacao($nome, $email)
+function enviarEmailConfirmacao($nome, $email, $login)
 {
     $mail = new PHPMailer(true);
 
@@ -28,6 +28,7 @@ function enviarEmailConfirmacao($nome, $email)
         $mail->Body = <<<HTML
             <h2>Olá, {$nome}!</h2>
             <p>Sua conta foi criada com sucesso.</p>
+            <p>Username : <strong>{$login}</strong></p>
             <p>Bem-vindo à nossa plataforma!</p>
 HTML;
 
@@ -124,7 +125,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Enviar o e-mail
-        if (enviarEmailConfirmacao($name, $email)) {
+        if (enviarEmailConfirmacao($name, $email, $login)) {
             echo json_encode(['success' => true, 'message' => 'Conta criada com sucesso e e-mail enviado.']);
         } else {
             echo json_encode(['success' => true, 'message' => 'Conta criada, mas falha ao enviar e-mail.']);
