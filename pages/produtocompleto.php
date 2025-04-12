@@ -123,14 +123,13 @@ function renderStars($rating)
     <div class="produto-detalhes">
         <h2>Descrição</h2>
         <p><?= nl2br(htmlspecialchars($product['PRODUCT_DESCRIPTION'])) ?></p>
-        <p><strong>Visualizações:</strong> <?= $product['PRODUCT_VIEW_QTY'] ?></p>
-        <?php
-        if ($product['PRODUCT_VIEW_QTY'] == 0) {
-            echo 'O produto ainda não tem visualizações.';
-        } else {
-            echo htmlspecialchars($product['PRODUCT_VIEW_QTY']);
-        }
-        ?>
+        <p><strong>Visualizações: </strong><?php
+            if ($product['PRODUCT_VIEW_QTY'] == 0) {
+                echo 'O produto ainda não tem visualizações.';
+            } else {
+                echo htmlspecialchars($product['PRODUCT_VIEW_QTY']);
+            }
+            ?></p>
         <p><strong>Produzido por:</strong> <?= htmlspecialchars($product['COMPANY_NAME']) ?></p>
     </div>
 
