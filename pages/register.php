@@ -1,6 +1,37 @@
 <?php
 // session_start();
 
+function validarSenha($senha) {
+    $erros = [];
+
+    // Verificar comprimento mínimo
+    if (strlen($senha) < 8) {
+        $erros[] = "A password deve ter pelo menos 10 caracteres";
+    }
+
+    // Verificar presença de letra minúscula
+    if (!preg_match('/[a-z]/', $senha)) {
+        $erros[] = "A password deve conter pelo menos uma letra minúscula";
+    }
+
+    // Verificar presença de letra maiúscula
+    if (!preg_match('/[A-Z]/', $senha)) {
+        $erros[] = "A password deve conter pelo menos uma letra maiúscula";
+    }
+
+    // Verificar presença de número
+    if (!preg_match('/[0-9]/', $senha)) {
+        $erros[] = "A password deve conter pelo menos um número";
+    }
+
+    // Verificar presença de caractere especial
+    if (!preg_match('/[!@#$%^&*(),.?":{}|<>]/', $senha)) {
+        $erros[] = "A password deve conter pelo menos um caracter especial";
+    }
+
+    return $erros;
+}
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -62,6 +93,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($password !== $confirm) {
         echo json_encode(['success' => false, 'message' => 'As palavras-passe não coincidem.']);
+        exit;
+    }
+
+    // Validar requisitos da senha
+    $errosSenha = validarSenha($password);
+    if (!empty($errosSenha)) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Requisitos de password não cumpridos:',
+            'errors' => $errosSenha
+        ]);
         exit;
     }
 
