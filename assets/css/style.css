@@ -619,3 +619,21 @@ footer {
 .top-rated-card:hover {
     transform: scale(1.02);
 }
+
+.password-requirements-errors {
+    color: #e74c3c;
+    background-color: #fdf2f0;
+    border: 1px solid #fadbd8;
+    border-radius: 4px;
+    padding: 10px;
+    margin-top: 10px;
+    list-style-type: none;
+}
+
+.error-item {
+    padding: 2px 0;
+}
+
+.error-item::before {
+    content: "❌ ";
+}

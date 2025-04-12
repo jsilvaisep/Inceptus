@@ -9,23 +9,21 @@
   .footer-carousel {
     display: flex;
     transition: transform 0.8s ease-in-out;
-    width: 200%;
   }
   
   .footer-carousel-slide {
     flex: 0 0 100%;
-    padding: 0 6vw;
+    padding: 0 2vw;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    gap: 24px;
   }
   
   .footer-carousel-title {
     font-size: 1.6rem;
     color: #be3144;
     font-weight: 700;
-    margin-bottom: 5px;
+    margin:5px;
   }
   
   .footer-carousel-cards {
@@ -54,7 +52,7 @@
     align-items: center;
     gap: 12px;
     padding: 12px 14px;
-    width: 525px;
+    width: 100%;
     height: 100px;
     text-decoration: none;
     color: inherit;

@@ -723,7 +723,6 @@
 
         // Registo
         if (page === 'register') {
-            
             const registerForm = document.getElementById('register-form');
             if (registerForm) {
                 registerForm.addEventListener('submit', async e => {
@@ -734,13 +733,24 @@
                     try {
                         const res = await fetch('pages/register.php', {method: 'POST', body: formData});
                         const data = await res.json();
-                        msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
-                        
-                        if (data.success) {
-                            setTimeout(() => {
-                                reloadNavbar();
-                                loadPage('home');
-                            }, 2000);
+
+                        // Tratamento especial para erros de validação de senha
+                        if (!data.success && data.errors && Array.isArray(data.errors)) {
+                            let errorMessage = `<p class="error">${data.message}</p><ul class="password-requirements-errors">`;
+                            data.errors.forEach(error => {
+                                errorMessage += `<li class="error-item">${error}</li>`;
+                            });
+                            errorMessage += '</ul>';
+                            msg.innerHTML = errorMessage;
+                        } else {
+                            msg.innerHTML = `<p class="${data.success ? 'success' : 'error'}">${data.message}</p>`;
+
+                            if (data.success) {
+                                setTimeout(() => {
+                                    reloadNavbar();
+                                    loadPage('home');
+                                }, 2000);
+                            }
                         }
                     } catch (error) {
                         msg.innerHTML = `<p class="error">Erro no servidor: ${error.message}</p>`;
