@@ -1,9 +1,13 @@
 <?php
-$host = '143.47.56.69';
-$port = '3306';
-$dbname = 'DB_INCEPTUS_PP';
-$user = 'vaadin_user';
-$pass = '#"6o6VB7!2';
+// Carrega as configurações do ambiente
+require_once __DIR__ . '/config.php';
+
+// Obtém as variáveis de ambiente
+$host = getenv('DB_HOST');
+$port = getenv('DB_PORT');
+$dbname = getenv('DB_NAME');
+$user = getenv('DB_USER');
+$pass = getenv('DB_PASSWORD');
 
 $pdo = null;
 try {

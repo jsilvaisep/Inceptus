@@ -43,11 +43,12 @@ function enviarEmailConfirmacao($nome, $email, $login)
     $mail = new PHPMailer(true);
 
     try {
+
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
         $mail->Username = 'maianetwork.cloud@gmail.com';
-        $mail->Password = 'bnzp epzh nbgh wslb';
+        $mail->Password = getenv('MAIL_PASSWORD');
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 

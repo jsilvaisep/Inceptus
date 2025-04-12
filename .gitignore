@@ -4,3 +4,4 @@
 /.idea
 /.fleet
 qodana.yaml
+.env
