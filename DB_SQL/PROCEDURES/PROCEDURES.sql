@@ -287,3 +287,23 @@ BEGIN
 END
 
 DROP PROCEDURE INSERT_COMMENT_EXT;
+
+
+/* 
+####################################
+####### CRIAR RESPOSTA COMENTÁRIO  #######################################################################################################################################################################
+####################################
+*/
+
+CREATE PROCEDURE INSERT_TAG (IN V_TAG_NAME VARCHAR(50), IN V_COMPANY_ID BINARY(36))
+BEGIN
+	DECLARE NEW_TAG_ID BINARY(36);
+	SET NEW_TAG_ID = UUID();
+	INSERT INTO TAG (TAG_ID, TAG_NAME) VALUES (NEW_TAG_ID, V_TAG_NAME);
+	INSERT INTO TAG_COMPANY (TAG_ID, COMPANY_ID) VALUES (NEW_TAG_ID, V_COMPANY_ID);
+END
+
+DROP PROCEDURE INSERT_TAG;
+
+
+
