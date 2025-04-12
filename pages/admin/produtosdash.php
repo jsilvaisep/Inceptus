@@ -58,6 +58,7 @@ try {
 <div class="dash_list">
     <div class="dash_head">
         <h2 class="dash_title">Gestão de Produtos</h2>
+        <button class="botao-voltar" onclick="loadPage('admin/empresadash')">Voltar</button>
         <button id="openModal" class="open-modal-btn" onclick="criarProduto()">Novo Produto</button>
     </div>
     <table class="dash_table">

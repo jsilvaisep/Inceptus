@@ -25,7 +25,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'COMPANY') {
         <div class="card-body text-center">
             <i class="fas fa-building fa-2x text-danger mb-2"></i>
             <h3 class="fw-bold">Comentários</h3>
-            <p class="text-muted small">Listar comentários produtos.</p>
+            <p class="text-muted small">Listar e gerir comentários produtos.</p>
             <button class="btn custom-btn mt-2" onclick="loadPage('admin/empresa_coms')">Gerir Comentários</button>
         </div>
     </div>
@@ -35,5 +35,13 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'COMPANY') {
             <h3 class="fw-bold">Notícias</h3>
             <p class="text-muted small">Listar e gerir notícias do site.</p>
             <button class="btn custom-btn mt-2" onclick="loadPage('admin/noticiasdash')">Gerir Notícias</button>
+        </div>
+    </div>
+    <div class="custom-card">
+        <div class="card-body text-center">
+            <i class="fas fa-newspaper fa-2x text-primary mb-2"></i>
+            <h3 class="fw-bold">Tags</h3>
+            <p class="text-muted small">Listar e gerir tags da empresa.</p>
+            <button class="btn custom-btn mt-2" onclick="loadPage('admin/empresa_tags')">Gerir Tags</button>
         </div>
     </div>

@@ -66,7 +66,7 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['user_type'] !== 'ADMIN') {
 <div class="dash_list">
     <div class="dash_head">
         <h2 class="dash_title">Gestão de Notícias</h2>
-        <button class="delete_button" onclick="loadPage('admin/dashboard')">Voltar</button>
+        <button class="delete_button" onclick="loadPage('admin/empresadash')">Voltar</button>
     </div>
 
     <div id="news-table-container">A carregar notícias...</div>

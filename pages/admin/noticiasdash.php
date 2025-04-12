@@ -52,7 +52,7 @@ if (empty($company_id_result)) {
 <div class="dash_list">
     <div class="dash_head">
         <h2 class="dash_title">Gestão de Empresas</h2>
-        <button class="botao-voltar" onclick="loadPage('admin/empresadash.php')">Voltar</button>
+        <button class="botao-voltar" onclick="loadPage('admin/empresadash')">Voltar</button>
         <button id="openModal" class="open-modal-btn" onclick="criarNoticia()">Nova Noticia</button>
     </div>
     <table class="dash_table">
