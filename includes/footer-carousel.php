@@ -11,23 +11,23 @@ $topCompanies = $pdo->query("SELECT * FROM COMPANY ORDER BY COMPANY_RANK DESC LI
 <div class="footer-carousel-wrapper" id="footer-carousel-container">
   <div class="footer-carousel" id="footer-carousel">
     <div class="footer-carousel-slide">
-        <br>
+        <div class="footer-carousel-title">Products</div>
       <div class="footer-carousel-cards">
-        <?php foreach ($topProducts as $product): ?>
-          <a href="?page=produtocompleto&id=<?= $product['PRODUCT_ID'] ?>" class="footer-carousel-card">
-            <img src="<?= htmlspecialchars($product['IMG_URL']) ?>" alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>">
-            <div class="footer-card-content">
-              <h3><?= htmlspecialchars($product['PRODUCT_NAME']) ?></h3>
-              <p><?= mb_strimwidth(htmlspecialchars($product['PRODUCT_DESCRIPTION']), 0, 60, '...') ?></p>
-            </div>
-          </a>
-        <?php endforeach; ?>
+            <?php foreach ($topProducts as $product): ?>
+              <a href="?page=produtocompleto&id=<?= $product['PRODUCT_ID'] ?>" class="footer-carousel-card">
+                <img src="<?= htmlspecialchars($product['IMG_URL']) ?>" alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>">
+                <div class="footer-card-content">
+                  <h3><?= htmlspecialchars($product['PRODUCT_NAME']) ?></h3>
+                  <p><?= mb_strimwidth(htmlspecialchars($product['PRODUCT_DESCRIPTION']), 0, 60, '...') ?></p>
+                </div>
+              </a>
+            <?php endforeach; ?>
       </div>
     </div>
 
     <div class="footer-carousel-slide">
-        <br>
-      <div class="footer-carousel-cards">
+        <div class="footer-carousel-title">Companies</div>
+        <div class="footer-carousel-cards">
         <?php foreach ($topCompanies as $company): ?>
           <a href="?page=empresacompleta&id=<?= $company['COMPANY_ID'] ?>" class="footer-carousel-card">
             <img src="<?= htmlspecialchars($company['IMG_URL']) ?>" alt="<?= htmlspecialchars($company['COMPANY_NAME']) ?>">
