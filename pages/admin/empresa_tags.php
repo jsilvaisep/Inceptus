@@ -32,11 +32,10 @@ if (empty($company_id_result)) {
 $company_id = $company_id_result['COMPANY_ID'];
 
 try {
-    $stmt2 = $pdo->prepare("SELECT c.*, cp.COMPANY_NAME, p.PRODUCT_NAME
-                       FROM COMMENT c 
-                       INNER JOIN COMPANY cp ON cp.COMPANY_ID = c.COMPANY_ID
-                       INNER JOIN PRODUCT p ON p.PRODUCT_ID = c.PRODUCT_ID
-                       WHERE cp.COMPANY_ID = ? AND c.COMMENT_STATUS = 'A'");
+    $stmt2 = $pdo->prepare("SELECT t.TAG_NAME, c.* FROM COMPANY c 
+                            INNER JOIN TAG_COMPANY tc ON tc.COMPANY_ID = c.COMPANY_ID
+                            INNER JOIN TAG t ON t.TAG_ID = tc.TAG_ID
+                            WHERE c.COMPANY_ID = ? AND t.TAG_STATUS = 'A'");
     $stmt2->execute([$company_id]);
     $comments = $stmt2->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -48,26 +47,25 @@ if (empty($company_id_result)) {
     exit;
 }
 
+// CALL INSERT_TAG (:tag_name,:company_id)
+
 ?>
 
 <div class="dash_list">
     <div class="dash_head">
-        <h2 class="dash_title">Gestão de Empresas</h2>
         <button class="delete_button" onclick="loadPage('admin/empresadash')">Voltar</button>
+        <h2 class="dash_title">Gestão de Empresas</h2>
+        <button class="delete_button" onclick="">Criar Tag</button>
     </div>
     <table class="dash_table">
         <tr class="dash_table_header">
-            <th>Product Name</th>
-            <th>Comment</th>
-            <th>Status</th>
+            <th>Tag Name</th>
             <th></th>
             <th></th>
         </tr>
         <?php foreach ($comments as $comment): ?>
             <tr class="dash_table_data">
-                <td><?= htmlspecialchars($comment['PRODUCT_NAME']) ?></td>
-                <td><?= htmlspecialchars($comment['COMMENT_TEXT']) ?></td>
-                <td><?= htmlspecialchars($comment['COMMENT_STATUS']) ?></td>
+                <td><?= htmlspecialchars($comment['TAG_NAME']) ?></td>
             </tr>
         <?php endforeach; ?>
     </table>

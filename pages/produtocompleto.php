@@ -149,11 +149,7 @@ function renderStars($rating)
                  alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>" class="imagem-principal-img">
         </div>
 
-        <!-- Imagens Menores -->
-        <div class="imagens-secundarias">
-            <img src="path/to/image2.jpg" alt="Imagem Secundária 1" class="imagem-secundaria">
-            <img src="path/to/image3.jpg" alt="Imagem Secundária 2" class="imagem-secundaria">
-        </div>
+
     </div>
 
     <!-- Seção de Descrição -->
