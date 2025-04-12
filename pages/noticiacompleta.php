@@ -93,7 +93,7 @@ $comentarios = $stmt->fetchAll();
                 </div>
             </div>
 
-            <div class="news-comments">
+            <div class="comentarios">
                 <h4>Comentários:</h4>
                 <div id="comment-section">
                     <?php foreach ($comentarios as $comentario):
@@ -110,9 +110,15 @@ $comentarios = $stmt->fetchAll();
                         </div>
                     <?php endforeach; ?>
                 </div>
+
                 <form>
-                    <textarea id="post_response<?= $noticia['POST_ID'] ?>" placeholder="Escreva o seu comentário..." rows="4" style="width:100%;"></textarea>
-                    <button type="button" onclick="submitComentarioNoticia('<?= $noticia['POST_ID'] ?>')">Comentar</button>
+                    <div class="comment_form">
+                        <h2>Comentário</h2>
+                        <textarea class="text-comment" id="post_response<?= $noticia['POST_ID'] ?>" placeholder="Escreva o seu comentário..." rows="4"></textarea>
+                        <div class="comment_actions">
+                            <button class="botao-comentar" type="button" onclick="submitComentarioNoticia('<?= $noticia['POST_ID'] ?>')">Comentar</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

@@ -11,28 +11,6 @@
     position: relative; /* Necessário para posicionar o botão */
 }
 
-/* ---------- Botão Voltar ---------- */
-.botao-voltar-modal {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-}
-
-.botao-voltar {
-    padding: 10px 15px;
-    font-size: 14px;
-    font-weight: bold;
-    color: white;
-    text-decoration: none;
-    background-color: #be3144; /* Tom de vermelho padrão */
-    border-radius: 6px;
-    transition: background-color 0.3s ease;
-}
-
-.botao-voltar:hover {
-    background-color: #9a2533; /* Tom mais escuro no hover */
-}
-
 /* ---------- Cabeçalho do Produto ---------- */
 .produto-completo-container h1 {
     color: #bd283d;

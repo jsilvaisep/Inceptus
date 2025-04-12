@@ -177,12 +177,11 @@ function renderStars($rating)
         <form>
             <div class="comment_form">
                 <h2>Comentário</h2>
-                <textarea id="comment" placeholder="Escreva o seu comentário..." rows="4"
-                          style="width:100%;"></textarea>
+                <textarea class="text-comment" id="comment" placeholder="Escreva o seu comentário..." rows="4"></textarea>
                 <h4>Rank</h4>
                 <div class="comment_rank">
                     <input type="number" id="review" min="0" max="5">
-                    <button class="botao-voltar" type="button"
+                    <button class="botao-comentar" type="button"
                             onclick="submitComentarioProduto('<?= $product['PRODUCT_ID'] ?>')">Comentar</button>
                 </div>
             </div>
