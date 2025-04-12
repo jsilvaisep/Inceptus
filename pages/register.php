@@ -47,14 +47,14 @@ function enviarEmailConfirmacao($nome, $email, $login)
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = 'maianetwork.cloud@gmail.com';
+        $mail->Username = getenv('MAIL_ADDRESS');
         $mail->Password = getenv('MAIL_PASSWORD');
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
         $mail->CharSet = 'UTF-8';
 
-        $mail->setFrom('maianetwork.cloud@gmail.com', 'Inceptus');
+        $mail->setFrom(getenv('MAIL_ADDRESS'), 'Inceptus');
         $mail->addAddress($email, $nome);
 
         $mail->isHTML(true);
