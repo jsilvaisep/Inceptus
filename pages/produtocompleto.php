@@ -11,6 +11,17 @@ if (isset($_SESSION['user'])) {
     exit;
 }
 
+//Valida conexão à BD
+try {
+    if (!isset($pdo) && isset($conn)) {
+        $pdo = $conn;
+    } else if (!isset($pdo)) {
+        throw new Exception("Conexão com a BD não encontrada");
+    }
+} catch (Exception $e) {
+    die("Erro na conexão com a BD: " . $e->getMessage());
+}
+
 // Verificar se a requisição é AJAX e se é um POST
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
@@ -19,7 +30,7 @@ if ($isAjax && $_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resposta']
     $rank = $_POST['rank'];
     $productId = $_GET['id'] ?? '';
 
-    // Recuperar o produto do banco de dados
+    // Recuperar o produto da base de dados
     $stmt = $pdo->prepare("SELECT * FROM PRODUCT WHERE PRODUCT_ID = ?");
     $stmt->execute([$productId]);
     $product = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -50,8 +61,8 @@ if (empty($productId)) {
 }
 
 // Recuperar informações do produto
-$stmt = $pdo->prepare("SELECT p.*, c.COMPANY_NAME 
-                       FROM PRODUCT p 
+$stmt = $pdo->prepare("SELECT p.*, c.COMPANY_NAME
+                       FROM PRODUCT p
                        INNER JOIN COMPANY c ON c.COMPANY_ID = p.COMPANY_ID
                        WHERE p.PRODUCT_ID = ? AND p.PRODUCT_STATUS = 'A'");
 $stmt->execute([$productId]);
@@ -62,12 +73,37 @@ if (!$product) {
     exit;
 }
 
+// Incrementar contagem de visualizações (apenas uma vez por sessão por produto)
+$viewKey = 'viewed_product_' . $productId;
+$timeKey = 'viewed_time_' . $productId;
+$now = time();
+$expireTime = 30; // Aguarda 30 segundos na session para voltar a incrementar
+
+// Verificar se já visualizou e se o tempo já expirou
+if (!isset($_SESSION[$viewKey]) ||
+    (isset($_SESSION[$timeKey]) && ($now - $_SESSION[$timeKey]) > $expireTime)) {
+
+    try {
+        $updateStmt = $pdo->prepare("UPDATE PRODUCT SET PRODUCT_VIEW_QTY = PRODUCT_VIEW_QTY + 1 WHERE PRODUCT_ID = ?");
+        $updateStmt->execute([$productId]);
+
+        // Atualizar o valor em $product para exibição correta
+        $product['PRODUCT_VIEW_QTY']++;
+
+        // Marcar o produto como visualizado nesta sessão
+        $_SESSION[$viewKey] = true;
+        $_SESSION[$timeKey] = $now;
+    } catch (PDOException $e) {
+        error_log("Erro ao atualizar visualizações: " . $e->getMessage());
+    }
+}
+
 // Buscar comentários no banco de dados
-$commentStmt = $pdo->prepare("SELECT c.COMMENT_TEXT, c.COMMENT_RANK, c.CREATED_AT, u.USER_NAME 
-                              FROM COMMENT c 
-                              INNER JOIN USER u ON u.USER_ID = c.USER_ID 
+$commentStmt = $pdo->prepare("SELECT c.COMMENT_TEXT, c.COMMENT_RANK, c.CREATED_AT, u.USER_NAME
+                              FROM COMMENT c
+                              INNER JOIN USER u ON u.USER_ID = c.USER_ID
                               WHERE c.PRODUCT_ID = ? AND c.COMMENT_STATUS = 'A'
-                              ORDER BY c.CREATED_AT DESC 
+                              ORDER BY c.CREATED_AT DESC
                               LIMIT 10");
 $commentStmt->execute([$productId]);
 $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -75,6 +111,7 @@ $comments = $commentStmt->fetchAll(PDO::FETCH_ASSOC);
 // Função para renderizar as estrelas
 function renderStars($rating)
 {
+    $rating = max(0, min(5, $rating)); // Limita o rating entre 0 e 5
     $fullStars = floor($rating);
     $halfStar = ($rating - $fullStars) >= 0.5 ? 1 : 0;
     $emptyStars = 5 - ($fullStars + $halfStar);
@@ -109,28 +146,25 @@ function renderStars($rating)
         <!-- Imagem Principal -->
         <div class="imagem-principal">
             <img src="<?= htmlspecialchars($product['IMG_URL']) ?>"
-                alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>" class="imagem-principal-img">
+                 alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>" class="imagem-principal-img">
         </div>
 
-        <!-- Imagens Menores -->
-        <div class="imagens-secundarias">
-            <img src="path/to/image2.jpg" alt="Imagem Secundária 1" class="imagem-secundaria">
-            <img src="path/to/image3.jpg" alt="Imagem Secundária 2" class="imagem-secundaria">
-        </div>
+
     </div>
 
     <!-- Seção de Descrição -->
     <div class="produto-detalhes">
         <h2>Descrição</h2>
         <p><?= nl2br(htmlspecialchars($product['PRODUCT_DESCRIPTION'])) ?></p>
-        <p><strong>Visualizações:</strong> <?= $product['PRODUCT_VIEW_QTY'] ?></p>
-        <?php
-        if ($product['PRODUCT_VIEW_QTY'] == 0) {
-            echo 'O produto ainda não tem visualizações.';
-        } else {
-            echo htmlspecialchars($product['PRODUCT_VIEW_QTY']);
-        }
-        ?>
+        <p><strong>Visualizações:</strong>
+            <?php
+            if ($product['PRODUCT_VIEW_QTY'] == 0) {
+                echo 'O produto ainda não tem visualizações.';
+            } else {
+                echo htmlspecialchars($product['PRODUCT_VIEW_QTY']);
+            }
+            ?>
+        </p>
         <p><strong>Produzido por:</strong> <?= htmlspecialchars($product['COMPANY_NAME']) ?></p>
     </div>
 
@@ -140,12 +174,12 @@ function renderStars($rating)
             <div class="comment_form">
                 <h2>Comentário</h2>
                 <textarea id="comment" placeholder="Escreva o seu comentário..." rows="4"
-                    style="width:100%;"></textarea>
+                          style="width:100%;"></textarea>
                 <h4>Rank</h4>
                 <div class="comment_rank">
                     <input type="number" id="review" min="0" max="5">
                     <button class="botao-voltar" type="button"
-                        onclick="submitComentarioProduto('<?= $product['PRODUCT_ID'] ?>')">Comentar</button>
+                            onclick="submitComentarioProduto('<?= $product['PRODUCT_ID'] ?>')">Comentar</button>
                 </div>
             </div>
         </form>
