@@ -164,11 +164,14 @@ function renderStars($rating)
                 echo htmlspecialchars($product['PRODUCT_VIEW_QTY']);
             }
             ?>
+        <p><strong>Produzido por:</strong>
+            <a href="empresacompleta.php?id=<?= urlencode($product['COMPANY_ID']) ?>" class="empresa-link">
+                <?= htmlspecialchars($product['COMPANY_NAME']) ?>
+            </a>
         </p>
-        <p><strong>Produzido por:</strong> <?= htmlspecialchars($product['COMPANY_NAME']) ?></p>
-    </div>
 
-    <!-- Seção de Comentários -->
+
+        <!-- Seção de Comentários -->
     <div class="comentarios">
         <form>
             <div class="comment_form">

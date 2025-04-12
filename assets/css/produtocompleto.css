@@ -154,4 +154,15 @@
     padding: 10px;
     font-size: x-large;
 }
+.empresa-link {
+    color: #2c3e50;           /* Um tom escuro e elegante */
+    text-decoration: none;    /* Remove o sublinhado */
+    font-weight: 600;         /* Negrito suave */
+    transition: color 0.3s;   /* Transição suave ao passar o rato */
+}
+
+.empresa-link:hover {
+    color: #ff0000;           /* Azul claro ao passar o rato */
+    text-decoration: underline; /* Sublinhado suave ao hover (opcional) */
+}
 
