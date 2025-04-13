@@ -1088,7 +1088,6 @@
         const resposta = textarea.value.trim();
         const rank = document.getElementById('review')?.value;
 
-
         if (!resposta || !rank) {
             alert("Preencha o comentário e o rank.");
             return;
@@ -1108,10 +1107,21 @@
         })
             .then(response => response.text())
             .then(html => {
+                // Limpar os campos do formulário
                 textarea.value = '';
                 document.getElementById('review').value = '';
+
+                // Recarregar a página do produto para atualizar os comentários
+                // Usando o mecanismo de SPA existente
+                loadPage('produtocompleto', `id=${product_Id}`);
+
+                // Opcional: Mostrar mensagem de sucesso
+                //alert('Comentário adicionado com sucesso!');
             })
-            .catch(error => console.error('Erro ao enviar comentário:', error));
+            .catch(error => {
+                console.error('Erro ao enviar comentário:', error);
+                alert('Ocorreu um erro ao enviar o comentário.');
+            });
     }
 
     window.submitComentarioProduto = submitComentarioProduto;
