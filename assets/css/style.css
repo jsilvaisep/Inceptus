@@ -640,7 +640,7 @@ footer {
 
 .text-comment {
     width:100%;
-    font-size: 14px;
+    font-size: 14px !important;
 }
 
 /* ---------- Botão Voltar ---------- */
