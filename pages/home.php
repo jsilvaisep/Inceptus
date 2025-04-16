@@ -10,8 +10,7 @@
             }
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $rating = (float) $row['PRODUCT_RANK'];
-                $rounded = ($rating < 2.5) ? 2 : (int) round($rating);
-                
+                $rounded = (int) round($rating);
                 $fullStars = str_repeat('&#9733;', $rounded);
                 $emptyStars = str_repeat('&#9734;', 5 - $rounded);
                 echo "
@@ -85,7 +84,7 @@
             }
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $rating = (float) $row['COMPANY_RANK'];
-                $rounded = ($rating < 2.5) ? 2 : (int) round($rating);
+                $rounded = (int) round($rating);
 
                 $fullStars = str_repeat('&#9733;', $rounded);
                 $emptyStars = str_repeat('&#9734;', 5 - $rounded);
