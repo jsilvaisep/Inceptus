@@ -148,8 +148,6 @@ function renderStars($rating)
             <img src="<?= htmlspecialchars($product['IMG_URL']) ?>"
                  alt="<?= htmlspecialchars($product['PRODUCT_NAME']) ?>" class="imagem-principal-img">
         </div>
-
-
     </div>
 
     <!-- Seção de Descrição -->
@@ -165,11 +163,10 @@ function renderStars($rating)
             }
             ?>
         <p><strong>Produzido por:</strong>
-            <a href="?page=empresacompleta.php?id=<?= urlencode($product['COMPANY_ID']) ?>" class="empresa-link">
+            <a href="?page=empresacompleta?id=<?= urlencode($product['COMPANY_ID']) ?>" class="empresa-link">
                 <?= htmlspecialchars($product['COMPANY_NAME']) ?>
             </a>
         </p>
-
 
         <!-- Seção de Comentários -->
     <div class="comentarios">
@@ -181,7 +178,8 @@ function renderStars($rating)
                 <div class="comment_rank">
                     <input type="number" id="review" min="0" max="5">
                     <button class="botao-comentar" type="button"
-                            onclick="submitComentarioProduto('<?= $product['PRODUCT_ID'] ?>')">Comentar</button>
+                            onclick="submitComentarioProduto('<?= $product['PRODUCT_ID'] ?>')">Comentar
+                    </button>
                 </div>
             </div>
         </form>
@@ -194,7 +192,7 @@ function renderStars($rating)
                     <div class="comentario-item">
                         <p>"<?= htmlspecialchars($comment['COMMENT_TEXT']) ?>"</p>
                         <p class="product-rating"><?= renderStars($comment['COMMENT_RANK']) ?></p>
-                        <footer>- <?= htmlspecialchars($comment['USER_NAME']) ?>, em
+                        <footer>- <?= htmlspecialchars($comment['USER_NAME']) ?>,
                             <?= date('d/m/Y', strtotime($comment['CREATED_AT'])) ?>
                         </footer>
                     </div>
