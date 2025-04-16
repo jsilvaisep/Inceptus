@@ -165,7 +165,7 @@ function renderStars($rating)
             }
             ?>
         <p><strong>Produzido por:</strong>
-            <a href="empresacompleta.php?id=<?= urlencode($product['COMPANY_ID']) ?>" class="empresa-link">
+            <a href="?page=empresacompleta.php?id=<?= urlencode($product['COMPANY_ID']) ?>" class="empresa-link">
                 <?= htmlspecialchars($product['COMPANY_NAME']) ?>
             </a>
         </p>
