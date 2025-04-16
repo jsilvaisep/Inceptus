@@ -145,9 +145,9 @@ $products = $productStmt->fetchAll(PDO::FETCH_ASSOC);
                 ?>
             </p>
             <p><strong>Website:</strong>
-                <?php if (!empty($company['SITE'])): ?>
-                    <a href="<?= htmlspecialchars($company['SITE']) ?>" target="_blank">
-                        <?= htmlspecialchars($company['SITE']) ?>
+                <?php if (!empty($company['COMPANY_SITE'])): ?>
+                    <a href="<?= htmlspecialchars($company['COMPANY_SITE']) ?>" target="_blank">
+                        <?= htmlspecialchars($company['COMPANY_SITE']) ?>
                     </a>
                 <?php else: ?>
                     Não disponível
